@@ -1,0 +1,18 @@
+@layer components {
+  .spark-box { position: relative; overflow: hidden; padding: 6px 7px 56px; border: 2px solid var(--line); border-radius: 5px; background: var(--surface); max-width: 900px; transition: border-color .18s ease, box-shadow .18s ease, background .25s ease; }
+  .spark-box:focus-within { border-color: var(--ivory); box-shadow: 0 0 0 2px rgba(255,255,255,.16); }
+  .spark-input { display: block; width: 100%; min-height: 188px; max-height: 480px; padding: 24px 23px 12px; resize: none; overflow-y: auto; background: transparent; border: none; outline: none; color: var(--ivory); font-family: var(--sans); font-size: 19px; font-weight: 650; line-height: 1.55; letter-spacing: -.017em; caret-color: var(--accent); transition: color .2s ease; text-shadow: 0 1px 0 oklch(14% .02 256 / .28); }
+  .spark-input::placeholder, .question-textarea::placeholder { color: var(--field-placeholder); opacity: 1; }
+  .spark-input:focus-visible { outline: none; }
+  .spark-bottom { position: absolute; inset-inline: 27px 18px; bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 14px; z-index: 1; }
+  .field-hint { font-size: 11px; font-weight: 700; letter-spacing: .012em; color: var(--muted); }
+  .field-status { min-height: 18px; margin: 10px 1px 0; font-size: 12px; color: var(--muted); }
+  .field-status.is-error { color: var(--error); }
+  .question-textarea { width: 100%; display: block; min-height: 86px; max-height: 380px; padding: 14px 16px; resize: none; overflow-y: auto; color: var(--ivory); background: var(--field-bg); border: 2px solid var(--line); border-radius: 4px; font-size: 16px; font-weight: 600; line-height: 1.75; caret-color: var(--accent); transition: border-color .2s, background .2s, box-shadow .2s; }
+  .question-textarea:focus { border-color: var(--spark-focus); outline: none; background: var(--field-focus-bg); box-shadow: 0 0 0 3px var(--field-focus-ring); }
+  .question-textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  @media (max-width: 490px) {
+    .spark-input { padding: 18px 14px; }
+    .spark-bottom { inset-inline: 19px 12px; }
+  }
+}

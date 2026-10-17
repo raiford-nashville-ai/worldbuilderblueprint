@@ -1,0 +1,27 @@
+@layer components {
+  .voice-disclosure { margin-top: 12px; padding: 16px 19px; border: 1px solid var(--hairline-strong); border-radius: 9px; color: var(--muted); background: var(--voice-bg); display: flex; justify-content: space-between; align-items: center; gap: 22px; font-size: 12px; line-height: 1.6; }
+  .voice-disclosure p { margin: 0; max-width: 570px; }
+  .voice-disclosure-actions { display: flex; gap: 8px; flex: none; }
+  .explore { max-width: 460px; }
+  .explore summary { width: fit-content; display: flex; align-items: center; gap: 7px; cursor: pointer; list-style: none; color: var(--muted); font-size: 12px; line-height: 1.4; transition: color .18s; }
+  .explore summary::-webkit-details-marker, .system-accordion summary::-webkit-details-marker { display: none; }
+  .explore summary:hover { color: var(--ivory); }
+  .explore summary svg { height: 13px; width: 13px; transition: transform .18s ease; }
+  .explore[open] summary svg { transform: rotate(45deg); }
+  .explore ul { padding: 13px 0 2px 15px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+  .explore li + li { margin-top: 5px; }
+  .system-accordion { margin-top: 100px; max-width: 920px; border-top: 2px solid rgba(203,235,248,.32); padding-top: 18px; }
+  .system-accordion summary { list-style: none; cursor: pointer; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; color: var(--ivory); }
+  .system-accordion-kicker { display: block; color: var(--accent); font: 800 11px/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+  .system-accordion-title { display: block; font: 820 clamp(24px,2.4vw,36px)/1.05 var(--sans); letter-spacing: -.05em; }
+  .system-accordion summary::after { content: '+'; flex: none; width: 42px; height: 42px; display: grid; place-items: center; border: 2px solid var(--line); border-radius: 4px; color: var(--line); font-size: 28px; line-height: 1; margin-bottom: 2px; }
+  .system-accordion[open] summary::after { content: '−'; }
+  .system-accordion-panel { padding-top: 20px; }
+  @media (max-width: 760px) {
+    .system-accordion { margin-top: 60px; }
+    .system-accordion summary { align-items: center; }
+    .system-accordion-title { max-width: 250px; }
+    .system-accordion summary::after { width: 38px; height: 38px; font-size: 24px; }
+  }
+  @media (max-width: 490px) { .voice-disclosure { align-items: stretch; flex-direction: column; gap: 12px; } }
+}

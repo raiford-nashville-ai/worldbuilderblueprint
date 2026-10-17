@@ -1,0 +1,31 @@
+{{- /* Explicit order is the CSS dependency graph. Supporting files own their
+     named layer too; no browser @imports or implicit glob ordering. */ -}}
+{{- $paths := slice
+  "css/main.css"
+  "css/layers/reset.css"
+  "css/layers/tokens.css"
+  "css/layers/themes.css"
+  "css/layers/base.css"
+  "css/layers/layout.css"
+  "css/layers/components.css"
+  "css/components/button.css"
+  "css/components/field.css"
+  "css/components/disclosure.css"
+  "css/components/document-surface.css"
+  "css/layers/features.css"
+  "css/features/discovery.css"
+  "css/features/blueprint.css"
+  "css/layers/utilities.css"
+-}}
+{{- $styles := slice -}}
+{{- range $paths -}}
+  {{- $styles = $styles | append (resources.Get .) -}}
+{{- end -}}
+{{- $css := $styles | resources.Concat "css/site.css" -}}
+{{- $js := resources.Get "js/main.js" | js.Build (dict "targetPath" "js/site.js" "target" "es2020" "format" "esm") -}}
+{{- if hugo.IsProduction -}}
+  {{- $css = $css | minify | fingerprint "sha384" -}}
+  {{- $js = $js | minify | fingerprint "sha384" -}}
+{{- end -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}>
+<script type="module" src="{{ $js.RelPermalink }}"{{ with $js.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}></script>

@@ -1,0 +1,46 @@
+@layer components {
+  /* Paper typography and material are independent of the blueprint workflow. */
+  .manuscript { position: relative; overflow: hidden; color: var(--paper-ink); background: linear-gradient(180deg, oklch(99.4% .003 95), oklch(98.3% .004 95)); border: 1px solid oklch(92% .006 95 / .9); border-radius: 3px; box-shadow: 0 50px 120px oklch(7% .01 240 / .28), 0 7px 25px oklch(7% .01 240 / .14); }
+  .manuscript::before { content: ''; position: absolute; pointer-events: none; inset: 0; opacity: .9; background-image: radial-gradient(oklch(35% .004 95 / .045) .5px, transparent .8px), radial-gradient(oklch(40% .004 95 / .028) .6px, transparent .9px), linear-gradient(180deg, transparent 0, transparent 21px, oklch(66% .008 95 / .14) 22px, transparent 23px), linear-gradient(to right, transparent 0, transparent 42px, oklch(67% .010 18 / .12) 43px, transparent 44px); background-size: 8px 8px, 13px 13px, 100% 24px, 100% 100%; background-position: 0 0, 4px 5px, 0 112px, 0 0; }
+  .manuscript::after { content: 'AUTHORING KIT\WORLD NOTES'; white-space: pre; position: absolute; top: 78px; right: 54px; width: 156px; height: 156px; display: grid; place-items: center; text-align: center; font: 650 11px/1.5 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: oklch(36% .004 95 / .26); border: 1px dashed oklch(38% .004 95 / .22); border-radius: 50%; box-shadow: inset 0 0 0 6px oklch(38% .004 95 / .03), inset 0 0 0 15px transparent; transform: rotate(-9deg); pointer-events: none; }
+  .manuscript-inner { position: relative; max-width: 790px; margin-inline: auto; padding: clamp(46px, 7vw, 92px) clamp(28px, 7vw, 70px) clamp(62px, 8vw, 105px); }
+  .manuscript-inner::before { content: ''; position: absolute; inset: 24px 24px auto auto; width: 110px; height: 36px; border-radius: 2px; background: linear-gradient(180deg, oklch(81% .012 88 / .32), oklch(77% .012 88 / .22)); transform: rotate(3deg); opacity: .8; box-shadow: 0 2px 8px oklch(20% .004 95 / .08); pointer-events: none; }
+  .manuscript-topline { display: flex; justify-content: space-between; gap: 20px; color: var(--paper-muted); border-bottom: 1px solid var(--paper-rule); padding-bottom: 19px; font-size: 9px; font-weight: 650; text-transform: uppercase; letter-spacing: .19em; }
+  .manuscript-title-block { margin-top: 70px; }
+  .manuscript-kicker { margin: 0 0 18px; font-size: 10px; font-weight: 650; letter-spacing: .18em; text-transform: uppercase; color: oklch(37% .006 95); }
+  .manuscript h2 { margin: 0; color: var(--paper-ink); font: 850 clamp(45px, 6vw, 73px)/1.08 var(--sans); letter-spacing: -.06em; overflow-wrap: anywhere; }
+  .manuscript-dek { margin: 23px 0 0; max-width: 600px; font: italic 400 clamp(18px, 2.4vw, 24px)/1.57 var(--serif); color: var(--paper-muted); }
+  .metadata { margin: 53px 0 61px; border-block: 1px solid var(--paper-rule); padding: 19px 0 21px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); column-gap: 18px; row-gap: 12px; }
+  .metadata-item span { display: block; font-size: 9px; letter-spacing: .17em; color: var(--paper-muted); text-transform: uppercase; margin-bottom: 5px; }
+  .metadata-item strong { display: block; font-size: 12px; font-weight: 550; color: var(--paper-ink); }
+  .document-body { max-width: 630px; margin-inline: auto; }
+  .document-opening { margin: 0 0 60px; font: 400 clamp(20px, 2.7vw, 25px)/1.6 var(--serif); letter-spacing: -.013em; color: var(--paper-ink); }
+  .document-section { padding-top: 37px; margin-top: 42px; border-top: 1px solid var(--paper-rule); }
+  .document-section .section-index { display: block; margin-bottom: 12px; color: oklch(37% .008 95); font-size: 10px; font-weight: 660; letter-spacing: .2em; }
+  .document-section h3 { margin: 0 0 22px; font: 800 clamp(28px, 3.2vw, 39px)/1.18 var(--sans); letter-spacing: -.04em; }
+  .document-section p { margin: 0 0 17px; color: oklch(33% .004 95); font-size: 14px; line-height: 1.95; }
+  .document-section blockquote { margin: 18px 0 26px; padding: 5px 0 5px 22px; border-left: 2px solid oklch(58% .006 95); font: italic 400 20px/1.65 var(--serif); letter-spacing: -.005em; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--paper-ink); }
+  .document-section .source-label { color: var(--paper-muted); font-size: 10px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; margin: 23px 0 0; }
+  .connection-box { background: oklch(97.2% .004 95); border-left: 2px solid oklch(42% .006 95); margin: 22px 0; padding: 22px 24px 4px; }
+  .connection-box p { font: 400 18px/1.7 var(--serif); color: var(--paper-ink); }
+  .open-threads { list-style: none; padding: 0; margin: 19px 0 8px; }
+  .open-threads li { padding: 12px 0; border-bottom: 1px solid var(--paper-rule); font-family: var(--serif); font-size: 17px; }
+  .open-threads li span { display: block; margin-bottom: 3px; font: 650 9px/1.5 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--paper-muted); }
+  .manuscript-end { display: grid; place-items: center; gap: 12px; margin-top: 74px; color: oklch(42% .006 95); }
+  .manuscript-end svg { width: 27px; height: 27px; }
+  .manuscript-end small { font: italic 16px/1.5 var(--serif); color: var(--paper-muted); }
+  @media (max-width: 760px) {
+    .manuscript-title-block { margin-top: 52px; }
+    .metadata { margin-block: 39px 43px; }
+  }
+  @media (max-width: 490px) {
+    .manuscript-inner { padding: 38px 25px 64px; }
+    .manuscript::after { top: 70px; right: 18px; width: 118px; height: 118px; font-size: 9px; letter-spacing: .18em; }
+    .manuscript-inner::before { width: 82px; height: 28px; inset: 18px 18px auto auto; }
+    .manuscript-topline { font-size: 8px; }
+    .manuscript h2 { font-size: clamp(39px, 10vw, 57px); }
+    .manuscript-dek { font-size: 18px; }
+    .metadata { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .document-section blockquote { font-size: 18px; }
+  }
+}

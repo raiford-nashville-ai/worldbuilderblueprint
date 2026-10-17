@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="blue-studio">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d2838">
+  <meta name="description" content="Begin with an idea. Explore seven questions. Discover the world behind what you imagine.">
+  <title>My World Blueprint — Create the world behind what you imagine</title>
+  {{ partial "assets.html" . }}
+</head>
+<body data-stage="spark">
+  <div class="background-wash" aria-hidden="true"></div>
+  <canvas id="atmosphere" aria-hidden="true"></canvas>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="wordmark" id="homeLink" href="#main" aria-label="My World Blueprint, go to beginning">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15"><path d="M12 2 22 12 12 22 2 12Z"/><path d="M12 6v12M6 12h12"/></svg></span>
+        <span>My World Blueprint</span>
+      </a>
+    </header>
+    <main id="main">{{ block "main" . }}{{ end }}</main>
+  </div>
+  <noscript><p class="noscript-notice">This creative experience needs JavaScript. Please enable it to explore the seven questions and generate a sample Blueprint.</p></noscript>
+</body>
+</html>
+
+{{/* The shell owns footer copy; home places it inside the creative stage. */}}
+{{ define "site-footer" }}
+<footer class="site-footer"><span>MY WORLD BLUEPRINT &nbsp; / &nbsp; BLUE STUDIO</span><span>Every world begins with one bright idea.</span></footer>
+{{ end }}

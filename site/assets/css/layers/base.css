@@ -1,0 +1,9 @@
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+  body { min-width: 320px; background: var(--page-bg); color: var(--ivory); font: 500 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  button { cursor: pointer; }
+  button:disabled { cursor: wait; }
+  ::selection { color: var(--ink); background: var(--accent); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .noscript-notice { padding: 24px; color: var(--ivory); }
+}

@@ -1,0 +1,25 @@
+@layer tokens {
+  :root {
+    /* Reference values describe the palette, not where it is used. */
+    --ref-charcoal-900: #1d2838;
+    --ref-charcoal-800: #2d394c;
+    --ref-charcoal-850: #222f41;
+    --ref-white: #f8fbff;
+    --ref-orange: #ffad59;
+    --ref-cream: #ffedc5;
+    --ref-blue-line: #cbebf8;
+    --ref-paper: oklch(99.2% 0.003 95);
+    --ref-paper-ink: oklch(28% 0.004 95);
+    --ref-paper-muted: oklch(50% 0.006 95);
+    --ref-font-serif: Iowan Old Style, Baskerville, Palatino Linotype, Book Antiqua, Georgia, serif;
+    --ref-font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Arial, sans-serif;
+    /* Semantic roles are the public styling API. Theme supplies studio roles. */
+    --serif: var(--ref-font-serif);
+    --sans: var(--ref-font-sans);
+    --paper: var(--ref-paper);
+    --paper-ink: var(--ref-paper-ink);
+    --paper-muted: var(--ref-paper-muted);
+    --paper-rule: oklch(72% 0.008 95 / .54);
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+}

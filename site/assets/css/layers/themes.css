@@ -1,0 +1,33 @@
+@layer themes {
+  /* Blue Studio is present before JS loads, including with JS disabled. */
+  :root[data-theme="blue-studio"] {
+    color-scheme: dark;
+    --ink: var(--ref-charcoal-900);
+    --ivory: var(--ref-white);
+    --muted: rgba(248,251,255,.82);
+    --quiet: rgba(248,251,255,.58);
+    --hairline: rgba(255,255,255,.13);
+    --hairline-strong: rgba(255,255,255,.26);
+    --accent: var(--ref-orange);
+    --line: var(--ref-blue-line);
+    --focus: rgba(255,255,255,.55);
+    --page-bg: radial-gradient(circle at top, var(--ref-charcoal-800), var(--ref-charcoal-900) 52%);
+    --background-wash: radial-gradient(ellipse 44% 33% at 50% -6%, rgba(115,135,164,.20), transparent 68%), radial-gradient(ellipse 65% 45% at 50% 100%, rgba(8,18,34,.28), transparent 72%), radial-gradient(rgba(255,255,255,.035) .55px, transparent .85px), radial-gradient(rgba(10,25,52,.18) .7px, transparent 1px), linear-gradient(180deg, var(--ref-charcoal-800), var(--ref-charcoal-900));
+    --surface: rgba(255,255,255,.035);
+    --surface-subtle: rgba(255,255,255,.025);
+    --field-bg: rgba(255,255,255,.04);
+    --field-focus-bg: rgba(255,255,255,.07);
+    --field-focus-ring: rgba(255,255,255,.07);
+    --field-placeholder: rgba(255,255,255,.68);
+    --spark-focus: rgba(255,255,255,.78);
+    --mic-hover: rgba(255,255,255,.16);
+    --voice-bg: rgba(10,31,64,.36);
+    --toolbar-hover: rgba(255,255,255,.14);
+    --primary-fg: var(--ref-charcoal-850);
+    --primary-bg: var(--accent);
+    --primary-hover: var(--ref-cream);
+    --confirm-bg: #fff;
+    --confirm-fg: var(--ink);
+    --error: oklch(82% .11 43);
+  }
+}

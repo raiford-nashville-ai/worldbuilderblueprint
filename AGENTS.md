@@ -5,6 +5,21 @@
 - Keep the local Hugo preview running after changes so the user can test.
 - Build with `hugo --source site` and verify affected interactions before committing.
 
+## Frontend ownership
+
+- Read `docs/frontend-architecture.md` before changing frontend boundaries.
+- `site/layouts/baseof.html` owns the document shell, metadata, header, and footer definition. `home.html` composes the four `partials/home/` sections.
+- Keep homepage copy in HTML partials. Runtime prompts, status messages, and generated prose belong in their JavaScript feature modules.
+- CSS lives in `site/assets/css/`. Preserve the declared layer order: reset, tokens, themes, base, layout, components, features, utilities.
+- Each layer/supporting CSS file wraps its rules in its named layer. Update the explicit resource list in `partials/assets.html` when adding a stylesheet; do not add browser CSS imports.
+- Use reference tokens for palette values and semantic tokens for their roles. Blue Studio is CSS-owned; do not initialize appearance in JavaScript.
+- `site/assets/js/main.js` coordinates stages; feature modules own their DOM behavior and resources. Use IDs/data attributes as behavior hooks rather than style-class selectors.
+- Preserve editable answers across generation and return navigation. Render user text with text nodes, not HTML interpolation.
+- Keep Three.js lazy and optional. Release voice tracks, audio contexts, animation frames, listeners, and renderer resources at their ownership boundaries.
+- For structural or styling changes, capture a baseline and compare desktop/mobile Spark, open system panel, Discovery, and Blueprint views. Settle animations before screenshots.
+- Verify validation, optional answers, generation, edit/regenerate, Markdown copy/download, keyboard focus, reduced motion, and enhancement failure paths as affected.
+- Production assets use Hugo ordered CSS concat and `js.Build`, followed by minification/fingerprints. Do not edit generated `site/public/` output.
+
 ## Git practices
 
 - Keep `main` as the stable baseline. Work on descriptive feature branches.

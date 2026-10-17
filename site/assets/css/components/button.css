@@ -1,0 +1,22 @@
+@layer components {
+  .primary-button { display: inline-flex; gap: 33px; align-items: center; justify-content: space-between; min-height: 57px; padding: 13px 22px 13px 26px; color: var(--primary-fg); border: 2px solid var(--primary-bg); border-radius: 4px; background: var(--primary-bg); font-weight: 850; font-size: 16px; line-height: 1.2; white-space: nowrap; box-shadow: none; transition: transform .18s var(--ease), background .18s, box-shadow .18s; }
+  .primary-button:hover:not(:disabled) { transform: translateY(-1px); background: var(--primary-hover); }
+  .primary-button:active:not(:disabled) { transform: translateY(0); }
+  .primary-button svg { width: 19px; height: 19px; }
+  .mic-button { width: 38px; height: 38px; display: grid; place-items: center; flex: none; color: var(--ivory); background: transparent; border: 1px solid var(--line); border-radius: 4px; transition: color .18s, background .18s, border-color .18s; }
+  .mic-button:hover { background: var(--mic-hover); }
+  .mic-button[aria-pressed="true"] { color: var(--ink); background: var(--accent); border-color: var(--accent); }
+  .mic-button svg { width: 18px; height: 18px; }
+  .quiet-button, .voice-confirm { padding: 9px 12px; border: 1px solid var(--hairline-strong); border-radius: 7px; background: transparent; color: var(--ivory); font-size: 11px; font-weight: 600; }
+  .voice-confirm { background: var(--confirm-bg); color: var(--confirm-fg); border-color: var(--confirm-bg); }
+  .toolbar-button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 3px; background: transparent; color: var(--ivory); font-size: 11px; font-weight: 750; transition: background .18s, border-color .18s; }
+  .toolbar-button:hover { background: var(--toolbar-hover); border-color: var(--hairline-strong); }
+  .toolbar-button svg { width: 14px; height: 14px; }
+  .toolbar-button.return { margin-left: 7px; background: transparent; border-color: transparent; color: var(--muted); }
+  .toolbar-button.return:hover { color: var(--ivory); }
+  @media (max-width: 490px) {
+    .primary-button { gap: 17px; padding-inline: 19px; }
+    .toolbar-button { flex: auto; justify-content: center; }
+    .toolbar-button.return { margin-left: 0; }
+  }
+}

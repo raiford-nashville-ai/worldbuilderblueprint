@@ -1,0 +1,19 @@
+@layer features {
+  .blueprint-stage { width: min(100% - 48px, 1010px); margin: 65px auto 90px; animation: enter-manuscript .8s var(--ease) both; }
+  @keyframes enter-manuscript { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .blueprint-toolbar { display: flex; gap: 20px; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+  .blueprint-toolbar .eyebrow { color: var(--accent); font-weight: 850; font-size: 12px; }
+  .toolbar-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+  .blueprint-footnote { display: flex; justify-content: space-between; gap: 20px; margin-top: 19px; color: var(--quiet); font-size: 11px; line-height: 1.7; }
+  .blueprint-footnote a { color: var(--muted); text-underline-offset: 3px; }
+  .export-status { min-height: 18px; margin: 9px 0 0; color: var(--accent); text-align: right; font-size: 12px; }
+  @media (max-width: 760px) {
+    .blueprint-toolbar { align-items: flex-start; flex-direction: column; }
+    .blueprint-stage { margin-top: 40px; }
+  }
+  @media (max-width: 490px) {
+    .blueprint-stage { width: min(100% - 36px, 1050px); }
+    .toolbar-actions { width: 100%; }
+    .blueprint-footnote { flex-direction: column; gap: 8px; }
+  }
+}

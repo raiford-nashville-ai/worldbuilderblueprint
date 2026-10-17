@@ -1,0 +1,28 @@
+<div class="hero" id="sparkSection">
+  <div class="slide-index">MY WORLD BLUEPRINT <span> / </span> THE FIRST IDEA</div>
+  <div class="eyebrow">01 &nbsp; The Spark</div>
+  <h1>What do you want <em>to create?</em></h1>
+  <p class="hero-description">A world begins with a single idea. Give it words. The structure comes next.</p>
+  <label class="sr-only" for="sparkInput">Describe what you want to create</label>
+  <div class="spark-box" id="sparkBox">
+    <textarea id="sparkInput" class="spark-input" rows="4" spellcheck="true" placeholder="It can be anything. A character, a story, a business, a world, or something you can't quite explain yet." aria-describedby="sparkHint voiceStatus"></textarea>
+    <div class="spark-bottom">
+      <span class="field-hint" id="sparkHint">Start with the fragment you can already feel.</span>
+      <div class="mic-group" id="micGroup">
+        <div class="audio-meter" id="audioMeter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <button id="micButton" type="button" class="mic-button" aria-label="Use voice input" aria-pressed="false" title="Voice input through your browser">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12.5" rx="3"/><path d="M5.5 10.5v1a6.5 6.5 0 0 0 13 0v-1M12 18v4m-4 0h8"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="voice-disclosure" id="voiceDisclosure" hidden>
+    <p>Voice input uses your browser's speech recognition, which may send audio to its speech service. This prototype does not store audio or send your written ideas to a Blueprint server. You can edit the transcribed text.</p>
+    <div class="voice-disclosure-actions"><button class="quiet-button" id="cancelVoice" type="button">Not now</button><button class="voice-confirm" id="confirmVoice" type="button">Start speaking</button></div>
+  </div>
+  <p id="voiceStatus" class="field-status" role="status" aria-live="polite"></p>
+  <div class="spark-actions">
+    <button id="startButton" type="button" class="primary-button">Let's go <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7"/></svg></button>
+    <p class="action-aside">A little curiosity is enough. Nothing needs to be perfect.</p>
+  </div>
+</div>
