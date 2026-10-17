@@ -22,6 +22,8 @@
 
 ## Git practices
 
+- Use `274983938+raiford-brookshire@users.noreply.github.com` for both commit author and committer email. Never publish a personal email in commit metadata. Supply `GIT_AUTHOR_EMAIL` and `GIT_COMMITTER_EMAIL` when committing, and verify metadata before pushing.
+
 - Keep `main` as the stable baseline. Work on descriptive feature branches.
 - The restructuring work starts on `feat/restructure-site`.
 - Use branch names such as `feat/<description>`, `fix/<description>`, or `chore/<description>`.

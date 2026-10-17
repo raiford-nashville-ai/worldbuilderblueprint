@@ -1,0 +1,15 @@
+# Paths are relative to the repository root; the Hugo project lives in site/.
+[build]
+  command = 'hugo --source site --gc --minify --baseURL "$URL"'
+  publish = "site/public"
+
+[build.environment]
+  HUGO_VERSION = "0.166.0"
+  HUGO_ENVIRONMENT = "production"
+
+# Netlify supplies the public site URL and unique preview URLs at build time.
+[context.deploy-preview]
+  command = 'hugo --source site --gc --minify --baseURL "$DEPLOY_PRIME_URL"'
+
+[context.branch-deploy]
+  command = 'hugo --source site --gc --minify --baseURL "$DEPLOY_PRIME_URL"'

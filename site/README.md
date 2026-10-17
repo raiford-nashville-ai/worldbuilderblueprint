@@ -1,5 +1,8 @@
 # My World Blueprint
 
+Netlify build and automatic deployment setup is documented in
+[`docs/netlify-deployment.md`](../docs/netlify-deployment.md).
+
 A single-page Hugo site based on the preserved `../final-mockup-home-page.html`.
 Blueprint generation runs locally in the browser as a demonstration.
 

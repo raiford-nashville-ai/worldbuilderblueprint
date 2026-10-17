@@ -1,4 +1,5 @@
 # Hugo build output and caches
+/.netlify/
 /site/public/
 /site/resources/
 /site/.hugo_build.lock
