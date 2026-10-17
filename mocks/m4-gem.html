@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My World Blueprint — World Builder Architecture</title>
+  
+  <!-- Typography: Newsreader (Editorial Serif), Plus Jakarta Sans (Structural UI), JetBrains Mono (Technical Notation) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for atmospheric ambient light dust and fiber drift -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS: MATTE CHARCOAL-TEXTURED STUDIO COBALT & OPTIC WHITE
+       Darker, velvety studio blue (OKLCH ~254 hue) with crisp white-on-blue hierarchy
+       ========================================================================= */
+    :root {
+      /* Deep Matte Royal / Studio Blue Canvas (A touch darker than studio backdrop) */
+      --color-canvas: oklch(0.27 0.135 254);            /* Rich velvety cobalt-slate */
+      --color-canvas-deep: oklch(0.22 0.115 254);       /* Recessed typing depth */
+      --color-surface-1: oklch(0.31 0.142 254);         /* Card surface */
+      --color-surface-2: oklch(0.35 0.150 254);         /* Hovered elevation */
+      --color-surface-highlight: oklch(0.40 0.160 254);
+
+      /* Fine Drafting & Studio Linework */
+      --border-subtle: oklch(0.44 0.095 254 / 0.45);   /* Crisp, quiet separation */
+      --border-focus: oklch(0.92 0.030 240);            /* Brilliant white focus boundary */
+      --grid-line-subtle: oklch(0.38 0.090 254 / 0.22);/* Subtle 28px graph guide */
+
+      /* Pure Crisp White Typography (White on Blue) */
+      --text-white-pure: oklch(0.995 0.002 240);       /* Optic white hero text */
+      --text-white-soft: oklch(0.89 0.020 245);        /* Body reading white */
+      --text-white-muted: oklch(0.72 0.055 250);       /* Editorial subtext & notations */
+      --blueprint-ice: oklch(0.85 0.085 235);          /* Ice-cyan technical highlight */
+      
+      /* Primary Button (Luminous White Pill with Cobalt Ink) */
+      --btn-white-bg: oklch(0.99 0.002 240);
+      --btn-white-text: oklch(0.22 0.135 254);
+      --btn-white-hover: #ffffff;
+      --indicator-captured: oklch(0.88 0.110 220);     /* Soft luminous cyan confirmation */
+
+      /* Fonts */
+      --font-serif: "Newsreader", "Charter", Georgia, serif;
+      --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+
+      /* Layout & Spatial Rhythm */
+      --max-width-text: 760px;
+      --max-width-folio: 880px;
+      --radius-sm: 4px;
+      --radius-md: 10px;
+      --radius-full: 9999px;
+      --transition-calm: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-unfold: 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--color-canvas);
+      color: var(--text-white-pure);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* =========================================================================
+       2. TACTILE FLAT CHARCOAL TEXTURE & STUDIO GRADIENT OVERLAYS
+       ========================================================================= */
+    /* Procedural SVG Charcoal Tooth Overlay */
+    .charcoal-tooth-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.055;
+      mix-blend-mode: overlay;
+    }
+
+    /* Studio Light Falloff: Subtle vertical gradient matching studio lighting */
+    .studio-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(
+        circle at 50% 18%,
+        oklch(0.32 0.145 254 / 0.85) 0%,
+        oklch(0.24 0.125 254) 85%
+      );
+    }
+
+    /* Subtle Architectural Grid */
+    .blueprint-grid-lines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: 
+        linear-gradient(to right, var(--grid-line-subtle) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-subtle) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.6;
+    }
+
+    /* Three.js Atmospheric Canvas: Luminous White Motes Drift */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.45;
+    }
+
+    /* Bleed-Through Worldbuilder Seal (White Ink Watermark) */
+    .world-seal-watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(85vw, 760px);
+      height: min(85vw, 760px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.045;
+      color: var(--text-white-pure);
+    }
+
+    /* Layout Shell */
+    .app-shell {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: var(--max-width-text);
+      margin: 0 auto;
+      padding: 3rem 1.5rem 8rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Site Header */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .wordmark-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .wordmark {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-white-pure);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .wordmark::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--text-white-pure);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    }
+
+    .wordmark-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--blueprint-ice);
+      border: 1px solid var(--border-subtle);
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .header-info-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white-soft);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-calm);
+    }
+
+    .header-info-btn:hover {
+      background: var(--color-surface-1);
+      color: var(--text-white-pure);
+      border-color: var(--text-white-pure);
+    }
+
+    /* =========================================================================
+       STAGE 1: THE SPARK
+       ========================================================================= */
+    .stage-spark {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+      position: relative;
+    }
+
+    .elevation-indicator {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blueprint-ice);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .elevation-indicator::before {
+      content: "";
+      width: 16px;
+      height: 1.5px;
+      background: var(--text-white-pure);
+    }
+
+    .spark-hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 6.2vw, 4rem);
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--text-white-pure);
+      text-shadow: 0 2px 14px rgba(0, 15, 45, 0.35);
+    }
+
+    /* Interactive Creative Input Plate */
+    .spark-input-container {
+      position: relative;
+      background: var(--color-canvas-deep);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.75rem 1.75rem 3.5rem;
+      box-shadow: 
+        0 4px 20px rgba(0, 10, 30, 0.4),
+        inset 0 1px 3px rgba(0, 0, 0, 0.35);
+      transition: border-color var(--transition-calm), box-shadow var(--transition-calm);
+    }
+
+    /* Drafting Corner Registration Marks */
+    .spark-input-container::before,
+    .spark-input-container::after,
+    .question-card::before,
+    .question-card::after,
+    .blueprint-folio::before,
+    .blueprint-folio::after {
+      content: "+";
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-white-muted);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .spark-input-container::before, .question-card::before, .blueprint-folio::before { top: 6px; left: 8px; }
+    .spark-input-container::after, .question-card::after, .blueprint-folio::after { bottom: 6px; right: 8px; }
+
+    .spark-input-container:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 
+        0 8px 32px rgba(0, 15, 45, 0.6),
+        0 0 0 1px var(--border-focus);
+    }
+
+    .spark-textarea {
+      width: 100%;
+      min-height: 115px;
+      background: transparent;
+      border: none;
+      resize: none;
+      color: var(--text-white-pure);
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      line-height: 1.55;
+      outline: none;
+    }
+
+    .spark-textarea::placeholder {
+      color: var(--text-white-muted);
+      font-style: italic;
+      font-family: var(--font-serif);
+      opacity: 0.8;
+    }
+
+    /* Dictation Toolbar */
+    .input-toolbar {
+      position: absolute;
+      bottom: 0.95rem;
+      right: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .mic-status-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-white-pure);
+      letter-spacing: 0.06em;
+      opacity: 0;
+      transition: opacity var(--transition-calm);
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    .mic-status-label.active {
+      opacity: 1;
+    }
+
+    .mic-btn {
+      background: var(--color-surface-1);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white-soft);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-calm);
+    }
+
+    .mic-btn:hover {
+      background: var(--color-surface-2);
+      color: var(--text-white-pure);
+      border-color: var(--border-focus);
+    }
+
+    .mic-btn.recording {
+      background: oklch(0.42 0.22 25);
+      border-color: #ff6b6b;
+      color: #fff;
+      animation: pulse-recording 1.8s infinite;
+    }
+
+    @keyframes pulse-recording {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.5); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 7px rgba(255, 107, 107, 0); }
+    }
+
+    /* Primary Action Button (Luminous White Pill) */
+    .action-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .btn-luminous-white {
+      background-color: var(--btn-white-bg);
+      color: var(--btn-white-text);
+      font-family: var(--font-ui);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.95rem 2.5rem;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 10, 30, 0.4);
+      transition: all var(--transition-calm);
+    }
+
+    .btn-luminous-white:hover {
+      background-color: var(--btn-white-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(0, 15, 45, 0.55), 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-luminous-white:focus-visible {
+      outline: 2px solid var(--text-white-pure);
+      outline-offset: 4px;
+    }
+
+    /* Subdued Preview of the 7 Questions */
+    .discovery-preview {
+      margin-top: 4.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2.25rem;
+      opacity: 0.48;
+      filter: blur(0.4px);
+      transition: all var(--transition-unfold);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .preview-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-header {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-white-muted);
+    }
+
+    .preview-scale {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--blueprint-ice);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.15rem;
+    }
+
+    .preview-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px dotted var(--border-subtle);
+    }
+
+    .preview-num-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-white-soft);
+    }
+
+    .preview-fragment {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--text-white-muted);
+    }
+
+    /* =========================================================================
+       STAGE 2: THE SEVEN QUESTIONS (ACTIVE DRAFTING)
+       ========================================================================= */
+    .stage-questions {
+      display: none;
+      flex-direction: column;
+      gap: 2.75rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity var(--transition-unfold), transform var(--transition-unfold);
+    }
+
+    .stage-questions.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Preserved Docked Spark */
+    .preserved-spark-dock {
+      background: var(--color-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--text-white-pure);
+      border-radius: var(--radius-md);
+      padding: 1.35rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      position: sticky;
+      top: 1.5rem;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 30px rgba(0, 10, 30, 0.5);
+    }
+
+    .preserved-spark-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dock-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint-ice);
+    }
+
+    .btn-edit-spark {
+      background: transparent;
+      border: none;
+      color: var(--text-white-muted);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .btn-edit-spark:hover {
+      color: var(--text-white-pure);
+    }
+
+    .preserved-spark-text {
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      line-height: 1.45;
+      color: var(--text-white-pure);
+      max-height: 4rem;
+      overflow-y: auto;
+    }
+
+    /* Question Cards */
+    .questions-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+    }
+
+    .question-card {
+      position: relative;
+      background: var(--color-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 2.25rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0, 10, 30, 0.35);
+      transition: border-color var(--transition-calm), box-shadow var(--transition-calm);
+    }
+
+    .question-card.has-content {
+      border-color: var(--text-white-soft);
+    }
+
+    .question-card:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 8px 30px rgba(0, 15, 45, 0.55);
+    }
+
+    .question-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .question-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-white-muted);
+    }
+
+    .question-captured-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--indicator-captured);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0;
+      transform: translateX(4px);
+      transition: all var(--transition-calm);
+    }
+
+    .question-captured-badge.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .question-captured-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--indicator-captured);
+      box-shadow: 0 0 8px var(--indicator-captured);
+    }
+
+    .question-lead {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--text-white-pure);
+    }
+
+    .question-textarea {
+      width: 100%;
+      min-height: 85px;
+      background: var(--color-canvas-deep);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      color: var(--text-white-pure);
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      line-height: 1.55;
+      resize: none;
+      outline: none;
+      transition: border-color var(--transition-calm);
+    }
+
+    .question-textarea:focus {
+      border-color: var(--border-focus);
+    }
+
+    .question-textarea::placeholder {
+      color: var(--text-white-muted);
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    /* Subtle Explore Drawers */
+    .explore-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text-white-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      align-self: flex-start;
+      transition: color var(--transition-calm);
+    }
+
+    .explore-toggle:hover {
+      color: var(--text-white-pure);
+    }
+
+    .explore-toggle svg {
+      transition: transform var(--transition-calm);
+    }
+
+    .explore-toggle.open svg {
+      transform: rotate(90deg);
+    }
+
+    .explore-content {
+      display: none;
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-white-soft);
+      background: var(--color-canvas-deep);
+      border-left: 2px solid var(--blueprint-ice);
+      padding: 0.95rem 1.25rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .explore-content.open {
+      display: block;
+    }
+
+    /* Bottom Culmination Trigger Zone */
+    .blueprint-trigger-zone {
+      margin-top: 3.5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .blueprint-promise-note {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--text-white-soft);
+    }
+
+    .btn-blueprint-trigger {
+      padding: 1.15rem 3.5rem;
+      font-size: 1.125rem;
+    }
+
+    /* =========================================================================
+       GENERATING CALIBRATION STATE
+       ========================================================================= */
+    .stage-generating {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 55vh;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .stage-generating.active {
+      display: flex;
+    }
+
+    .blueprint-spinner {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--border-subtle);
+      border-top: 2px solid var(--text-white-pure);
+      border-radius: 50%;
+      animation: blueprint-spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes blueprint-spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .generating-status {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--text-white-pure);
+      font-weight: 500;
+    }
+
+    .generating-subtext {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--text-white-muted);
+      max-width: 440px;
+    }
+
+    /* =========================================================================
+       STAGE 3: THE BLUEPRINT PRESENTATION (MASTER FOLIO)
+       ========================================================================= */
+    .stage-blueprint {
+      display: none;
+      flex-direction: column;
+      gap: 2.25rem;
+      max-width: var(--max-width-folio);
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-blueprint.active {
+      display: flex;
+    }
+
+    .blueprint-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-secondary {
+      background: var(--color-surface-1);
+      color: var(--text-white-soft);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-calm);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-surface-2);
+      color: var(--text-white-pure);
+      border-color: var(--text-white-pure);
+    }
+
+    /* Master Folio Document */
+    .blueprint-folio {
+      position: relative;
+      background-color: var(--color-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: clamp(2.5rem, 5vw, 4.5rem);
+      box-shadow: 0 20px 60px rgba(0, 10, 30, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+      overflow: hidden;
+    }
+
+    /* Stamped White Ink Seal (Bleeding through folio) */
+    .folio-stamp-seal {
+      position: absolute;
+      top: 2.5rem;
+      right: 2.5rem;
+      width: 130px;
+      height: 130px;
+      pointer-events: none;
+      opacity: 0.18;
+      color: var(--text-white-pure);
+    }
+
+    .folio-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .folio-classification {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blueprint-ice);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .folio-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--text-white-pure);
+      letter-spacing: -0.02em;
+    }
+
+    .folio-description {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.45rem;
+      line-height: 1.45;
+      color: var(--text-white-soft);
+      max-width: 680px;
+    }
+
+    /* Folio Structured Metadata Bar */
+    .folio-metadata-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.25rem;
+      background: var(--color-canvas-deep);
+      border: 1px solid var(--border-subtle);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-white-muted);
+    }
+
+    .meta-value {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--text-white-pure);
+      font-weight: 500;
+    }
+
+    /* Narrative Document */
+    .folio-narrative {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .narrative-prologue {
+      font-family: var(--font-serif);
+      font-size: 1.38rem;
+      line-height: 1.75;
+      color: var(--text-white-soft);
+    }
+
+    .narrative-prologue::first-letter {
+      float: left;
+      font-size: 4.8rem;
+      line-height: 0.85;
+      padding-top: 4px;
+      padding-right: 12px;
+      font-family: var(--font-serif);
+      font-weight: 400;
+      color: var(--text-white-pure);
+    }
+
+    /* Pillars */
+    .pillar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .pillar-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+    }
+
+    .pillar-index {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--blueprint-ice);
+    }
+
+    .pillar-title {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      font-weight: 500;
+      color: var(--text-white-pure);
+    }
+
+    .pillar-core-answer {
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      font-style: italic;
+      color: var(--text-white-pure);
+      background: var(--color-canvas-deep);
+      border-left: 3px solid var(--text-white-pure);
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .pillar-synthesis-text {
+      font-family: var(--font-serif);
+      font-size: 1.24rem;
+      line-height: 1.75;
+      color: var(--text-white-soft);
+    }
+
+    /* Trajectories & Horizons */
+    .folio-horizon {
+      background: var(--color-canvas-deep);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .horizon-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint-ice);
+    }
+
+    .horizon-title {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      font-weight: 500;
+      color: var(--text-white-pure);
+    }
+
+    .horizon-bullets {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .horizon-bullets li {
+      position: relative;
+      padding-left: 1.5rem;
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      line-height: 1.6;
+      color: var(--text-white-soft);
+    }
+
+    .horizon-bullets li::before {
+      content: "↳";
+      position: absolute;
+      left: 0;
+      font-family: var(--font-mono);
+      color: var(--blueprint-ice);
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: var(--btn-white-bg);
+      color: var(--btn-white-text);
+      padding: 0.6rem 1.6rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition-calm);
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 10, 30, 0.6);
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Philosophy Modal */
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 12, 32, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 200;
+    }
+
+    .dialog-backdrop.open {
+      display: flex;
+    }
+
+    .dialog-panel {
+      background: var(--color-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      max-width: 580px;
+      width: 100%;
+      padding: 2.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 24px 64px rgba(0, 10, 30, 0.8);
+    }
+
+    .dialog-panel h2 {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      color: var(--text-white-pure);
+    }
+
+    .dialog-panel p {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      line-height: 1.65;
+      color: var(--text-white-soft);
+    }
+
+    .dialog-close-btn {
+      align-self: flex-end;
+      background: var(--btn-white-bg);
+      border: none;
+      color: var(--btn-white-text);
+      padding: 0.5rem 1.4rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      #ambient-canvas {
+        display: none;
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      .app-shell {
+        padding: 2rem 1.15rem 6rem;
+      }
+      .site-header {
+        margin-bottom: 3.5rem;
+      }
+      .spark-input-container {
+        padding: 1.25rem 1.25rem 3.5rem;
+      }
+      .question-card {
+        padding: 1.5rem;
+      }
+      .blueprint-folio {
+        padding: 2.25rem 1.35rem;
+      }
+      .folio-stamp-seal {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Charcoal Paper Tooth SVG Filter -->
+  <svg class="charcoal-tooth-overlay" aria-hidden="true">
+    <filter id="charcoal-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.85 0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#charcoal-noise)" />
+  </svg>
+
+  <!-- Studio Lighting Falloff & Blueprint Grid -->
+  <div class="studio-vignette" aria-hidden="true"></div>
+  <div class="blueprint-grid-lines" aria-hidden="true"></div>
+
+  <!-- Three.js Canvas: Atmospheric Luminous White Dust -->
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- Bleed-Through Worldbuilder Seal (White Line Watermark) -->
+  <svg class="world-seal-watermark" viewBox="0 0 400 400" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="200" cy="200" r="192" stroke-width="0.8" stroke-dasharray="3 3"/>
+    <circle cx="200" cy="200" r="176" stroke-width="1.4"/>
+    <circle cx="200" cy="200" r="150" stroke-width="0.6"/>
+    <circle cx="200" cy="200" r="122" stroke-width="0.8" stroke-dasharray="3 3"/>
+    <circle cx="200" cy="200" r="88" stroke-width="1.2"/>
+    <circle cx="200" cy="200" r="32" stroke-width="0.8"/>
+    <!-- Crosshairs -->
+    <line x1="200" y1="8" x2="200" y2="392" stroke-width="0.75" stroke-dasharray="8 4"/>
+    <line x1="8" y1="200" x2="392" y2="200" stroke-width="0.75" stroke-dasharray="8 4"/>
+    <!-- Ring Lettering -->
+    <path id="seal-text-circle" d="M 54,200 A 146,146 0 1,1 346,200 A 146,146 0 1,1 54,200" fill="none"/>
+    <text font-family="Newsreader, serif" font-size="8.5" letter-spacing="4" fill="currentColor">
+      <textPath href="#seal-text-circle" startOffset="0%">
+        MY WORLD BLUEPRINT · ARCHITECTURAL EDITION · GENESIS &amp; SEVEN FOUNDATIONS ·
+      </textPath>
+    </text>
+  </svg>
+
+  <div class="app-shell">
+    
+    <!-- Header -->
+    <header class="site-header" role="banner">
+      <div class="wordmark-wrap">
+        <a href="#" class="wordmark" id="brandLink" aria-label="World Builder Home">
+          <span>World Builder</span>
+        </a>
+        <span class="wordmark-tag">BLUEPRINT</span>
+      </div>
+      <button class="header-info-btn" id="openPhilosophyBtn" aria-haspopup="dialog">
+        Philosophy
+      </button>
+    </header>
+
+    <main id="main-content" role="main">
+      
+      <!-- =====================================================================
+           STAGE 1: THE SPARK
+           ===================================================================== -->
+      <section id="stage-spark" class="stage-spark" aria-labelledby="spark-heading">
+        <div class="elevation-indicator">Phase 01 · Elevation 00 · Genesis</div>
+        
+        <h1 id="spark-heading" class="spark-hero-title">
+          What do you want to create?
+        </h1>
+
+        <div class="spark-input-container">
+          <textarea 
+            id="spark-input" 
+            class="spark-textarea" 
+            rows="3" 
+            placeholder="It can be anything. A character, a story, a business, a world, or something you can't quite explain yet."
+            aria-label="Describe what you want to create"></textarea>
+
+          <div class="input-toolbar">
+            <span id="mic-status" class="mic-status-label" aria-live="polite">LISTENING // SPEAK</span>
+            <button id="mic-btn" class="mic-btn" type="button" aria-label="Voice dictation" title="Voice dictation">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="spark-submit-btn" class="btn-luminous-white" type="button">
+            Let's go
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Subdued Preview of the 7 Questions -->
+        <aside class="discovery-preview" aria-hidden="true">
+          <div class="preview-header-bar">
+            <span class="preview-header">The Seven Foundations Awaiting Alignment</span>
+            <span class="preview-scale">Scale 1:1 Inception</span>
+          </div>
+          <div class="preview-grid">
+            <div class="preview-item">
+              <span class="preview-num-title">01 · ORIGIN</span>
+              <span class="preview-fragment">Where did it begin?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">02 · ESSENCE</span>
+              <span class="preview-fragment">Why does it matter?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">03 · BELIEF</span>
+              <span class="preview-fragment">What does it believe?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">04 · PERCEPTION</span>
+              <span class="preview-fragment">What might it be missing?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">05 · FRICTION</span>
+              <span class="preview-fragment">What's standing in the way?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">06 · GRAVITY</span>
+              <span class="preview-fragment">What holds it together?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">07 · COHERENCE</span>
+              <span class="preview-fragment">What must remain true?</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- =====================================================================
+           STAGE 2: THE SEVEN QUESTIONS (ACTIVE DRAFTING)
+           ===================================================================== -->
+      <section id="stage-questions" class="stage-questions" aria-label="Seven Blueprint Questions">
+        
+        <!-- Docked Preserved Spark -->
+        <div class="preserved-spark-dock">
+          <div class="preserved-spark-header">
+            <span class="dock-tag">The Spark · Primary Vector</span>
+            <button id="re-edit-spark-btn" class="btn-edit-spark" type="button">Edit Spark</button>
+          </div>
+          <div id="docked-spark-text" class="preserved-spark-text"></div>
+        </div>
+
+        <div class="questions-stream">
+          
+          <!-- 1. Origin -->
+          <article class="question-card" data-key="origin">
+            <div class="question-card-meta">
+              <span class="question-label">01 · Origin</span>
+              <span class="question-captured-badge" id="badge-origin">Captured</span>
+            </div>
+            <h2 class="question-lead">What's its story?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-origin" 
+                rows="2" 
+                placeholder="Where it came from, the moment it sparked, or the history it carries..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              A character carries an unpayable debt. A venture begins from a broken promise. A fictional world starts from a single shattered moon. Where did your idea first draw breath?
+            </div>
+          </article>
+
+          <!-- 2. Essence -->
+          <article class="question-card" data-key="essence">
+            <div class="question-card-meta">
+              <span class="question-label">02 · Essence</span>
+              <span class="question-captured-badge" id="badge-essence">Captured</span>
+            </div>
+            <h2 class="question-lead">What makes it matter?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-essence" 
+                rows="2" 
+                placeholder="The fundamental difference it makes, why it demands to exist..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Strip away the surface details. If this didn't exist, what silence, injustice, or compromise would remain in the room?
+            </div>
+          </article>
+
+          <!-- 3. Belief -->
+          <article class="question-card" data-key="belief">
+            <div class="question-card-meta">
+              <span class="question-label">03 · Belief</span>
+              <span class="question-captured-badge" id="badge-belief">Captured</span>
+            </div>
+            <h2 class="question-lead">What does it hold to be true?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-belief" 
+                rows="2" 
+                placeholder="Its unshakable convictions, unwritten laws, or internal code..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              What assumption does it treat as gospel? The standard or conviction everyone else rejects, but this world treats as gravity.
+            </div>
+          </article>
+
+          <!-- 4. Perception -->
+          <article class="question-card" data-key="perception">
+            <div class="question-card-meta">
+              <span class="question-label">04 · Perception</span>
+              <span class="question-captured-badge" id="badge-perception">Captured</span>
+            </div>
+            <h2 class="question-lead">What does it notice that others miss?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-perception" 
+                rows="2" 
+                placeholder="The overlooked nuance, quiet truth, or contrarian angle..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Where other systems move too fast to register detail, what subtle fracture or human need does your world keep its eye upon?
+            </div>
+          </article>
+
+          <!-- 5. Friction -->
+          <article class="question-card" data-key="friction">
+            <div class="question-card-meta">
+              <span class="question-label">05 · Friction</span>
+              <span class="question-captured-badge" id="badge-friction">Captured</span>
+            </div>
+            <h2 class="question-lead">What's holding it back?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-friction" 
+                rows="2" 
+                placeholder="The resistance, the paradox, or the doubt it must wrestle with..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Every meaningful concept holds an internal contradiction or adversary. That resistance provides the dramatic weight that keeps it from floating away.
+            </div>
+          </article>
+
+          <!-- 6. Gravity -->
+          <article class="question-card" data-key="gravity">
+            <div class="question-card-meta">
+              <span class="question-label">06 · Gravity</span>
+              <span class="question-captured-badge" id="badge-gravity">Captured</span>
+            </div>
+            <h2 class="question-lead">What holds everything together?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-gravity" 
+                rows="2" 
+                placeholder="The central anchor, obsession, or relationship at the center..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              If wind and chaos strike, what single pole stops the parts from flying apart into space? An unbreakable covenant? A shared memory?
+            </div>
+          </article>
+
+          <!-- 7. Coherence -->
+          <article class="question-card" data-key="coherence">
+            <div class="question-card-meta">
+              <span class="question-label">07 · Coherence</span>
+              <span class="question-captured-badge" id="badge-coherence">Captured</span>
+            </div>
+            <h2 class="question-lead">What makes it stay itself?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-coherence" 
+                rows="2" 
+                placeholder="The boundaries and signatures that keep it unmistakably true..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              As it scales and welcomes others, what boundary must never be crossed? What would compromise it so fundamentally that it would cease to be what you imagined?
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Action / Culmination Button -->
+        <div class="blueprint-trigger-zone">
+          <p class="blueprint-promise-note">Your world begins with what you've imagined.</p>
+          <button id="get-blueprint-btn" class="btn-luminous-white btn-blueprint-trigger" type="button">
+            Get Your Blueprint
+          </button>
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           GENERATING CALIBRATION STATE
+           ===================================================================== -->
+      <section id="stage-generating" class="stage-generating" aria-live="polite">
+        <div class="blueprint-spinner"></div>
+        <h2 class="generating-status">Bringing your ideas together.</h2>
+        <p class="generating-subtext">Synthesizing foundations, silent tensions, and internal gravity into an architectural Blueprint...</p>
+      </section>
+
+      <!-- =====================================================================
+           STAGE 3: THE BLUEPRINT PRESENTATION (MASTER FOLIO)
+           ===================================================================== -->
+      <section id="stage-blueprint" class="stage-blueprint" aria-label="Generated World Blueprint">
+        
+        <!-- Controls Bar -->
+        <div class="blueprint-toolbar">
+          <div class="toolbar-group">
+            <button id="return-to-questions-btn" class="btn-secondary" type="button">
+              ← Refine Answers
+            </button>
+            <button id="start-new-btn" class="btn-secondary" type="button">
+              New Blueprint
+            </button>
+          </div>
+          <div class="toolbar-group">
+            <button id="copy-markdown-btn" class="btn-secondary" type="button">
+              Copy Markdown
+            </button>
+            <button id="download-markdown-btn" class="btn-secondary" type="button">
+              Download .md
+            </button>
+          </div>
+        </div>
+
+        <!-- Master Reading Folio -->
+        <article class="blueprint-folio" id="blueprint-folio-doc">
+          
+          <!-- Stamped White Ink Seal -->
+          <svg class="folio-stamp-seal" viewBox="0 0 200 200" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="100" cy="100" r="92" stroke-width="1.4" stroke-dasharray="4 2"/>
+            <circle cx="100" cy="100" r="80" stroke-width="0.8"/>
+            <circle cx="100" cy="100" r="60" stroke-width="0.6"/>
+            <line x1="100" y1="10" x2="100" y2="190" stroke-width="0.75" stroke-dasharray="3 3"/>
+            <line x1="10" y1="100" x2="190" y2="100" stroke-width="0.75" stroke-dasharray="3 3"/>
+            <polygon points="100,68 122,100 100,132 78,100" stroke-width="1"/>
+          </svg>
+
+          <header class="folio-header">
+            <div class="folio-classification">
+              <span>ARCHITECTURAL WORLD BLUEPRINT</span>
+              <span>·</span>
+              <span id="bp-folio-id">WB-8924</span>
+            </div>
+            <h1 id="bp-title" class="folio-title">The Luminary Core</h1>
+            <p id="bp-description" class="folio-description">A sanctuary formed in defiance of accelerated noise, grounded in tactile craftsmanship and deliberate contemplation.</p>
+          </header>
+
+          <div class="folio-metadata-strip">
+            <div class="meta-item">
+              <span class="meta-label">Primary Archetype</span>
+              <span id="bp-archetype" class="meta-value">Sanctuary of Craft</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Gravitational Anchor</span>
+              <span id="bp-anchor" class="meta-value">The First Memory</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Tension Matrix</span>
+              <span id="bp-coherence-level" class="meta-value">Self-Sustaining Tension</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Coordinates</span>
+              <span id="bp-coordinates" class="meta-value">41°24′N · 02°10′E</span>
+            </div>
+          </div>
+
+          <div class="folio-narrative">
+            <div id="bp-prologue" class="narrative-prologue"></div>
+
+            <!-- Pillars Stream -->
+            <div id="bp-pillars-container"></div>
+
+            <!-- Horizons & Next Chapters -->
+            <div class="folio-horizon">
+              <span class="horizon-tag">Unwritten Trajectories & Next Chapters</span>
+              <h3 class="horizon-title">Where This World Wants to Go Next</h3>
+              <ul id="bp-horizons-list" class="horizon-bullets"></ul>
+            </div>
+          </div>
+
+        </article>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-pill" role="status" aria-live="polite">COPIED TO CLIPBOARD</div>
+
+  <!-- Philosophy Modal -->
+  <div id="philosophy-dialog" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-panel">
+      <h2 id="dialog-title">The Single Question Philosophy</h2>
+      <p>
+        The interface is not just a container for an experience; it is how someone discovers that their imagination matters.
+      </p>
+      <p>
+        We intentionally refuse dashboards, feature mazes, and account paywalls before you have explored your world. World Builder has one job: to guide you from an unstructured spark to a meaningful first Blueprint.
+      </p>
+      <button id="closePhilosophyBtn" class="dialog-close-btn" type="button">Understood</button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       JAVASCRIPT ARCHITECTURE
+       - Three.js Luminous Atmospheric Particle Field
+       - Web Speech Recognition
+       - Backend Integration Stub (with TODO)
+       - Dynamic Blueprint Synthesis & Markdown Generation
+       ========================================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Application State
+      const state = {
+        currentStage: 'spark',
+        profile: {
+          spark: '',
+          questions: {
+            origin: '',
+            essence: '',
+            belief: '',
+            perception: '',
+            friction: '',
+            gravity: '',
+            coherence: ''
+          }
+        },
+        currentBlueprint: null
+      };
+
+      // Element References
+      const els = {
+        stageSpark: document.getElementById('stage-spark'),
+        stageQuestions: document.getElementById('stage-questions'),
+        stageGenerating: document.getElementById('stage-generating'),
+        stageBlueprint: document.getElementById('stage-blueprint'),
+        
+        sparkInput: document.getElementById('spark-input'),
+        sparkSubmitBtn: document.getElementById('spark-submit-btn'),
+        micBtn: document.getElementById('mic-btn'),
+        micStatus: document.getElementById('mic-status'),
+        dockedSparkText: document.getElementById('docked-spark-text'),
+        reEditSparkBtn: document.getElementById('re-edit-spark-btn'),
+        
+        questionInputs: {
+          origin: document.getElementById('q-origin'),
+          essence: document.getElementById('q-essence'),
+          belief: document.getElementById('q-belief'),
+          perception: document.getElementById('q-perception'),
+          friction: document.getElementById('q-friction'),
+          gravity: document.getElementById('q-gravity'),
+          coherence: document.getElementById('q-coherence')
+        },
+        getBlueprintBtn: document.getElementById('get-blueprint-btn'),
+        
+        bpFolioId: document.getElementById('bp-folio-id'),
+        bpTitle: document.getElementById('bp-title'),
+        bpDescription: document.getElementById('bp-description'),
+        bpArchetype: document.getElementById('bp-archetype'),
+        bpAnchor: document.getElementById('bp-anchor'),
+        bpCoherenceLevel: document.getElementById('bp-coherence-level'),
+        bpCoordinates: document.getElementById('bp-coordinates'),
+        bpPrologue: document.getElementById('bp-prologue'),
+        bpPillarsContainer: document.getElementById('bp-pillars-container'),
+        bpHorizonsList: document.getElementById('bp-horizons-list'),
+
+        copyMarkdownBtn: document.getElementById('copy-markdown-btn'),
+        downloadMarkdownBtn: document.getElementById('download-markdown-btn'),
+        returnToQuestionsBtn: document.getElementById('return-to-questions-btn'),
+        startNewBtn: document.getElementById('start-new-btn'),
+        
+        toast: document.getElementById('toast'),
+        philosophyDialog: document.getElementById('philosophy-dialog'),
+        openPhilosophyBtn: document.getElementById('openPhilosophyBtn'),
+        closePhilosophyBtn: document.getElementById('closePhilosophyBtn')
+      };
+
+      // -----------------------------------------------------------------------
+      // 1. THREE.JS ATMOSPHERE: LUMINOUS WHITE MOTE DRIFT
+      // Soft ambient light particles floating in the deep cobalt studio space
+      // -----------------------------------------------------------------------
+      function initBlueAtmosphere() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const canvas = document.getElementById('ambient-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 100;
+
+        const count = 110;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        const scales = new Float32Array(count);
+
+        for (let i = 0; i < count * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 170;
+          positions[i + 1] = (Math.random() - 0.5) * 170;
+          positions[i + 2] = (Math.random() - 0.5) * 80;
+          scales[i / 3] = Math.random() * 2.0 + 0.5;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
+
+        // Brilliant pure white & soft ice particles
+        const material = new THREE.PointsMaterial({
+          color: 0xffffff,
+          size: 1.8,
+          transparent: true,
+          opacity: 0.35,
+          blending: THREE.AdditiveBlending
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX - window.innerWidth / 2) * 0.012;
+          mouseY = (e.clientY - window.innerHeight / 2) * 0.012;
+        }, { passive: true });
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        let clock = new THREE.Clock();
+
+        function animate() {
+          requestAnimationFrame(animate);
+          const elapsed = clock.getElapsedTime() * 0.09;
+
+          targetX += (mouseX - targetX) * 0.03;
+          targetY += (mouseY - targetY) * 0.03;
+
+          points.rotation.y = elapsed * 0.35 + targetX * 0.04;
+          points.rotation.x = targetY * 0.03;
+
+          const pos = geometry.attributes.position.array;
+          for (let i = 1; i < count * 3; i += 3) {
+            pos[i] += Math.sin(elapsed + pos[i - 1]) * 0.018;
+          }
+          geometry.attributes.position.needsUpdate = true;
+
+          renderer.render(scene, camera);
+        }
+
+        animate();
+      }
+
+      // -----------------------------------------------------------------------
+      // 2. AUTO-EXPANDING TEXTAREAS
+      // -----------------------------------------------------------------------
+      function autoExpandTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.max(textarea.scrollHeight, 60)}px`;
+      }
+
+      function setupAutoExpand() {
+        document.querySelectorAll('textarea').forEach(t => {
+          t.addEventListener('input', () => autoExpandTextarea(t));
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 3. SPEECH-TO-TEXT INPUT (WEB SPEECH API)
+      // -----------------------------------------------------------------------
+      let recognition = null;
+      let isRecording = false;
+
+      function setupVoiceInput() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+          els.micBtn.title = "Voice dictation not supported in this browser.";
+          els.micBtn.style.opacity = '0.45';
+          return;
+        }
+
+        try {
+          recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = 'en-US';
+
+          recognition.onstart = () => {
+            isRecording = true;
+            els.micBtn.classList.add('recording');
+            els.micStatus.textContent = "LISTENING // SPEAK NOW";
+            els.micStatus.classList.add('active');
+          };
+
+          recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+              }
+            }
+            if (finalTranscript) {
+              const current = els.sparkInput.value.trim();
+              els.sparkInput.value = current ? `${current} ${finalTranscript.trim()}` : finalTranscript.trim();
+              autoExpandTextarea(els.sparkInput);
+            }
+          };
+
+          recognition.onerror = () => stopRecording();
+          recognition.onend = () => stopRecording();
+
+          els.micBtn.addEventListener('click', () => {
+            if (isRecording) {
+              recognition.stop();
+            } else {
+              recognition.start();
+            }
+          });
+        } catch (e) {
+          console.warn("Speech recognition bypassed", e);
+        }
+      }
+
+      function stopRecording() {
+        isRecording = false;
+        els.micBtn.classList.remove('recording');
+        els.micStatus.classList.remove('active');
+      }
+
+      // -----------------------------------------------------------------------
+      // 4. STAGE TRANSITIONS & STATE MANAGEMENT
+      // -----------------------------------------------------------------------
+      function setStage(newStage) {
+        state.currentStage = newStage;
+
+        els.stageSpark.style.display = 'none';
+        els.stageQuestions.classList.remove('active');
+        els.stageGenerating.classList.remove('active');
+        els.stageBlueprint.classList.remove('active');
+
+        if (newStage === 'spark') {
+          els.stageSpark.style.display = 'flex';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'questions') {
+          els.stageQuestions.classList.add('active');
+          els.dockedSparkText.textContent = state.profile.spark || "A world waiting to take form.";
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'generating') {
+          els.stageGenerating.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'blueprint') {
+          els.stageBlueprint.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      function setupExploreDrawers() {
+        document.querySelectorAll('.explore-toggle').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const content = btn.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            content.classList.toggle('open', !isOpen);
+            btn.classList.toggle('open', !isOpen);
+            btn.setAttribute('aria-expanded', !isOpen);
+          });
+        });
+      }
+
+      function setupEffortAcknowledgement() {
+        Object.entries(els.questionInputs).forEach(([key, input]) => {
+          const card = input.closest('.question-card');
+          const badge = document.getElementById(`badge-${key}`);
+
+          input.addEventListener('input', () => {
+            const hasText = input.value.trim().length > 0;
+            card.classList.toggle('has-content', hasText);
+            if (badge) {
+              badge.classList.toggle('visible', hasText);
+            }
+            state.profile.questions[key] = input.value.trim();
+          });
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 5. BACKEND INTEGRATION STUB
+      // -----------------------------------------------------------------------
+      /**
+       * Generates a synthesized World Blueprint from user profile.
+       * 
+       * @param {Object} profile - Full creative profile containing spark and answers
+       * @returns {Promise<Object>} Synthesized Blueprint object
+       */
+      async function generateBlueprint(profile) {
+        /* =========================================================================
+           TODO: BACKEND AI SERVICE INTEGRATION
+           -------------------------------------------------------------------------
+           When your backend blueprint synthesis service is ready:
+           
+           1. Replace this client-side mock synthesis with your live API endpoint:
+              const response = await fetch('/api/blueprint/generate', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  // 'Authorization': 'Bearer ' + userToken
+                },
+                body: JSON.stringify(profile)
+              });
+
+              if (!response.ok) {
+                throw new Error(`Generation failed with status ${response.status}`);
+              }
+              return await response.json();
+
+           2. Maintain asynchronous boundaries and streaming protocols as required.
+           3. Never store or expose API keys directly in client-side script.
+           ========================================================================= */
+
+        // Phase One: Mock Blueprint synthesis (1.1s simulated synthesis latency)
+        await new Promise(resolve => setTimeout(resolve, 1100));
+        return synthesizeBlueprintProfile(profile);
+      }
+
+      // -----------------------------------------------------------------------
+      // 6. SYNTHESIS ENGINE (MOCK IMPLEMENTATION REFLECTING ARCHITECTURE)
+      // -----------------------------------------------------------------------
+      function synthesizeBlueprintProfile(profile) {
+        const spark = profile.spark.trim() || "An unnamable world waiting for form";
+        const q = profile.questions;
+
+        // Extract a working title
+        let computedTitle = "The Unfolding World";
+        const words = spark.split(/\s+/).filter(w => w.length > 2);
+        if (words.length >= 2) {
+          const w1 = words[0].replace(/[^a-zA-Z]/g, '');
+          const w2 = words[Math.min(words.length - 1, 3)].replace(/[^a-zA-Z]/g, '');
+          computedTitle = `The ${capitalize(w1)} of ${capitalize(w2)}`;
+        } else if (words.length === 1) {
+          computedTitle = `The Architecture of ${capitalize(words[0])}`;
+        }
+
+        const archetypes = [
+          "Sanctuary of Craft",
+          "Living Cartography",
+          "Contrarian Enterprise",
+          "Quiet Sovereign Network",
+          "Resilient Meridian"
+        ];
+        const computedArchetype = archetypes[Math.floor(Math.random() * archetypes.length)];
+        const computedAnchor = q.gravity ? truncate(q.gravity, 32) : "The Primordial Inception";
+        const randomCoordLat = (Math.random() * 60 + 10).toFixed(2);
+        const randomCoordLon = (Math.random() * 120 - 60).toFixed(2);
+
+        return {
+          id: `WB-${Math.floor(1000 + Math.random() * 9000)}`,
+          title: computedTitle,
+          description: `An architectural creative territory born from: "${truncate(spark, 80)}". Grounded across seven discovery pillars into an autonomous Blueprint.`,
+          metadata: {
+            archetype: computedArchetype,
+            anchor: computedAnchor,
+            coherenceLevel: q.coherence ? "Self-Sustaining Tension" : "Evolving Baseline",
+            coordinates: `${randomCoordLat}°N · ${Math.abs(randomCoordLon)}°${randomCoordLon >= 0 ? 'E' : 'W'}`,
+            timestamp: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+          },
+          prologue: `Every world begins not with an inventory of exterior surfaces, but with an internal blueprint of what matters. What began as "${spark}" carries an internal momentum that refuses conventional categorization. What follows is the structural drafting of your intuition into an enduring creative foundation.`,
+          pillars: [
+            {
+              index: "01",
+              name: "Genesis & Heritage",
+              key: "origin",
+              userAnswer: q.origin || "Originating in the raw initial impulse.",
+              synthesis: q.origin 
+                ? `Anchored in your premise: "${q.origin}". This creates an inherited imperative; the work does not start from vacant ground, but answers an existing debt or calling.`
+                : `Its emergence is spontaneous yet structured, answering directly to the original spark.`
+            },
+            {
+              index: "02",
+              name: "Essence & Gravitas",
+              key: "essence",
+              userAnswer: q.essence || "It matters because it alters the observer's frame of reference.",
+              synthesis: q.essence
+                ? `Its non-negotiable core is defined by: "${q.essence}". Strip away all exterior ornament, and this remains the living heart that justifies the architecture.`
+                : `It matters because it cuts through ambient distraction to establish a permanent clearing for contemplation.`
+            },
+            {
+              index: "03",
+              name: "The Internal Law",
+              key: "belief",
+              userAnswer: q.belief || "That truth is revealed through fidelity to the work itself.",
+              synthesis: q.belief
+                ? `Its constitutional law is: "${q.belief}". This is not outward promotion; it is the internal rule determining how decisions are made within this world.`
+                : `Its governing axiom insists that quiet precision will always outlast transient noise.`
+            },
+            {
+              index: "04",
+              name: "Perceptual Clarity",
+              key: "perception",
+              userAnswer: q.perception || "The quiet fissures and nuances that speed overlooks.",
+              synthesis: q.perception
+                ? `Its perceptual advantage: "${q.perception}". Where others move too quickly to recognize the pattern, this world draws its strength from the overlooked margin.`
+                : `It detects the human hunger for tactile depth at the exact moment mass systems accelerate into abstraction.`
+            },
+            {
+              index: "05",
+              name: "Structural Friction",
+              key: "friction",
+              userAnswer: q.friction || "The tension between expansive vision and finite mortal energy.",
+              synthesis: q.friction
+                ? `The internal crucible is: "${q.friction}". This resistance is not a flaw in the drafting—it is the source of the world's electrical charge.`
+                : `The friction lies in sustaining absolute intimacy while constructing structures broad enough to welcome others.`
+            },
+            {
+              index: "06",
+              name: "Gravitational Pole",
+              key: "gravity",
+              userAnswer: q.gravity || "The relentless return to the founding inquiry.",
+              synthesis: q.gravity
+                ? `What prevents collapse is: "${q.gravity}". Even as secondary branches develop, this is the gravitational center to which every element responds.`
+                : `The gravitational anchor is your refusal to compromise the original creative breakthrough.`
+            },
+            {
+              index: "07",
+              name: "Coherence & Boundary",
+              key: "coherence",
+              userAnswer: q.coherence || "The conviction that it must remain unmistakably itself.",
+              synthesis: q.coherence
+                ? `The boundary condition: "${q.coherence}". As long as this remains unbroken, the world can expand without losing its identity.`
+                : `It stays itself through deliberate subtraction—rejecting whatever does not serve its fundamental architectural reality.`
+            }
+          ],
+          horizons: [
+            "Translate this architecture into an opening chapter, founding essay, or pilot artifact.",
+            `Test the tension between "${truncate(q.friction || 'the primary obstacle', 38)}" and your core belief.`,
+            "Protect the gravitational center before inviting commercial or distribution obligations.",
+            "Return to adjust any foundation whose meaning sharpened while reading this Blueprint."
+          ]
+        };
+      }
+
+      function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
+      }
+
+      function truncate(s, len) {
+        return (s && s.length > len) ? s.substring(0, len) + '...' : (s || '');
+      }
+
+      // -----------------------------------------------------------------------
+      // 7. BLUEPRINT RENDERING & MARKDOWN EXPORT
+      // -----------------------------------------------------------------------
+      function renderBlueprint(bp) {
+        state.currentBlueprint = bp;
+
+        els.bpFolioId.textContent = bp.id;
+        els.bpTitle.textContent = bp.title;
+        els.bpDescription.textContent = bp.description;
+        els.bpArchetype.textContent = bp.metadata.archetype;
+        els.bpAnchor.textContent = bp.metadata.anchor;
+        els.bpCoherenceLevel.textContent = bp.metadata.coherenceLevel;
+        els.bpCoordinates.textContent = bp.metadata.coordinates;
+        els.bpPrologue.textContent = bp.prologue;
+
+        // Render Pillars
+        els.bpPillarsContainer.innerHTML = '';
+        bp.pillars.forEach(p => {
+          const section = document.createElement('section');
+          section.className = 'pillar-section';
+          section.innerHTML = `
+            <div class="pillar-header">
+              <span class="pillar-index">${p.index} · ${p.key.toUpperCase()}</span>
+              <h3 class="pillar-title">${p.name}</h3>
+            </div>
+            <div class="pillar-core-answer">"${escapeHtml(p.userAnswer)}"</div>
+            <p class="pillar-synthesis-text">${escapeHtml(p.synthesis)}</p>
+          `;
+          els.bpPillarsContainer.appendChild(section);
+        });
+
+        // Render Horizons
+        els.bpHorizonsList.innerHTML = '';
+        bp.horizons.forEach(h => {
+          const li = document.createElement('li');
+          li.textContent = h;
+          els.bpHorizonsList.appendChild(li);
+        });
+      }
+
+      function generateMarkdown(bp) {
+        let md = `# ${bp.title}\n`;
+        md += `**Document ID:** ${bp.id} | **Class:** Architectural World Blueprint\n\n`;
+        md += `> ${bp.description}\n\n`;
+        md += `- **Primary Archetype:** ${bp.metadata.archetype}\n`;
+        md += `- **Gravitational Anchor:** ${bp.metadata.anchor}\n`;
+        md += `- **Tension Matrix:** ${bp.metadata.coherenceLevel}\n`;
+        md += `- **Coordinates:** ${bp.metadata.coordinates}\n`;
+        md += `- **Drafted Date:** ${bp.metadata.timestamp}\n\n`;
+        md += `---\n\n`;
+        md += `## Prologue & Genesis\n\n${bp.prologue}\n\n`;
+        md += `## The Seven Foundations\n\n`;
+
+        bp.pillars.forEach(p => {
+          md += `### ${p.index} · ${p.name}\n\n`;
+          md += `*Creator Discovery:* "${p.userAnswer}"\n\n`;
+          md += `${p.synthesis}\n\n`;
+        });
+
+        md += `---\n\n## Unwritten Trajectories & Next Chapters\n\n`;
+        bp.horizons.forEach(h => {
+          md += `- ${h}\n`;
+        });
+
+        md += `\n---\n*Synthesized via My World Blueprint · Phase One Specification*\n`;
+        return md;
+      }
+
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add('show');
+        setTimeout(() => els.toast.classList.remove('show'), 2400);
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      // -----------------------------------------------------------------------
+      // 8. EVENT WIRING
+      // -----------------------------------------------------------------------
+      function setupEvents() {
+        els.sparkSubmitBtn.addEventListener('click', () => {
+          state.profile.spark = els.sparkInput.value.trim();
+          if (isRecording && recognition) recognition.stop();
+          setStage('questions');
+        });
+
+        els.reEditSparkBtn.addEventListener('click', () => setStage('spark'));
+
+        els.getBlueprintBtn.addEventListener('click', async () => {
+          setStage('generating');
+          try {
+            const bp = await generateBlueprint(state.profile);
+            renderBlueprint(bp);
+            setStage('blueprint');
+          } catch (err) {
+            console.error("Blueprint generation error:", err);
+            alert("An error occurred during blueprint generation. Returning to discovery questions.");
+            setStage('questions');
+          }
+        });
+
+        els.returnToQuestionsBtn.addEventListener('click', () => setStage('questions'));
+
+        els.startNewBtn.addEventListener('click', () => {
+          if (confirm("Reset current Blueprint and start a new world?")) {
+            els.sparkInput.value = '';
+            Object.values(els.questionInputs).forEach(i => {
+              i.value = '';
+              i.closest('.question-card').classList.remove('has-content');
+            });
+            document.querySelectorAll('.question-captured-badge').forEach(b => b.classList.remove('visible'));
+            state.profile.spark = '';
+            Object.keys(state.profile.questions).forEach(k => state.profile.questions[k] = '');
+            setStage('spark');
+          }
+        });
+
+        els.copyMarkdownBtn.addEventListener('click', async () => {
+          if (!state.currentBlueprint) return;
+          const md = generateMarkdown(state.currentBlueprint);
+          try {
+            await navigator.clipboard.writeText(md);
+            showToast("MARKDOWN COPIED TO CLIPBOARD");
+          } catch {
+            const temp = document.createElement('textarea');
+            temp.value = md;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast("MARKDOWN COPIED");
+          }
+        });
+
+        els.downloadMarkdownBtn.addEventListener('click', () => {
+          if (!state.currentBlueprint) return;
+          const md = generateMarkdown(state.currentBlueprint);
+          const fname = `${state.currentBlueprint.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-blueprint.md`;
+          const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fname;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast(`DOWNLOADED ${fname.toUpperCase()}`);
+        });
+
+        els.openPhilosophyBtn.addEventListener('click', () => els.philosophyDialog.classList.add('open'));
+        els.closePhilosophyBtn.addEventListener('click', () => els.philosophyDialog.classList.remove('open'));
+        els.philosophyDialog.addEventListener('click', (e) => {
+          if (e.target === els.philosophyDialog) els.philosophyDialog.classList.remove('open');
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 9. INITIALIZATION
+      // -----------------------------------------------------------------------
+      function init() {
+        initBlueAtmosphere();
+        setupAutoExpand();
+        setupVoiceInput();
+        setupExploreDrawers();
+        setupEffortAcknowledgement();
+        setupEvents();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

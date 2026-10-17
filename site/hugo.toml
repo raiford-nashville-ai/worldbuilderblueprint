@@ -1,0 +1,7 @@
+baseURL = 'https://example.org/'
+locale = 'en-US'
+title = 'My World Blueprint'
+disableKinds = ['taxonomy', 'term', 'RSS', 'sitemap', 'robotsTXT', '404']
+
+[outputs]
+  home = ['HTML']

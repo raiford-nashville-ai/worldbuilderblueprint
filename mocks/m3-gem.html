@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My World Blueprint — Authoring Kit & Worldbuilder Folio</title>
+  
+  <!-- Typography: Newsreader (Editorial Serif), JetBrains Mono (Authoring Notes), Plus Jakarta Sans (Structural UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for atmospheric microscopic paper fibers & graphite drift -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS: BRIGHT WHITE COTTON PAPER & CHARCOAL PIGMENTS
+       ========================================================================= */
+    :root {
+      /* Bright Cotton White & Archival Paper Tones (OKLCH) */
+      --paper-white: oklch(0.988 0.003 85);          /* Crisp, bright cotton paper */
+      --paper-elevated: oklch(0.996 0.001 90);       /* Pure white raised leaf */
+      --paper-recessed: oklch(0.976 0.005 85);       /* Slightly pressed letterpress depression */
+      --paper-rule: oklch(0.915 0.008 80 / 0.55);    /* Soft laid paper guideline */
+
+      /* Handcrafted Charcoal Pigment Palette */
+      --charcoal-black: oklch(0.20 0.012 50);        /* Deep smudged vine charcoal */
+      --charcoal-deep: oklch(0.28 0.015 50);         /* Primary literary text */
+      --charcoal-soft: oklch(0.42 0.015 55);         /* Secondary editorial voice */
+      --charcoal-faint: oklch(0.60 0.012 60);        /* Technical notation & margins */
+      --charcoal-border: oklch(0.85 0.008 75);       /* Delicate pencil rule line */
+      --charcoal-focus: oklch(0.32 0.015 50);        /* Sharp graphite focus */
+
+      /* Authoring Kit Accent: Cinnabar Wax & Archival Proofing Stamp */
+      --stamp-cinnabar: oklch(0.54 0.19 32);         /* Archival vermilion binder ink */
+      --stamp-cinnabar-faint: oklch(0.54 0.19 32 / 0.12);
+      --indicator-captured: oklch(0.42 0.14 140);    /* Quiet herbal ink acknowledgement */
+
+      /* Fonts */
+      --font-serif: "Newsreader", "Charter", "Baskerville", Georgia, serif;
+      --font-mono: "JetBrains Mono", "Courier Prime", monospace;
+      --font-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+
+      /* Spatial & Motion Tokens */
+      --max-width-sheet: 780px;
+      --max-width-manuscript: 880px;
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      --radius-full: 9999px;
+      --transition-calm: 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-unfold: 440ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base Canvas */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--paper-white);
+      color: var(--charcoal-deep);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* =========================================================================
+       2. TACTILE PAPER GRAIN & FIBER TEXTURE OVERLAYS
+       ========================================================================= */
+    /* Procedural SVG Fiber Noise Overlay */
+    .paper-texture-grain {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.045;
+      mix-blend-mode: multiply;
+    }
+
+    /* Laid Manuscript Watermark & Deckled Rule Guides */
+    .laid-paper-lines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 31px, var(--paper-rule) 32px),
+        repeating-linear-gradient(90deg, transparent, transparent 159px, var(--paper-rule) 160px);
+      opacity: 0.65;
+    }
+
+    /* Three.js Canvas: Atmospheric Cotton Fibers & Smudged Graphite Drift */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.45;
+    }
+
+    /* Large Handcrafted Authoring Seal (Watermark Bleed) */
+    .author-seal-watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(88vw, 760px);
+      height: min(88vw, 760px);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.038;
+      color: var(--charcoal-black);
+    }
+
+    /* Layout Shell */
+    .app-shell {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: var(--max-width-sheet);
+      margin: 0 auto;
+      padding: 3rem 1.75rem 9rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =========================================================================
+       3. AUTHORING KIT HEADERS & BOOKMAKER REGISTRATION
+       ========================================================================= */
+    .kit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--charcoal-border);
+      position: relative;
+    }
+
+    /* Archival Folio Signature Stamp */
+    .kit-imprint {
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+    }
+
+    .kit-wordmark {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--charcoal-black);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .kit-wordmark::before {
+      content: "§";
+      color: var(--stamp-cinnabar);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .kit-codex-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--charcoal-faint);
+    }
+
+    .header-nav-btn {
+      background: transparent;
+      border: 1px solid var(--charcoal-border);
+      color: var(--charcoal-soft);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-calm);
+    }
+
+    .header-nav-btn:hover {
+      background: var(--paper-elevated);
+      color: var(--charcoal-black);
+      border-color: var(--charcoal-deep);
+    }
+
+    /* =========================================================================
+       4. STAGE 1: THE SPARK (THE FIRST INK)
+       ========================================================================= */
+    .stage-spark {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+      position: relative;
+    }
+
+    .author-dossier-index {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal-faint);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .author-dossier-index::before {
+      content: "";
+      width: 18px;
+      height: 1px;
+      background: var(--charcoal-faint);
+    }
+
+    .spark-hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 6.2vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.14;
+      letter-spacing: -0.025em;
+      color: var(--charcoal-black);
+    }
+
+    /* Handcrafted Letterpress Creative Input Sheet */
+    .spark-input-container {
+      position: relative;
+      background: var(--paper-elevated);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-md);
+      padding: 1.75rem 1.75rem 3.75rem;
+      box-shadow: 
+        0 2px 4px rgba(0,0,0,0.02),
+        0 12px 28px rgba(0,0,0,0.035),
+        inset 0 1px 2px rgba(0,0,0,0.02);
+      transition: border-color var(--transition-calm), box-shadow var(--transition-calm);
+    }
+
+    /* Manuscript Registration Notations */
+    .spark-input-container::before,
+    .spark-input-container::after,
+    .question-card::before,
+    .question-card::after,
+    .manuscript-folio::before,
+    .manuscript-folio::after {
+      content: "⌜";
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--charcoal-faint);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .spark-input-container::before, .question-card::before, .manuscript-folio::before { top: 6px; left: 8px; }
+    .spark-input-container::after, .question-card::after, .manuscript-folio::after { 
+      content: "⌟"; 
+      bottom: 6px; 
+      right: 8px; 
+    }
+
+    .spark-input-container:focus-within {
+      border-color: var(--charcoal-focus);
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,0.04),
+        0 16px 36px rgba(0,0,0,0.06);
+    }
+
+    .spark-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: transparent;
+      border: none;
+      resize: none;
+      color: var(--charcoal-black);
+      font-family: var(--font-serif);
+      font-size: 1.38rem;
+      line-height: 1.55;
+      outline: none;
+    }
+
+    .spark-textarea::placeholder {
+      color: var(--charcoal-faint);
+      font-style: italic;
+      font-family: var(--font-serif);
+      opacity: 0.75;
+    }
+
+    /* Author's Input Toolbar & Speech Dictation */
+    .input-toolbar {
+      position: absolute;
+      bottom: 1rem;
+      right: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .mic-status-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--stamp-cinnabar);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transition: opacity var(--transition-calm);
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    .mic-status-label.active {
+      opacity: 1;
+    }
+
+    .mic-btn {
+      background: var(--paper-recessed);
+      border: 1px solid var(--charcoal-border);
+      color: var(--charcoal-soft);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-calm);
+    }
+
+    .mic-btn:hover {
+      background: var(--paper-elevated);
+      color: var(--charcoal-black);
+      border-color: var(--charcoal-focus);
+    }
+
+    .mic-btn.recording {
+      background: var(--stamp-cinnabar-faint);
+      border-color: var(--stamp-cinnabar);
+      color: var(--stamp-cinnabar);
+      animation: pulse-recording 1.8s infinite;
+    }
+
+    @keyframes pulse-recording {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(180, 50, 40, 0.3); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(180, 50, 40, 0); }
+    }
+
+    /* Handcrafted Action Button */
+    .action-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .btn-handcrafted {
+      background-color: var(--charcoal-black);
+      color: var(--paper-white);
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      padding: 0.95rem 2.4rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--charcoal-black);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+      transition: all var(--transition-calm);
+    }
+
+    .btn-handcrafted:hover {
+      background-color: var(--charcoal-deep);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .btn-handcrafted:focus-visible {
+      outline: 2px solid var(--charcoal-black);
+      outline-offset: 4px;
+    }
+
+    /* Subdued Preview of the 7 Questions (Muted Authoring Guidelines) */
+    .discovery-preview {
+      margin-top: 4.5rem;
+      border-top: 1px solid var(--charcoal-border);
+      padding-top: 2.25rem;
+      opacity: 0.45;
+      filter: blur(0.4px);
+      transition: all var(--transition-unfold);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .preview-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-header {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--charcoal-faint);
+    }
+
+    .preview-sigil {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--charcoal-faint);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.15rem;
+    }
+
+    .preview-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px dotted var(--charcoal-border);
+    }
+
+    .preview-num-title {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--charcoal-soft);
+    }
+
+    .preview-fragment {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--charcoal-faint);
+    }
+
+    /* =========================================================================
+       5. STAGE 2: THE SEVEN FOUNDATIONAL QUESTIONS
+       ========================================================================= */
+    .stage-questions {
+      display: none;
+      flex-direction: column;
+      gap: 2.75rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity var(--transition-unfold), transform var(--transition-unfold);
+    }
+
+    .stage-questions.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Preserved Manuscript Spark Leaf */
+    .preserved-spark-dock {
+      background: var(--paper-elevated);
+      border: 1px solid var(--charcoal-border);
+      border-left: 3px solid var(--stamp-cinnabar);
+      border-radius: var(--radius-md);
+      padding: 1.35rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      position: sticky;
+      top: 1.5rem;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .preserved-spark-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dock-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--stamp-cinnabar);
+    }
+
+    .btn-edit-spark {
+      background: transparent;
+      border: none;
+      color: var(--charcoal-faint);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .btn-edit-spark:hover {
+      color: var(--charcoal-black);
+    }
+
+    .preserved-spark-text {
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      line-height: 1.45;
+      color: var(--charcoal-black);
+      max-height: 4rem;
+      overflow-y: auto;
+    }
+
+    /* Individual Question Cards: Archival Folio Sheets */
+    .questions-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+    }
+
+    .question-card {
+      position: relative;
+      background: var(--paper-elevated);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-md);
+      padding: 2.25rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: border-color var(--transition-calm), box-shadow var(--transition-calm);
+    }
+
+    .question-card.has-content {
+      border-color: var(--charcoal-soft);
+    }
+
+    .question-card:focus-within {
+      border-color: var(--charcoal-focus);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+
+    .question-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .question-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--charcoal-faint);
+    }
+
+    .question-captured-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--indicator-captured);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0;
+      transform: translateX(4px);
+      transition: all var(--transition-calm);
+    }
+
+    .question-captured-badge.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .question-captured-badge::before {
+      content: "✓";
+      font-weight: 600;
+      color: var(--indicator-captured);
+    }
+
+    .question-lead {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--charcoal-black);
+    }
+
+    .question-textarea {
+      width: 100%;
+      min-height: 80px;
+      background: var(--paper-recessed);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      color: var(--charcoal-black);
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      line-height: 1.55;
+      resize: none;
+      outline: none;
+      transition: border-color var(--transition-calm);
+    }
+
+    .question-textarea:focus {
+      border-color: var(--charcoal-focus);
+    }
+
+    .question-textarea::placeholder {
+      color: var(--charcoal-faint);
+      opacity: 0.65;
+      font-style: italic;
+    }
+
+    /* Handcrafted Authoring Hint Drawer */
+    .explore-toggle {
+      background: transparent;
+      border: none;
+      color: var(--charcoal-faint);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      align-self: flex-start;
+      transition: color var(--transition-calm);
+    }
+
+    .explore-toggle:hover {
+      color: var(--charcoal-black);
+    }
+
+    .explore-toggle svg {
+      transition: transform var(--transition-calm);
+    }
+
+    .explore-toggle.open svg {
+      transform: rotate(90deg);
+    }
+
+    .explore-content {
+      display: none;
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--charcoal-soft);
+      background: var(--paper-recessed);
+      border-left: 2px solid var(--charcoal-soft);
+      padding: 0.9rem 1.25rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .explore-content.open {
+      display: block;
+    }
+
+    /* Bottom Culmination Trigger Zone */
+    .blueprint-trigger-zone {
+      margin-top: 3.5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--charcoal-border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .blueprint-promise-note {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--charcoal-soft);
+    }
+
+    .btn-author-trigger {
+      padding: 1.15rem 3.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* =========================================================================
+       6. GENERATING STATE: AUTHOR'S PRESS CALIBRATION
+       ========================================================================= */
+    .stage-generating {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 55vh;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .stage-generating.active {
+      display: flex;
+    }
+
+    .press-watermark-spin {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--charcoal-border);
+      border-top: 2px solid var(--charcoal-black);
+      border-radius: 50%;
+      animation: press-spin 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes press-spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .generating-status {
+      font-family: var(--font-serif);
+      font-size: 1.95rem;
+      color: var(--charcoal-black);
+      font-weight: 400;
+    }
+
+    .generating-subtext {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      color: var(--charcoal-faint);
+      max-width: 460px;
+    }
+
+    /* =========================================================================
+       7. STAGE 3: THE BLUEPRINT PRESENTATION (THE MASTER FOLIO)
+       ========================================================================= */
+    .stage-blueprint {
+      display: none;
+      flex-direction: column;
+      gap: 2.25rem;
+      max-width: var(--max-width-manuscript);
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-blueprint.active {
+      display: flex;
+    }
+
+    .blueprint-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--charcoal-border);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-secondary {
+      background: var(--paper-elevated);
+      color: var(--charcoal-soft);
+      border: 1px solid var(--charcoal-border);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-calm);
+    }
+
+    .btn-secondary:hover {
+      background: var(--paper-recessed);
+      color: var(--charcoal-black);
+      border-color: var(--charcoal-deep);
+    }
+
+    /* The Master Manuscript Folio */
+    .manuscript-folio {
+      position: relative;
+      background-color: var(--paper-elevated);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-md);
+      padding: clamp(2.5rem, 5vw, 4.75rem);
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,0.03),
+        0 24px 64px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+      overflow: hidden;
+    }
+
+    /* Handcrafted Cinnabar Folio Stamp */
+    .folio-cinnabar-stamp {
+      position: absolute;
+      top: 2.5rem;
+      right: 2.5rem;
+      width: 120px;
+      height: 120px;
+      pointer-events: none;
+      opacity: 0.28;
+      color: var(--stamp-cinnabar);
+    }
+
+    .folio-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      border-bottom: 1px solid var(--charcoal-border);
+      padding-bottom: 2.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .folio-classification {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stamp-cinnabar);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .folio-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--charcoal-black);
+      letter-spacing: -0.02em;
+    }
+
+    .folio-description {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.42rem;
+      line-height: 1.45;
+      color: var(--charcoal-soft);
+      max-width: 680px;
+    }
+
+    /* Structured Authoring Metadata Strip */
+    .folio-metadata-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.25rem;
+      background: var(--paper-recessed);
+      border: 1px solid var(--charcoal-border);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--charcoal-faint);
+    }
+
+    .meta-value {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      color: var(--charcoal-black);
+      font-weight: 500;
+    }
+
+    /* Narrative Manuscript Layout */
+    .folio-narrative {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .narrative-prologue {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      line-height: 1.75;
+      color: var(--charcoal-deep);
+    }
+
+    .narrative-prologue::first-letter {
+      float: left;
+      font-size: 4.8rem;
+      line-height: 0.85;
+      padding-top: 4px;
+      padding-right: 12px;
+      font-family: var(--font-serif);
+      font-weight: 400;
+      color: var(--charcoal-black);
+    }
+
+    /* The Seven Pillars */
+    .pillar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--charcoal-border);
+    }
+
+    .pillar-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+    }
+
+    .pillar-index {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--stamp-cinnabar);
+    }
+
+    .pillar-title {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      font-weight: 500;
+      color: var(--charcoal-black);
+    }
+
+    .pillar-core-answer {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--charcoal-soft);
+      background: var(--paper-recessed);
+      border-left: 3px solid var(--charcoal-soft);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .pillar-synthesis-text {
+      font-family: var(--font-serif);
+      font-size: 1.22rem;
+      line-height: 1.75;
+      color: var(--charcoal-deep);
+    }
+
+    /* Unwritten Trajectories / Next Chapters */
+    .folio-horizon {
+      background: var(--paper-recessed);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-sm);
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .horizon-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--stamp-cinnabar);
+    }
+
+    .horizon-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--charcoal-black);
+    }
+
+    .horizon-bullets {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .horizon-bullets li {
+      position: relative;
+      padding-left: 1.5rem;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: var(--charcoal-deep);
+    }
+
+    .horizon-bullets li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--charcoal-faint);
+    }
+
+    /* Clipboard Toast */
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: var(--charcoal-black);
+      color: var(--paper-white);
+      padding: 0.6rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition-calm);
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Philosophy Modal */
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 20, 0.45);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 200;
+    }
+
+    .dialog-backdrop.open {
+      display: flex;
+    }
+
+    .dialog-panel {
+      background: var(--paper-elevated);
+      border: 1px solid var(--charcoal-border);
+      border-radius: var(--radius-md);
+      max-width: 580px;
+      width: 100%;
+      padding: 2.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+    }
+
+    .dialog-panel h2 {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      color: var(--charcoal-black);
+    }
+
+    .dialog-panel p {
+      font-family: var(--font-serif);
+      font-size: 1.18rem;
+      line-height: 1.65;
+      color: var(--charcoal-soft);
+    }
+
+    .dialog-close-btn {
+      align-self: flex-end;
+      background: var(--charcoal-black);
+      border: none;
+      color: var(--paper-white);
+      padding: 0.5rem 1.35rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      #ambient-canvas {
+        display: none;
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      .app-shell {
+        padding: 2rem 1.15rem 6rem;
+      }
+      .kit-header {
+        margin-bottom: 3.5rem;
+      }
+      .spark-input-container {
+        padding: 1.25rem 1.25rem 3.5rem;
+      }
+      .question-card {
+        padding: 1.5rem;
+      }
+      .manuscript-folio {
+        padding: 2.25rem 1.35rem;
+      }
+      .folio-cinnabar-stamp {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG Paper Grain Filter Definition & Texture Canvas -->
+  <svg class="paper-texture-grain" aria-hidden="true">
+    <filter id="paper-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.1   0 0 0 0 0.1   0 0 0 0 0.1   0 0 0 0.9 0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#paper-noise)" />
+  </svg>
+
+  <!-- Physical Laid Paper Rule Lines -->
+  <div class="laid-paper-lines" aria-hidden="true"></div>
+
+  <!-- Three.js Canvas: Microscopic Paper Fibers & Smudged Graphite Drift -->
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- Bleed-Through Worldbuilder Seal (Handcrafted Engraving Watermark) -->
+  <svg class="author-seal-watermark" viewBox="0 0 400 400" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="200" cy="200" r="192" stroke-width="0.8" stroke-dasharray="2 3"/>
+    <circle cx="200" cy="200" r="176" stroke-width="1.4"/>
+    <circle cx="200" cy="200" r="150" stroke-width="0.6"/>
+    <circle cx="200" cy="200" r="124" stroke-width="0.8" stroke-dasharray="4 4"/>
+    <circle cx="200" cy="200" r="88" stroke-width="1.2"/>
+    <circle cx="200" cy="200" r="32" stroke-width="0.8"/>
+    <!-- Compass Crosshairs -->
+    <line x1="200" y1="8" x2="200" y2="392" stroke-width="0.75" stroke-dasharray="8 4"/>
+    <line x1="8" y1="200" x2="392" y2="200" stroke-width="0.75" stroke-dasharray="8 4"/>
+    <!-- Authoring Ring Lettering -->
+    <path id="seal-text-circle" d="M 54,200 A 146,146 0 1,1 346,200 A 146,146 0 1,1 54,200" fill="none"/>
+    <text font-family="Newsreader, serif" font-size="8.5" letter-spacing="4" fill="currentColor">
+      <textPath href="#seal-text-circle" startOffset="0%">
+        WORLD BUILDER AUTHORING KIT · LIBER I · CODEX COHERENCE · FOUNDATION &amp; HORIZON ·
+      </textPath>
+    </text>
+  </svg>
+
+  <div class="app-shell">
+    
+    <!-- Archival Kit Header -->
+    <header class="kit-header" role="banner">
+      <div class="kit-imprint">
+        <a href="#" class="kit-wordmark" id="brandLink" aria-label="World Builder Home">
+          <span>World Builder</span>
+        </a>
+        <span class="kit-codex-tag">Authoring Kit · Liber I</span>
+      </div>
+      <button class="header-nav-btn" id="openPhilosophyBtn" aria-haspopup="dialog">
+        Specification
+      </button>
+    </header>
+
+    <main id="main-content" role="main">
+      
+      <!-- =====================================================================
+           STAGE 1: THE SPARK (THE FIRST INK)
+           ===================================================================== -->
+      <section id="stage-spark" class="stage-spark" aria-labelledby="spark-heading">
+        <div class="author-dossier-index">Fascicle 01 · Primary Inception</div>
+        
+        <h1 id="spark-heading" class="spark-hero-title">
+          What do you want to create?
+        </h1>
+
+        <div class="spark-input-container">
+          <textarea 
+            id="spark-input" 
+            class="spark-textarea" 
+            rows="3" 
+            placeholder="It can be anything. A character, a story, a business, a world, or something you can't quite explain yet."
+            aria-label="Describe what you want to create in your authoring kit"></textarea>
+
+          <div class="input-toolbar">
+            <span id="mic-status" class="mic-status-label" aria-live="polite">Dictating // Transcribing</span>
+            <button id="mic-btn" class="mic-btn" type="button" aria-label="Dictate idea" title="Dictate idea">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="spark-submit-btn" class="btn-handcrafted" type="button">
+            Let's go
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Subdued Preview of the 7 Questions -->
+        <aside class="discovery-preview" aria-hidden="true">
+          <div class="preview-header-bar">
+            <span class="preview-header">The Seven Folio Foundations</span>
+            <span class="preview-sigil">Waiting in the Margin</span>
+          </div>
+          <div class="preview-grid">
+            <div class="preview-item">
+              <span class="preview-num-title">01 · ORIGIN</span>
+              <span class="preview-fragment">Where did it begin?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">02 · ESSENCE</span>
+              <span class="preview-fragment">Why does it matter?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">03 · BELIEF</span>
+              <span class="preview-fragment">What does it believe?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">04 · PERCEPTION</span>
+              <span class="preview-fragment">What might it be missing?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">05 · FRICTION</span>
+              <span class="preview-fragment">What's standing in the way?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">06 · GRAVITY</span>
+              <span class="preview-fragment">What holds it together?</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-num-title">07 · COHERENCE</span>
+              <span class="preview-fragment">What must remain true?</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- =====================================================================
+           STAGE 2: THE SEVEN QUESTIONS (ACTIVE AUTHORING)
+           ===================================================================== -->
+      <section id="stage-questions" class="stage-questions" aria-label="Authoring Discovery Questions">
+        
+        <!-- Docked Preserved Spark -->
+        <div class="preserved-spark-dock">
+          <div class="preserved-spark-header">
+            <span class="dock-tag">The Spark · Primary Inception</span>
+            <button id="re-edit-spark-btn" class="btn-edit-spark" type="button">Edit Spark</button>
+          </div>
+          <div id="docked-spark-text" class="preserved-spark-text"></div>
+        </div>
+
+        <div class="questions-stream">
+          
+          <!-- 1. Origin -->
+          <article class="question-card" data-key="origin">
+            <div class="question-card-meta">
+              <span class="question-label">01 · Origin</span>
+              <span class="question-captured-badge" id="badge-origin">Captured</span>
+            </div>
+            <h2 class="question-lead">What's its story?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-origin" 
+                rows="2" 
+                placeholder="Where it came from, the moment it sparked, or the history it carries..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              A character might inherit a locked notebook. A venture starts from an impossible trade. A fictional world might begin the night a star refused to rise. Where did your idea first draw breath?
+            </div>
+          </article>
+
+          <!-- 2. Essence -->
+          <article class="question-card" data-key="essence">
+            <div class="question-card-meta">
+              <span class="question-label">02 · Essence</span>
+              <span class="question-captured-badge" id="badge-essence">Captured</span>
+            </div>
+            <h2 class="question-lead">What makes it matter?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-essence" 
+                rows="2" 
+                placeholder="The fundamental difference it makes, why it demands to exist..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Strip away the surface details. If this didn't exist, what silence, grief, or blank page would remain in the room?
+            </div>
+          </article>
+
+          <!-- 3. Belief -->
+          <article class="question-card" data-key="belief">
+            <div class="question-card-meta">
+              <span class="question-label">03 · Belief</span>
+              <span class="question-captured-badge" id="badge-belief">Captured</span>
+            </div>
+            <h2 class="question-lead">What does it hold to be true?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-belief" 
+                rows="2" 
+                placeholder="Its unshakable convictions, unwritten laws, or internal code..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              What assumption does it treat as non-negotiable scripture? An ethic, an unbendable standard, or an aesthetic truth everyone else dismissed.
+            </div>
+          </article>
+
+          <!-- 4. Perception -->
+          <article class="question-card" data-key="perception">
+            <div class="question-card-meta">
+              <span class="question-label">04 · Perception</span>
+              <span class="question-captured-badge" id="badge-perception">Captured</span>
+            </div>
+            <h2 class="question-lead">What does it notice that others miss?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-perception" 
+                rows="2" 
+                placeholder="The overlooked nuance, quiet truth, or contrarian angle..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Where other systems move too fast to register detail, what subtle fracture or human need does your world keep its eye upon?
+            </div>
+          </article>
+
+          <!-- 5. Friction -->
+          <article class="question-card" data-key="friction">
+            <div class="question-card-meta">
+              <span class="question-label">05 · Friction</span>
+              <span class="question-captured-badge" id="badge-friction">Captured</span>
+            </div>
+            <h2 class="question-lead">What's holding it back?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-friction" 
+                rows="2" 
+                placeholder="The resistance, the paradox, or the doubt it must wrestle with..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              Every true manuscript holds an inner paradox. That resistance is not a flaw in your design—it is the friction that gives the story its dramatic weight.
+            </div>
+          </article>
+
+          <!-- 6. Gravity -->
+          <article class="question-card" data-key="gravity">
+            <div class="question-card-meta">
+              <span class="question-label">06 · Gravity</span>
+              <span class="question-captured-badge" id="badge-gravity">Captured</span>
+            </div>
+            <h2 class="question-lead">What holds everything together?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-gravity" 
+                rows="2" 
+                placeholder="The central anchor, obsession, or relationship at the center..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              If wind and chaos strike, what anchor keeps the characters and chapters from spinning apart? A vow? An heirloom? A single room?
+            </div>
+          </article>
+
+          <!-- 7. Coherence -->
+          <article class="question-card" data-key="coherence">
+            <div class="question-card-meta">
+              <span class="question-label">07 · Coherence</span>
+              <span class="question-captured-badge" id="badge-coherence">Captured</span>
+            </div>
+            <h2 class="question-lead">What makes it stay itself?</h2>
+            <div class="question-input-wrapper">
+              <textarea 
+                class="question-textarea" 
+                id="q-coherence" 
+                rows="2" 
+                placeholder="The boundaries and signatures that keep it unmistakably true..."></textarea>
+            </div>
+            <button class="explore-toggle" type="button" aria-expanded="false">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Explore this question
+            </button>
+            <div class="explore-content">
+              As the manuscript grows into volumes or products, what border must never be compromised? What makes it unmistakably itself?
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Action / Culmination Button -->
+        <div class="blueprint-trigger-zone">
+          <p class="blueprint-promise-note">Your world begins with what you've imagined.</p>
+          <button id="get-blueprint-btn" class="btn-handcrafted btn-author-trigger" type="button">
+            Get Your Blueprint
+          </button>
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           GENERATING STATE: BINDERY & PRESS CALIBRATION
+           ===================================================================== -->
+      <section id="stage-generating" class="stage-generating" aria-live="polite">
+        <div class="press-watermark-spin"></div>
+        <h2 class="generating-status">Bringing your ideas together.</h2>
+        <p class="generating-subtext">Setting the type, balancing the dramatic frictions, and pressing your thoughts into an Authoring Folio...</p>
+      </section>
+
+      <!-- =====================================================================
+           STAGE 3: THE BLUEPRINT PRESENTATION (THE MASTER FOLIO)
+           ===================================================================== -->
+      <section id="stage-blueprint" class="stage-blueprint" aria-label="Generated World Blueprint Folio">
+        
+        <!-- Controls Bar -->
+        <div class="blueprint-toolbar">
+          <div class="toolbar-group">
+            <button id="return-to-questions-btn" class="btn-secondary" type="button">
+              ← Refine Answers
+            </button>
+            <button id="start-new-btn" class="btn-secondary" type="button">
+              New Folio
+            </button>
+          </div>
+          <div class="toolbar-group">
+            <button id="copy-markdown-btn" class="btn-secondary" type="button">
+              Copy Markdown
+            </button>
+            <button id="download-markdown-btn" class="btn-secondary" type="button">
+              Download .md
+            </button>
+          </div>
+        </div>
+
+        <!-- Master Manuscript Folio -->
+        <article class="manuscript-folio" id="blueprint-folio-doc">
+          
+          <!-- Cinnabar Proofing Seal -->
+          <svg class="folio-cinnabar-stamp" viewBox="0 0 200 200" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="100" cy="100" r="92" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <circle cx="100" cy="100" r="80" stroke-width="0.75"/>
+            <circle cx="100" cy="100" r="60" stroke-width="0.5"/>
+            <polygon points="100,68 122,100 100,132 78,100" stroke-width="1.2"/>
+            <text x="100" y="104" font-family="Newsreader, serif" font-size="11" text-anchor="middle" fill="currentColor">IMPRIMATUR</text>
+          </svg>
+
+          <header class="folio-header">
+            <div class="folio-classification">
+              <span>AUTHORING KIT SPECIFICATION</span>
+              <span>·</span>
+              <span id="bp-folio-id">FOLIO WB-9041</span>
+            </div>
+            <h1 id="bp-title" class="folio-title">The Luminary Core</h1>
+            <p id="bp-description" class="folio-description">A sanctuary formed in defiance of accelerated noise, grounded in tactile craftsmanship and deliberate contemplation.</p>
+          </header>
+
+          <div class="folio-metadata-strip">
+            <div class="meta-item">
+              <span class="meta-label">Chronicle Archetype</span>
+              <span id="bp-archetype" class="meta-value">Sanctuary of Craft</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Gravitational Anchor</span>
+              <span id="bp-anchor" class="meta-value">The First Memory</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Tension Matrix</span>
+              <span id="bp-coherence-level" class="meta-value">Self-Sustaining Tension</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Binder Registration</span>
+              <span id="bp-coordinates" class="meta-value">Codex Edition · Octavo</span>
+            </div>
+          </div>
+
+          <div class="folio-narrative">
+            <div id="bp-prologue" class="narrative-prologue"></div>
+
+            <!-- Pillars Stream -->
+            <div id="bp-pillars-container"></div>
+
+            <!-- Horizons & Next Chapters -->
+            <div class="folio-horizon">
+              <span class="horizon-tag">Unwritten Trajectories & Next Chapters</span>
+              <h3 class="horizon-title">Where This World Wants to Go Next</h3>
+              <ul id="bp-horizons-list" class="horizon-bullets"></ul>
+            </div>
+          </div>
+
+        </article>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-pill" role="status" aria-live="polite">COPIED TO CLIPBOARD</div>
+
+  <!-- Philosophy Modal -->
+  <div id="philosophy-dialog" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-panel">
+      <h2 id="dialog-title">The Single Question Philosophy</h2>
+      <p>
+        The interface is not just a container for an experience; it is how an author discovers that their imagination matters.
+      </p>
+      <p>
+        We intentionally refuse dashboards, feature mazes, and account paywalls before you have explored your world. World Builder has one job: to guide you from an unstructured spark to a meaningful first Blueprint.
+      </p>
+      <button id="closePhilosophyBtn" class="dialog-close-btn" type="button">Close Specification</button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       JAVASCRIPT ARCHITECTURE
+       - Three.js Atmospheric Micro-Fibers & Smudged Graphite Drift
+       - Web Speech Recognition
+       - Backend Integration Stub (with TODO)
+       - Dynamic Blueprint Synthesis & Markdown Generation
+       ========================================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Application State
+      const state = {
+        currentStage: 'spark',
+        profile: {
+          spark: '',
+          questions: {
+            origin: '',
+            essence: '',
+            belief: '',
+            perception: '',
+            friction: '',
+            gravity: '',
+            coherence: ''
+          }
+        },
+        currentBlueprint: null
+      };
+
+      // Element References
+      const els = {
+        stageSpark: document.getElementById('stage-spark'),
+        stageQuestions: document.getElementById('stage-questions'),
+        stageGenerating: document.getElementById('stage-generating'),
+        stageBlueprint: document.getElementById('stage-blueprint'),
+        
+        sparkInput: document.getElementById('spark-input'),
+        sparkSubmitBtn: document.getElementById('spark-submit-btn'),
+        micBtn: document.getElementById('mic-btn'),
+        micStatus: document.getElementById('mic-status'),
+        dockedSparkText: document.getElementById('docked-spark-text'),
+        reEditSparkBtn: document.getElementById('re-edit-spark-btn'),
+        
+        questionInputs: {
+          origin: document.getElementById('q-origin'),
+          essence: document.getElementById('q-essence'),
+          belief: document.getElementById('q-belief'),
+          perception: document.getElementById('q-perception'),
+          friction: document.getElementById('q-friction'),
+          gravity: document.getElementById('q-gravity'),
+          coherence: document.getElementById('q-coherence')
+        },
+        getBlueprintBtn: document.getElementById('get-blueprint-btn'),
+        
+        bpFolioId: document.getElementById('bp-folio-id'),
+        bpTitle: document.getElementById('bp-title'),
+        bpDescription: document.getElementById('bp-description'),
+        bpArchetype: document.getElementById('bp-archetype'),
+        bpAnchor: document.getElementById('bp-anchor'),
+        bpCoherenceLevel: document.getElementById('bp-coherence-level'),
+        bpCoordinates: document.getElementById('bp-coordinates'),
+        bpPrologue: document.getElementById('bp-prologue'),
+        bpPillarsContainer: document.getElementById('bp-pillars-container'),
+        bpHorizonsList: document.getElementById('bp-horizons-list'),
+
+        copyMarkdownBtn: document.getElementById('copy-markdown-btn'),
+        downloadMarkdownBtn: document.getElementById('download-markdown-btn'),
+        returnToQuestionsBtn: document.getElementById('return-to-questions-btn'),
+        startNewBtn: document.getElementById('start-new-btn'),
+        
+        toast: document.getElementById('toast'),
+        philosophyDialog: document.getElementById('philosophy-dialog'),
+        openPhilosophyBtn: document.getElementById('openPhilosophyBtn'),
+        closePhilosophyBtn: document.getElementById('closePhilosophyBtn')
+      };
+
+      // -----------------------------------------------------------------------
+      // 1. THREE.JS ATMOSPHERE: COTTON FIBERS & SOFT GRAPHITE DUST
+      // Handcrafted, delicate particles moving across the bright white sheet
+      // -----------------------------------------------------------------------
+      function initPaperAtmosphere() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const canvas = document.getElementById('ambient-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 100;
+
+        // Subtle dark charcoal dust flecks
+        const count = 95;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        const scales = new Float32Array(count);
+
+        for (let i = 0; i < count * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 160;
+          positions[i + 1] = (Math.random() - 0.5) * 160;
+          positions[i + 2] = (Math.random() - 0.5) * 70;
+          scales[i / 3] = Math.random() * 1.8 + 0.6;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
+
+        // Charcoal / graphite pigment particle material
+        const material = new THREE.PointsMaterial({
+          color: 0x2b2b2b,
+          size: 1.6,
+          transparent: true,
+          opacity: 0.18,
+          blending: THREE.NormalBlending
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX - window.innerWidth / 2) * 0.012;
+          mouseY = (e.clientY - window.innerHeight / 2) * 0.012;
+        }, { passive: true });
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        let clock = new THREE.Clock();
+
+        function animate() {
+          requestAnimationFrame(animate);
+          const elapsed = clock.getElapsedTime() * 0.08;
+
+          targetX += (mouseX - targetX) * 0.03;
+          targetY += (mouseY - targetY) * 0.03;
+
+          points.rotation.y = elapsed * 0.3 + targetX * 0.04;
+          points.rotation.x = targetY * 0.03;
+
+          const pos = geometry.attributes.position.array;
+          for (let i = 1; i < count * 3; i += 3) {
+            pos[i] += Math.sin(elapsed + pos[i - 1]) * 0.015;
+          }
+          geometry.attributes.position.needsUpdate = true;
+
+          renderer.render(scene, camera);
+        }
+
+        animate();
+      }
+
+      // -----------------------------------------------------------------------
+      // 2. AUTO-EXPANDING TEXTAREAS
+      // -----------------------------------------------------------------------
+      function autoExpandTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.max(textarea.scrollHeight, 60)}px`;
+      }
+
+      function setupAutoExpand() {
+        document.querySelectorAll('textarea').forEach(t => {
+          t.addEventListener('input', () => autoExpandTextarea(t));
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 3. SPEECH-TO-TEXT INPUT (WEB SPEECH API)
+      // -----------------------------------------------------------------------
+      let recognition = null;
+      let isRecording = false;
+
+      function setupVoiceInput() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+          els.micBtn.title = "Voice dictation not supported in this browser.";
+          els.micBtn.style.opacity = '0.45';
+          return;
+        }
+
+        try {
+          recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = 'en-US';
+
+          recognition.onstart = () => {
+            isRecording = true;
+            els.micBtn.classList.add('recording');
+            els.micStatus.textContent = "Listening // Speak your world";
+            els.micStatus.classList.add('active');
+          };
+
+          recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+              }
+            }
+            if (finalTranscript) {
+              const current = els.sparkInput.value.trim();
+              els.sparkInput.value = current ? `${current} ${finalTranscript.trim()}` : finalTranscript.trim();
+              autoExpandTextarea(els.sparkInput);
+            }
+          };
+
+          recognition.onerror = () => stopRecording();
+          recognition.onend = () => stopRecording();
+
+          els.micBtn.addEventListener('click', () => {
+            if (isRecording) {
+              recognition.stop();
+            } else {
+              recognition.start();
+            }
+          });
+        } catch (e) {
+          console.warn("Speech recognition bypassed", e);
+        }
+      }
+
+      function stopRecording() {
+        isRecording = false;
+        els.micBtn.classList.remove('recording');
+        els.micStatus.classList.remove('active');
+      }
+
+      // -----------------------------------------------------------------------
+      // 4. STAGE TRANSITIONS & STATE MANAGEMENT
+      // -----------------------------------------------------------------------
+      function setStage(newStage) {
+        state.currentStage = newStage;
+
+        els.stageSpark.style.display = 'none';
+        els.stageQuestions.classList.remove('active');
+        els.stageGenerating.classList.remove('active');
+        els.stageBlueprint.classList.remove('active');
+
+        if (newStage === 'spark') {
+          els.stageSpark.style.display = 'flex';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'questions') {
+          els.stageQuestions.classList.add('active');
+          els.dockedSparkText.textContent = state.profile.spark || "A world waiting to take form.";
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'generating') {
+          els.stageGenerating.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (newStage === 'blueprint') {
+          els.stageBlueprint.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      function setupExploreDrawers() {
+        document.querySelectorAll('.explore-toggle').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const content = btn.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            content.classList.toggle('open', !isOpen);
+            btn.classList.toggle('open', !isOpen);
+            btn.setAttribute('aria-expanded', !isOpen);
+          });
+        });
+      }
+
+      function setupEffortAcknowledgement() {
+        Object.entries(els.questionInputs).forEach(([key, input]) => {
+          const card = input.closest('.question-card');
+          const badge = document.getElementById(`badge-${key}`);
+
+          input.addEventListener('input', () => {
+            const hasText = input.value.trim().length > 0;
+            card.classList.toggle('has-content', hasText);
+            if (badge) {
+              badge.classList.toggle('visible', hasText);
+            }
+            state.profile.questions[key] = input.value.trim();
+          });
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 5. BACKEND INTEGRATION STUB
+      // -----------------------------------------------------------------------
+      /**
+       * Generates a synthesized Authoring Folio Blueprint from creator input.
+       * 
+       * @param {Object} profile - Full creative profile containing spark and answers
+       * @returns {Promise<Object>} Synthesized Blueprint object
+       */
+      async function generateBlueprint(profile) {
+        /* =========================================================================
+           TODO: BACKEND AI SERVICE INTEGRATION
+           -------------------------------------------------------------------------
+           When your backend authoring synthesis service is ready:
+           
+           1. Replace this client-side mock synthesis with your live API endpoint:
+              const response = await fetch('/api/author/blueprint', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  // 'Authorization': 'Bearer ' + userToken
+                },
+                body: JSON.stringify(profile)
+              });
+
+              if (!response.ok) {
+                throw new Error(`Generation failed with status ${response.status}`);
+              }
+              return await response.json();
+
+           2. Maintain asynchronous boundaries and streaming protocols as required.
+           3. Never store or expose API keys directly in client-side script.
+           ========================================================================= */
+
+        // Phase One: Mock Blueprint synthesis (1.1s bindery latency)
+        await new Promise(resolve => setTimeout(resolve, 1100));
+        return synthesizeAuthoringProfile(profile);
+      }
+
+      // -----------------------------------------------------------------------
+      // 6. SYNTHESIS ENGINE (MOCK IMPLEMENTATION FOR AUTHORING KITS)
+      // -----------------------------------------------------------------------
+      function synthesizeAuthoringProfile(profile) {
+        const spark = profile.spark.trim() || "An unwritten chronicle waiting for ink";
+        const q = profile.questions;
+
+        // Extract a working title
+        let computedTitle = "The Unfolding World";
+        const words = spark.split(/\s+/).filter(w => w.length > 2);
+        if (words.length >= 2) {
+          const w1 = words[0].replace(/[^a-zA-Z]/g, '');
+          const w2 = words[Math.min(words.length - 1, 3)].replace(/[^a-zA-Z]/g, '');
+          computedTitle = `The ${capitalize(w1)} of ${capitalize(w2)}`;
+        } else if (words.length === 1) {
+          computedTitle = `The Chronicle of ${capitalize(words[0])}`;
+        }
+
+        const archetypes = [
+          "Living Sanctuary",
+          "Tactile Chronicle",
+          "Contrarian Enterprise",
+          "Quiet Sovereign Network",
+          "Resilient Meridian"
+        ];
+        const computedArchetype = archetypes[Math.floor(Math.random() * archetypes.length)];
+        const computedAnchor = q.gravity ? truncate(q.gravity, 32) : "The Inception Memory";
+
+        return {
+          id: `FOLIO WB-${Math.floor(1000 + Math.random() * 9000)}`,
+          title: computedTitle,
+          description: `An authoring foundation born from: "${truncate(spark, 80)}". Synthesized through seven structural anchors into an enduring creative blueprint.`,
+          metadata: {
+            archetype: computedArchetype,
+            anchor: computedAnchor,
+            coherenceLevel: q.coherence ? "Self-Sustaining Tension" : "Evolving Equilibrium",
+            registration: `Codex Edition · Sheet ${Math.floor(Math.random() * 50 + 1)}`,
+            timestamp: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+          },
+          prologue: `Every world begins not with an inventory of mechanical parts, but with an unspoken certainty about what matters. What began as "${spark}" carries an internal momentum that refuses conventional categorization. What follows is the structural drafting of that intuition onto the page.`,
+          pillars: [
+            {
+              index: "01",
+              name: "Genesis & Heritage",
+              key: "origin",
+              userAnswer: q.origin || "Originating in the raw initial impulse.",
+              synthesis: q.origin 
+                ? `Anchored in your discovery: "${q.origin}". This creates an inherited necessity; the manuscript does not start from vacant ground, but answers an existing debt or calling.`
+                : `Its emergence is spontaneous yet structured, answering directly to the original spark.`
+            },
+            {
+              index: "02",
+              name: "Essence & Gravitas",
+              key: "essence",
+              userAnswer: q.essence || "It matters because it alters the reader's frame of reference.",
+              synthesis: q.essence
+                ? `Its non-negotiable heart is defined by: "${q.essence}". Strip away ornament and convenience, and this remains the living core that justifies every creative sacrifice.`
+                : `It matters because it cuts through ambient noise to establish a permanent clearing for contemplation.`
+            },
+            {
+              index: "03",
+              name: "The Unwritten Creed",
+              key: "belief",
+              userAnswer: q.belief || "That truth is revealed through fidelity to the work itself.",
+              synthesis: q.belief
+                ? `The world operates on an internal commandment: "${q.belief}". This is not marketing copy; it is the constitutional law governing how choices are made within it.`
+                : `Its primary axiom holds that authentic presence will outlast manufactured spectacle.`
+            },
+            {
+              index: "04",
+              name: "The Perceptual Edge",
+              key: "perception",
+              userAnswer: q.perception || "The quiet fractures and nuances that conventional systems overlook.",
+              synthesis: q.perception
+                ? `Its unfair creative advantage is its eye: "${q.perception}". While others follow standard metrics, this world draws its power from the overlooked margin.`
+                : `It perceives the human need for depth at the exact moment surrounding culture leans into speed.`
+            },
+            {
+              index: "05",
+              name: "The Dramatic Crucible",
+              key: "friction",
+              userAnswer: q.friction || "The tension between expansive vision and finite mortal energy.",
+              synthesis: q.friction
+                ? `Its central drama stems from: "${q.friction}". This friction is not a flaw in your design—it is the source of the story's electrical charge.`
+                : `The friction lies in sustaining the raw intimacy of the idea while constructing structures broad enough to welcome readers.`
+            },
+            {
+              index: "06",
+              name: "Gravitational Center",
+              key: "gravity",
+              userAnswer: q.gravity || "The relentless return to the founding inquiry.",
+              synthesis: q.gravity
+                ? `What prevents collapse is: "${q.gravity}". Even as secondary branches develop, this is the gravitational center to which every element responds.`
+                : `The gravitational anchor is your refusal to dilute the original creative breakthrough.`
+            },
+            {
+              index: "07",
+              name: "Inviolable Coherence",
+              key: "coherence",
+              userAnswer: q.coherence || "The conviction that it must remain unmistakably itself.",
+              synthesis: q.coherence
+                ? `The boundary condition that preserves identity is: "${q.coherence}". As long as this remains true, the world can change forms indefinitely without losing its soul.`
+                : `It stays itself through deliberate subtraction—rejecting whatever does not serve its fundamental reality.`
+            }
+          ],
+          horizons: [
+            "Translate this architecture into an opening chapter, founding essay, or pilot artifact.",
+            `Test the tension between "${truncate(q.friction || 'the primary obstacle', 38)}" and your core belief.`,
+            "Protect the gravitational center before inviting commercial or distribution obligations.",
+            "Return to adjust any foundation whose meaning sharpened while reading this Folio."
+          ]
+        };
+      }
+
+      function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
+      }
+
+      function truncate(s, len) {
+        return (s && s.length > len) ? s.substring(0, len) + '...' : (s || '');
+      }
+
+      // -----------------------------------------------------------------------
+      // 7. BLUEPRINT RENDERING & MARKDOWN EXPORT
+      // -----------------------------------------------------------------------
+      function renderBlueprint(bp) {
+        state.currentBlueprint = bp;
+
+        els.bpFolioId.textContent = bp.id;
+        els.bpTitle.textContent = bp.title;
+        els.bpDescription.textContent = bp.description;
+        els.bpArchetype.textContent = bp.metadata.archetype;
+        els.bpAnchor.textContent = bp.metadata.anchor;
+        els.bpCoherenceLevel.textContent = bp.metadata.coherenceLevel;
+        els.bpCoordinates.textContent = bp.metadata.registration;
+        els.bpPrologue.textContent = bp.prologue;
+
+        // Render Pillars
+        els.bpPillarsContainer.innerHTML = '';
+        bp.pillars.forEach(p => {
+          const section = document.createElement('section');
+          section.className = 'pillar-section';
+          section.innerHTML = `
+            <div class="pillar-header">
+              <span class="pillar-index">${p.index} · ${p.key.toUpperCase()}</span>
+              <h3 class="pillar-title">${p.name}</h3>
+            </div>
+            <div class="pillar-core-answer">"${escapeHtml(p.userAnswer)}"</div>
+            <p class="pillar-synthesis-text">${escapeHtml(p.synthesis)}</p>
+          `;
+          els.bpPillarsContainer.appendChild(section);
+        });
+
+        // Render Horizons
+        els.bpHorizonsList.innerHTML = '';
+        bp.horizons.forEach(h => {
+          const li = document.createElement('li');
+          li.textContent = h;
+          els.bpHorizonsList.appendChild(li);
+        });
+      }
+
+      function generateMarkdown(bp) {
+        let md = `# ${bp.title}\n`;
+        md += `**Document:** ${bp.id} | **Class:** Authoring Kit World Blueprint\n\n`;
+        md += `> ${bp.description}\n\n`;
+        md += `- **Chronicle Archetype:** ${bp.metadata.archetype}\n`;
+        md += `- **Gravitational Anchor:** ${bp.metadata.anchor}\n`;
+        md += `- **Tension Matrix:** ${bp.metadata.coherenceLevel}\n`;
+        md += `- **Registration:** ${bp.metadata.registration}\n`;
+        md += `- **Drafted Date:** ${bp.metadata.timestamp}\n\n`;
+        md += `---\n\n`;
+        md += `## Prologue & Genesis\n\n${bp.prologue}\n\n`;
+        md += `## The Seven Foundations\n\n`;
+
+        bp.pillars.forEach(p => {
+          md += `### ${p.index} · ${p.name}\n\n`;
+          md += `*Creator Discovery:* "${p.userAnswer}"\n\n`;
+          md += `${p.synthesis}\n\n`;
+        });
+
+        md += `---\n\n## Unwritten Trajectories & Next Chapters\n\n`;
+        bp.horizons.forEach(h => {
+          md += `- ${h}\n`;
+        });
+
+        md += `\n---\n*Synthesized via My World Blueprint · Authoring Kit Liber I*\n`;
+        return md;
+      }
+
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add('show');
+        setTimeout(() => els.toast.classList.remove('show'), 2400);
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      // -----------------------------------------------------------------------
+      // 8. EVENT WIRING
+      // -----------------------------------------------------------------------
+      function setupEvents() {
+        els.sparkSubmitBtn.addEventListener('click', () => {
+          state.profile.spark = els.sparkInput.value.trim();
+          if (isRecording && recognition) recognition.stop();
+          setStage('questions');
+        });
+
+        els.reEditSparkBtn.addEventListener('click', () => setStage('spark'));
+
+        els.getBlueprintBtn.addEventListener('click', async () => {
+          setStage('generating');
+          try {
+            const bp = await generateBlueprint(state.profile);
+            renderBlueprint(bp);
+            setStage('blueprint');
+          } catch (err) {
+            console.error("Blueprint generation error:", err);
+            alert("An error occurred during blueprint generation. Returning to discovery questions.");
+            setStage('questions');
+          }
+        });
+
+        els.returnToQuestionsBtn.addEventListener('click', () => setStage('questions'));
+
+        els.startNewBtn.addEventListener('click', () => {
+          if (confirm("Reset current Blueprint and start a new manuscript folio?")) {
+            els.sparkInput.value = '';
+            Object.values(els.questionInputs).forEach(i => {
+              i.value = '';
+              i.closest('.question-card').classList.remove('has-content');
+            });
+            document.querySelectorAll('.question-captured-badge').forEach(b => b.classList.remove('visible'));
+            state.profile.spark = '';
+            Object.keys(state.profile.questions).forEach(k => state.profile.questions[k] = '');
+            setStage('spark');
+          }
+        });
+
+        els.copyMarkdownBtn.addEventListener('click', async () => {
+          if (!state.currentBlueprint) return;
+          const md = generateMarkdown(state.currentBlueprint);
+          try {
+            await navigator.clipboard.writeText(md);
+            showToast("MARKDOWN COPIED TO CLIPBOARD");
+          } catch {
+            const temp = document.createElement('textarea');
+            temp.value = md;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast("MARKDOWN COPIED");
+          }
+        });
+
+        els.downloadMarkdownBtn.addEventListener('click', () => {
+          if (!state.currentBlueprint) return;
+          const md = generateMarkdown(state.currentBlueprint);
+          const fname = `${state.currentBlueprint.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-blueprint.md`;
+          const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fname;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast(`DOWNLOADED ${fname.toUpperCase()}`);
+        });
+
+        els.openPhilosophyBtn.addEventListener('click', () => els.philosophyDialog.classList.add('open'));
+        els.closePhilosophyBtn.addEventListener('click', () => els.philosophyDialog.classList.remove('open'));
+        els.philosophyDialog.addEventListener('click', (e) => {
+          if (e.target === els.philosophyDialog) els.philosophyDialog.classList.remove('open');
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 9. INITIALIZATION
+      // -----------------------------------------------------------------------
+      function init() {
+        initPaperAtmosphere();
+        setupAutoExpand();
+        setupVoiceInput();
+        setupExploreDrawers();
+        setupEffortAcknowledgement();
+        setupEvents();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

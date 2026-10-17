@@ -1,0 +1,3042 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World Builder Blueprint · What do you want to create?</title>
+<meta name="description" content="Describe what you want to create, explore it through seven questions, and discover the Blueprint behind what you imagine.">
+<meta name="theme-color" content="#fbfbf9">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://worldbuilderblueprint.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="World Builder Blueprint">
+<meta property="og:title" content="World Builder Blueprint">
+<meta property="og:description" content="Create the world behind what you imagine.">
+<meta property="og:url" content="https://worldbuilderblueprint.com/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c1a17'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23d8bb8c' stroke-width='1.6'/%3E%3Cpath d='M6 17.5c3.3-1.8 6.7-1.8 10 0s6.7 1.8 10 0' fill='none' stroke='%23d8bb8c' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='11.5' r='2' fill='%23d8bb8c'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Courier+Prime:wght@400;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap">
+
+<style>
+/* ==========================================================================
+   World Builder Blueprint — Phase One · Concept III "Authoring Kit"
+   Bright white handmade paper, charcoal lettering, index cards, pencil
+   marginalia, a typewriter, and a rubber stamp.
+   1. Tokens   2. Paper & base   3. Masthead   4. Spark (the first card)
+   5. Fields & voice   6. The seven cards   7. Buttons   8. Sketching
+   9. The Blueprint manuscript   10. Dialogs, toast   11. Stages, motion, print
+   ========================================================================== */
+
+/* 1. Tokens ---------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Paper */
+  --paper:   oklch(0.985 0.003 95);
+  --card:    oklch(0.995 0.002 95);
+  --card-2:  oklch(0.975 0.004 90);
+  --tape:    oklch(0.93 0.012 90 / .72);
+
+  /* Charcoal & graphite */
+  --charcoal:   oklch(0.26 0.004 60);
+  --charcoal-2: oklch(0.38 0.005 60);
+  --graphite:   oklch(0.5 0.006 60);
+  --graphite-2: oklch(0.6 0.006 60);
+  --smudge:     oklch(0.26 0.004 60 / .07);
+
+  /* Rules & edges */
+  --line:        oklch(0.26 0.004 60 / .16);
+  --line-2:      oklch(0.26 0.004 60 / .28);
+  --line-strong: oklch(0.26 0.004 60 / .6);
+  --rule:        oklch(0.72 0.02 245 / .32);   /* index-card ruling */
+  --margin:      oklch(0.64 0.13 25 / .45);    /* index-card margin line */
+
+  /* The one accent: red pencil & stamp ink */
+  --red:   oklch(0.53 0.15 28);
+  --red-a: oklch(0.53 0.15 28 / .12);
+
+  --focus: var(--charcoal);
+  --highlight: oklch(0.93 0.13 102 / .65);
+
+  /* Handmade paper tile, replaced by a richer Three.js-generated tile at runtime */
+  --paper-tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .23 0 0 0 0 .2 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --tex-size: 320px;
+
+  /* Type */
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-text: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-type: "Courier Prime", "Courier New", ui-monospace, monospace;
+  --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: cubic-bezier(.6, 0, .3, 1);
+  --t-fast: 180ms;
+  --t-med: 320ms;
+  --t-slow: 520ms;
+
+  /* Hand-cut shapes */
+  --cut: 14px 17px 15px 18px / 17px 14px 18px 15px;
+  --sketch: 255px 14px 225px 16px / 16px 225px 14px 255px;
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --column: 46rem;
+  --shadow-card:
+    0 1px 1px oklch(0.3 0.01 60 / .07),
+    0 2px 3px -1px oklch(0.3 0.01 60 / .06),
+    0 16px 30px -20px oklch(0.3 0.01 60 / .32);
+}
+
+/* 2. Paper & base ---------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 1.5rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  color: var(--charcoal);
+  font-family: var(--font-text);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  background: var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size) repeat, var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+/* Three.js lamp: a soft pool of light over the desk, multiplied onto the paper. */
+#lamp {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 1.6s var(--ease-out);
+}
+#lamp.is-ready { opacity: 1; }
+
+::selection { background: var(--highlight); color: var(--charcoal); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+[tabindex="-1"]:focus:not(:focus-visible) { outline: none; }
+
+button { font: inherit; color: inherit; }
+kbd {
+  font: 400 .78rem/1 var(--font-type);
+  padding: .2rem .4rem;
+  border: 1px solid var(--line-2);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--charcoal-2);
+  background: var(--card);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+main {
+  flex: 1;
+  width: min(100% - var(--gutter) * 2, var(--column));
+  margin-inline: auto;
+  padding-bottom: clamp(4rem, 12vh, 8rem);
+}
+
+/* Large lettering gets a charcoal edge (see #charcoal filter in the body). */
+.charcoal { filter: url(#charcoal); }
+
+/* 3. Masthead -------------------------------------------------------------- */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100% - var(--gutter) * 2, 72rem);
+  margin-inline: auto;
+  padding-block: clamp(1.25rem, 3.5vh, 2rem);
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  color: var(--charcoal);
+  text-decoration: none;
+  border-radius: 6px;
+}
+.wordmark svg { flex: none; color: var(--charcoal); }
+.wordmark__name {
+  font: 500 1.12rem/1 var(--font-display);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  letter-spacing: -.005em;
+}
+.wordmark__sub {
+  font: 400 .72rem/1 var(--font-type);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding-left: .65rem;
+  border-left: 1px solid var(--line-2);
+}
+.link-quiet {
+  background: none;
+  border: 0;
+  padding: .4rem .2rem;
+  font: 400 .88rem/1 var(--font-type);
+  color: var(--graphite);
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-decoration-color: transparent;
+  text-underline-offset: .3em;
+  transition: color var(--t-fast), text-decoration-color var(--t-fast);
+}
+.link-quiet:hover { color: var(--charcoal); text-decoration-color: var(--line-strong); }
+
+/* 4. The Spark ------------------------------------------------------------- */
+.spark {
+  padding-top: clamp(2rem, 10vh, 7rem);
+  transition:
+    padding var(--t-slow) var(--ease-out),
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    filter 420ms var(--ease-out);
+}
+.spark__eyebrow {
+  display: none;
+  margin: 0 0 .5rem;
+  font: 400 .78rem/1 var(--font-type);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.question {
+  margin: 0 0 clamp(1.75rem, 4.5vh, 2.6rem);
+  font-family: var(--font-display);
+  font-weight: 340;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: clamp(2.6rem, 1.2rem + 5.2vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: var(--charcoal);
+  transition:
+    font-size var(--t-slow) var(--ease-out),
+    color var(--t-slow) var(--ease-out),
+    margin var(--t-slow) var(--ease-out);
+}
+
+/* Pencil marginalia beside the first card */
+.marginalia {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: .3rem;
+  margin: -.75rem .5rem .1rem 0;
+  font: 500 1.35rem/1 var(--font-hand);
+  color: var(--graphite);
+  transform: rotate(-2deg);
+  pointer-events: none;
+}
+.marginalia svg { flex: none; margin-bottom: -.6rem; }
+
+.nudge {
+  margin: .9rem .25rem 0;
+  font: 500 1.4rem/1.2 var(--font-hand);
+  color: var(--red);
+}
+.nudge:empty { display: none; }
+
+.spark__actions-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows var(--t-med) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out),
+    visibility 0s linear 0s;
+}
+.spark__actions {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem 1.25rem;
+  padding: clamp(1.5rem, 3.5vh, 2rem) .5rem .75rem;
+}
+.shortcut { font: 400 .82rem/1.4 var(--font-type); color: var(--graphite); }
+
+/* 5. Fields: index cards with ruled lines ---------------------------------- */
+.field {
+  --tilt: -.35deg;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background:
+    linear-gradient(oklch(1 0 0 / .6), oklch(1 0 0 / .6)),
+    var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size),
+    var(--card);
+  box-shadow: var(--shadow-card);
+  transform: rotate(var(--tilt));
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+.field:hover { border-color: var(--line-2); }
+/* Attentive: the card squares up and lifts a little when you write on it. */
+.field:focus-within {
+  transform: rotate(0deg) translateY(-1px);
+  border-color: var(--line-strong);
+  box-shadow:
+    0 1px 1px oklch(0.3 0.01 60 / .08),
+    0 3px 6px -2px oklch(0.3 0.01 60 / .1),
+    0 22px 40px -22px oklch(0.3 0.01 60 / .4);
+}
+
+.field__input {
+  --lh: 2rem;
+  --pad-top: calc(var(--lh) * .75);
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  color: var(--charcoal);
+  caret-color: var(--red);
+  font-family: var(--font-text);
+  font-weight: 400;
+  line-height: var(--lh);
+  padding: var(--pad-top) 1.4rem calc(var(--lh) * 1.75) 3.25rem;
+  background:
+    linear-gradient(to right, transparent 2.4rem, var(--margin) 2.4rem, var(--margin) calc(2.4rem + 1px), transparent calc(2.4rem + 1px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--lh) - 1px), var(--rule) calc(var(--lh) - 1px), var(--rule) var(--lh));
+  background-position: 0 0, 0 var(--pad-top);
+  background-attachment: local;
+  field-sizing: content;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+  border-radius: inherit;
+  transition: font-size var(--t-slow) var(--ease-out), min-height var(--t-slow) var(--ease-out);
+}
+.field__input::placeholder { color: var(--graphite-2); font-style: italic; opacity: 1; }
+.field__input:focus-visible { outline: none; } /* the card carries focus */
+
+.field--spark .field__input {
+  --lh: 2.15rem;
+  min-height: 11rem;
+  max-height: 62vh;
+  font-size: clamp(1.18rem, 1.05rem + .45vw, 1.36rem);
+}
+.field--q .field__input {
+  --lh: 1.9rem;
+  min-height: 7.6rem;
+  max-height: 52vh;
+  font-size: 1.12rem;
+}
+
+.field__tools {
+  position: absolute;
+  right: .65rem;
+  bottom: .65rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.mic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1.5px solid var(--charcoal-2);
+  border-radius: 52% 48% 50% 50% / 49% 52% 48% 51%;
+  background: var(--card);
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+.mic:hover { background: oklch(0.96 0.004 90); transform: rotate(-4deg); }
+.mic:active { transform: scale(.96); }
+.mic:focus-visible { border-radius: 50%; }
+.mic[data-state="requesting"] { border-style: dashed; color: var(--red); border-color: var(--red); }
+.mic[data-state="listening"] { background: var(--charcoal); color: var(--card); border-color: var(--charcoal); }
+.mic[data-state="unavailable"] { color: var(--graphite-2); border-color: var(--line-2); }
+.mic__rec {
+  position: absolute;
+  top: .25rem; right: .25rem;
+  width: .45rem; height: .45rem;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 2px var(--card);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.mic[data-state="listening"] .mic__rec { opacity: 1; }
+
+.meter { display: inline-flex; align-items: center; gap: 3px; height: 1.1rem; opacity: 0; transition: opacity var(--t-fast); }
+.meter i {
+  width: 2px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--charcoal);
+  transform: scaleY(.18);
+  transition: transform 90ms linear;
+}
+.field[data-voice="listening"] .meter { opacity: 1; }
+.meter i:nth-child(1) { transform: scaleY(calc(.18 + var(--level, 0) * .45)); }
+.meter i:nth-child(2) { transform: scaleY(calc(.18 + var(--level, 0) * .8)); animation-delay: .15s; }
+.meter i:nth-child(3) { transform: scaleY(calc(.18 + var(--level, 0) * 1)); animation-delay: .3s; }
+.meter i:nth-child(4) { transform: scaleY(calc(.18 + var(--level, 0) * .7)); animation-delay: .45s; }
+.meter i:nth-child(5) { transform: scaleY(calc(.18 + var(--level, 0) * .4)); animation-delay: .6s; }
+.field[data-voice="listening"][data-meter="ambient"] .meter i { animation: breathe 1.6s var(--ease-in-out) infinite; }
+@keyframes breathe { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(.6); } }
+
+.voice-note {
+  margin: .7rem .4rem 0;
+  font: italic 400 .95rem/1.45 var(--font-text);
+  color: var(--graphite);
+}
+.voice-note:empty { display: none; }
+.voice-note[data-tone="live"] { color: var(--red); font-style: normal; }
+
+/* 6. The seven cards ------------------------------------------------------- */
+.discovery {
+  margin-top: clamp(3.5rem, 9vh, 5.5rem);
+  transition:
+    margin var(--t-slow) var(--ease-out),
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    filter 420ms var(--ease-out);
+}
+.discovery__head {
+  display: grid;
+  gap: .4rem;
+  margin-bottom: 1.4rem;
+  scroll-margin-top: 1rem;
+}
+/* A hand-ruled divider, like a pencil line across the page */
+.discovery__head::before {
+  content: "";
+  display: block;
+  height: 8px;
+  margin-bottom: 1.4rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 8' preserveAspectRatio='none'%3E%3Cpath d='M1 4.6 C 90 3.2 160 5.4 250 4.1 S 420 3 520 4.8 S 580 4.2 599 3.6' fill='none' stroke='%23332f2b' stroke-opacity='.35' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.discovery__title {
+  margin: 0;
+  font: 400 .8rem/1.2 var(--font-type);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  transition: color var(--t-slow);
+}
+.discovery__lede {
+  margin: 0;
+  max-width: 38rem;
+  font: italic 400 1.12rem/1.5 var(--font-text);
+  color: var(--graphite);
+  transition: color var(--t-slow);
+}
+.discovery[data-state="deferred"] .when-active,
+.discovery[data-state="active"] .when-deferred { display: none; }
+.discovery[data-state="active"] .discovery__title { color: var(--red); }
+.discovery[data-state="active"] .discovery__lede { color: var(--charcoal-2); }
+
+.questions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .3rem;
+  transition: gap var(--t-slow) var(--ease-out);
+}
+/* Waiting in the kit: a loose pile of cards fading into the page */
+.discovery[data-state="deferred"] .questions {
+  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+}
+.discovery[data-state="active"] .questions { gap: 1.5rem; }
+
+.q {
+  --delay: calc(var(--i, 0) * 85ms);
+  position: relative;
+  padding: .95rem clamp(1rem, 3vw, 1.5rem) 1rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background:
+    linear-gradient(oklch(1 0 0 / .55), oklch(1 0 0 / .55)),
+    var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size),
+    var(--card);
+  box-shadow: var(--shadow-card);
+  opacity: .58;
+  transform: rotate(var(--tilt, 0deg));
+  transition:
+    opacity var(--t-med) var(--ease-out) var(--delay),
+    transform var(--t-slow) var(--ease-out) var(--delay),
+    border-color var(--t-med) var(--ease-out);
+}
+/* Pulled from the kit: each card squares up, one after another. */
+.discovery[data-state="active"] .q { opacity: 1; transform: none; }
+.discovery[data-state="active"] .q:focus-within { border-color: var(--line-2); }
+.discovery[data-state="active"] .q.is-answered { border-color: var(--line-2); }
+
+.q__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .25rem .85rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--t-med) var(--ease-out) var(--delay);
+}
+.discovery[data-state="active"] .q__head { border-bottom-color: var(--margin); }
+.q__num {
+  font: 400 .8rem/1 var(--font-type);
+  color: var(--graphite);
+}
+.q__label {
+  margin: 0;
+  font: 700 .8rem/1 var(--font-type);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+.q__fragment {
+  margin: 0 0 0 auto;
+  font: 500 1.35rem/1 var(--font-hand);
+  color: var(--graphite);
+  transform: rotate(-1.5deg);
+  transition: opacity var(--t-fast) var(--ease-out), visibility 0s linear var(--t-fast);
+}
+.discovery[data-state="active"] .q__fragment { opacity: 0; visibility: hidden; }
+
+/* Captured: a red-pencil tick drawn in the corner */
+.q__mark {
+  position: absolute;
+  top: .55rem;
+  right: clamp(.9rem, 3vw, 1.4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font: 500 1.3rem/1 var(--font-hand);
+  color: var(--red);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.q__mark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .5s var(--ease-out) .05s;
+}
+.discovery[data-state="active"] .q.is-answered .q__mark { opacity: 1; }
+.discovery[data-state="active"] .q.is-answered .q__mark path { stroke-dashoffset: 0; }
+
+/* Expanding body */
+.q__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) var(--delay),
+    opacity var(--t-med) var(--ease-out) calc(var(--delay) + 80ms),
+    visibility 0s linear calc(var(--delay) + var(--t-slow));
+}
+.discovery[data-state="active"] .q__body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) var(--delay),
+    opacity var(--t-med) var(--ease-out) calc(var(--delay) + 80ms),
+    visibility 0s linear 0s;
+}
+.q__inner {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0 -10px -12px;
+  padding: 0 10px 12px; /* room for focus rings and card shadows */
+}
+.q__question {
+  margin: .95rem 0 .95rem;
+  font-family: var(--font-display);
+  font-weight: 380;
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.05rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--charcoal);
+  text-wrap: balance;
+}
+.q__question label { cursor: text; }
+.q .field { --tilt: 0deg; box-shadow: 0 1px 1px oklch(0.3 0.01 60 / .05), 0 8px 18px -14px oklch(0.3 0.01 60 / .3); }
+
+/* Hint: a pencil note in the margin */
+.q__hint {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  margin: .9rem .25rem 0;
+  color: var(--graphite);
+}
+.q__hint-label { font: 400 .74rem/1 var(--font-type); letter-spacing: .12em; text-transform: uppercase; flex: none; }
+.q__hint-text { font: 500 1.28rem/1.25 var(--font-hand); color: var(--charcoal-2); }
+
+.explore-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  margin: .65rem 0 0;
+  padding: .45rem .55rem .45rem .3rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font: 400 .86rem/1 var(--font-type);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast);
+}
+.explore-toggle:hover { color: var(--charcoal); background: var(--smudge); }
+.explore-toggle svg { transition: transform var(--t-med) var(--ease-out); }
+.explore-toggle[aria-expanded="true"] { color: var(--charcoal); }
+.explore-toggle[aria-expanded="true"] svg { transform: rotate(45deg); }
+
+.explore {
+  position: relative;
+  margin: .5rem 0 .3rem;
+  padding: 1.1rem 1.2rem 1.1rem 1.3rem;
+  border-radius: 2px;
+  background: oklch(0.965 0.02 95 / .8);
+  box-shadow: 0 1px 1px oklch(0.3 0.01 60 / .06), 0 10px 16px -14px oklch(0.3 0.01 60 / .35);
+  transform: rotate(.3deg);
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+@starting-style { .explore { opacity: 0; transform: rotate(.3deg) translateY(-4px); } }
+.explore__title {
+  margin: 0 0 .55rem;
+  font: 400 .74rem/1 var(--font-type);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.explore__list { margin: 0; padding: 0; list-style: none; display: grid; gap: .45rem; }
+.explore__list li {
+  position: relative;
+  padding-left: 1.1rem;
+  font: 400 1.05rem/1.45 var(--font-text);
+  color: var(--charcoal-2);
+}
+.explore__list li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--graphite);
+}
+.explore__spark { margin: 1rem 0 0; font: italic 400 1.05rem/1.45 var(--font-text); color: var(--charcoal); }
+.explore__spark span {
+  display: block;
+  margin-bottom: .25rem;
+  font: 500 1.25rem/1 var(--font-hand);
+  font-style: normal;
+  color: var(--red);
+}
+
+/* Culmination */
+.culmination {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out),
+    opacity var(--t-slow) var(--ease-out),
+    visibility 0s linear var(--t-slow);
+}
+.discovery[data-state="active"] .culmination {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) 600ms,
+    opacity var(--t-slow) var(--ease-out) 680ms,
+    visibility 0s linear 0s;
+}
+.culmination__inner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  gap: 1.2rem;
+  padding: clamp(2.75rem, 7vh, 4.25rem) .5rem 1rem;
+  text-align: center;
+}
+.culmination__line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: clamp(1.35rem, 1.1rem + .8vw, 1.65rem);
+  line-height: 1.35;
+  color: var(--charcoal-2);
+  text-wrap: balance;
+}
+.culmination .shortcut { margin: 0; }
+
+/* 7. Buttons --------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  min-height: 3rem;
+  padding: .9rem 1.7rem;
+  border: 1.5px solid transparent;
+  border-radius: var(--cut);
+  font-family: var(--font-display);
+  font-weight: 450;
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  font-size: 1.12rem;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out);
+}
+.btn:active { transform: translateY(1px) scale(.99); transition-duration: 60ms; }
+.btn svg { flex: none; }
+
+/* Ink: charcoal pressed into paper */
+.btn--ink {
+  color: var(--card);
+  background: var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size), var(--charcoal);
+  background-blend-mode: multiply;
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .12),
+    0 1px 1px oklch(0.2 0.01 60 / .2),
+    0 10px 20px -12px oklch(0.2 0.01 60 / .55);
+}
+.btn--ink:hover {
+  background-color: oklch(0.2 0.004 60);
+  transform: translateY(-1px) rotate(-.4deg);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .14),
+    0 2px 2px oklch(0.2 0.01 60 / .2),
+    0 14px 26px -12px oklch(0.2 0.01 60 / .6);
+}
+
+.btn--primary {
+  min-width: min(100%, 21rem);
+  min-height: 3.9rem;
+  padding: 1.1rem 2.4rem;
+  font-size: 1.3rem;
+}
+.btn--primary svg { transition: transform var(--t-fast) var(--ease-out); }
+.btn--primary:hover svg { transform: rotate(18deg) scale(1.1); }
+.btn[aria-busy="true"] { cursor: progress; }
+
+.btn--quiet {
+  background: transparent;
+  color: var(--charcoal);
+  border-color: var(--charcoal-2);
+  border-radius: var(--sketch);
+}
+.btn--quiet:hover { background: var(--smudge); }
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 2.5rem;
+  padding: .5rem .85rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--sketch);
+  background: oklch(0.995 0.002 95 / .7);
+  font: 400 .86rem/1 var(--font-type);
+  color: var(--charcoal-2);
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast), background-color var(--t-fast);
+}
+.tool:hover { color: var(--charcoal); border-color: var(--line-strong); background: var(--card); }
+.tool[aria-expanded="true"] { color: var(--charcoal); border-color: var(--line-strong); }
+.tool--plain { border-color: transparent; background: none; padding-inline: .4rem; }
+
+/* 8. Sketching (generating) ------------------------------------------------ */
+.generating {
+  display: grid;
+  place-items: center;
+  min-height: min(68vh, 34rem);
+  text-align: center;
+  animation: rise .6s var(--ease-out) both;
+}
+.generating__inner { display: grid; justify-items: center; gap: 1.1rem; }
+.sketch { overflow: visible; color: var(--charcoal-2); }
+.sketch path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sketch 3.6s var(--ease-in-out) infinite;
+}
+.sketch path:nth-child(2) { animation-delay: .35s; }
+.sketch path:nth-child(3) { animation-delay: .7s; }
+.sketch path:nth-child(4) { animation-delay: 1.05s; }
+@keyframes sketch {
+  0%       { stroke-dashoffset: 1; opacity: 1; }
+  45%, 80% { stroke-dashoffset: 0; opacity: 1; }
+  100%     { stroke-dashoffset: 0; opacity: 0; }
+}
+.generating__msg {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.95rem);
+  line-height: 1.3;
+  color: var(--charcoal);
+}
+.generating__sub { margin: 0; max-width: 28rem; font: italic 400 1rem/1.5 var(--font-text); color: var(--graphite); }
+.generating__sub:empty { display: none; }
+.generating__error { display: grid; justify-items: center; gap: 1.25rem; }
+.generating__error p { margin: 0; font: italic 400 1.35rem/1.4 var(--font-text); color: var(--charcoal); }
+.row { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+
+/* 9. The Blueprint: a deckle-edged manuscript page ------------------------ */
+.blueprint { padding-top: clamp(.5rem, 3vh, 1.5rem); }
+@media (min-width: 60rem) { .blueprint { margin-inline: -3.5rem; } }
+
+.bp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .6rem;
+  margin-bottom: 1.5rem;
+  animation: rise .5s var(--ease-out) .35s both;
+}
+.bp-bar__group { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* The shadow follows the hand-torn edge. */
+.sheet-wrap {
+  filter:
+    drop-shadow(0 1px 1px oklch(0.3 0.01 60 / .12))
+    drop-shadow(0 22px 30px oklch(0.3 0.01 60 / .16));
+  animation: manuscript .8s var(--ease-out) both;
+}
+@keyframes manuscript {
+  from { opacity: 0; transform: translateY(20px) rotate(.4deg); }
+  to   { opacity: 1; transform: none; }
+}
+.sheet {
+  position: relative;
+  padding: clamp(2.25rem, 7vw, 5rem) clamp(1.4rem, 7.5vw, 6rem) clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--charcoal);
+  background:
+    linear-gradient(oklch(1 0 0 / .5), oklch(1 0 0 / .5)),
+    var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size),
+    var(--card);
+  clip-path: var(--deckle, none);
+}
+.sheet :focus-visible { outline-color: var(--charcoal); }
+
+.sheet__head { position: relative; margin-bottom: clamp(2.25rem, 5vw, 3.25rem); }
+.sheet__intro { padding-right: clamp(5.5rem, 17vw, 10rem); }
+
+/* Rubber stamp, red ink, slightly uneven */
+.stamp {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  width: clamp(84px, 14vw, 136px);
+  color: var(--red);
+  opacity: .85;
+  transform: rotate(-11deg);
+  mix-blend-mode: multiply;
+  animation: stamp .55s cubic-bezier(.3, 1.4, .5, 1) .7s both;
+}
+.stamp svg { display: block; width: 100%; height: auto; filter: url(#stamp-ink); }
+@keyframes stamp {
+  from { opacity: 0; transform: rotate(-11deg) scale(1.25); }
+  to   { opacity: .85; transform: rotate(-11deg) scale(1); }
+}
+
+.sheet__kicker {
+  margin: 0 0 1rem;
+  font: 400 .8rem/1.3 var(--font-type);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.sheet__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 360;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: clamp(2.35rem, 1.3rem + 3.9vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.underline-sketch {
+  display: block;
+  width: min(100%, 22rem);
+  height: 14px;
+  margin: .55rem 0 0 -.2rem;
+  color: var(--charcoal-2);
+}
+.underline-sketch path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.1s var(--ease-out) .9s forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.sheet__dek {
+  margin: 1.1rem 0 0;
+  max-width: 40rem;
+  font: italic 400 clamp(1.18rem, 1rem + .5vw, 1.38rem)/1.5 var(--font-text);
+  color: var(--charcoal-2);
+  text-wrap: pretty;
+}
+
+/* Kit record: a typed library catalog card */
+.record {
+  position: relative;
+  margin: clamp(1.9rem, 4vw, 2.6rem) 0 0;
+  padding: 1rem 1.25rem 1.1rem;
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  background: oklch(0.995 0.002 95 / .85);
+  box-shadow: 0 1px 1px oklch(0.3 0.01 60 / .06), 0 12px 22px -18px oklch(0.3 0.01 60 / .35);
+  transform: rotate(-.35deg);
+  font-family: var(--font-type);
+}
+.record__title {
+  margin: 0 0 .6rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--margin);
+  font: 700 .78rem/1 var(--font-type);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+.record dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  margin: 0;
+}
+.record dl > div {
+  display: grid;
+  grid-template-columns: 6.25rem 1fr;
+  gap: .75rem;
+  padding: .42rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.record .wide { grid-column: 1 / -1; }
+.record dt { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--graphite); padding-top: .12rem; }
+.record dd { margin: 0; font-size: .92rem; line-height: 1.45; color: var(--charcoal); }
+@media (max-width: 40rem) {
+  .record dl { grid-template-columns: 1fr; }
+  .record dl > div { grid-template-columns: 7rem 1fr; }
+}
+
+.sheet__body { max-width: 40rem; }
+.bp-section + .bp-section { margin-top: clamp(2.4rem, 5vw, 3.4rem); }
+.bp-section .bp-eyebrow {
+  margin: 0 0 .45rem;
+  font: 400 .76rem/1 var(--font-type);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.bp-section h3 {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding-bottom: .35rem;
+  font-family: var(--font-display);
+  font-weight: 420;
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  font-size: clamp(1.5rem, 1.2rem + .9vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.2 C 40 3.4 70 6 110 4.4 S 170 3.2 198 4.6' fill='none' stroke='%23332f2b' stroke-opacity='.55' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E") left bottom / 100% 7px no-repeat;
+}
+.bp-section p {
+  margin: 0 0 1rem;
+  font: 400 1.16rem/1.72 var(--font-text);
+  text-wrap: pretty;
+  hanging-punctuation: first;
+}
+.bp-section p:last-child { margin-bottom: 0; }
+
+.echo { margin: 1.3rem 0 1.4rem; }
+.echo blockquote {
+  margin: 0;
+  padding: .15rem 0 .15rem 1.25rem;
+  border-left: 2px solid oklch(0.26 0.004 60 / .35);
+}
+.echo blockquote p { margin: 0 0 .6rem; font: italic 400 1.2rem/1.6 var(--font-text); color: var(--charcoal); }
+.echo blockquote p:last-child { margin-bottom: 0; }
+.echo figcaption {
+  margin: .35rem 0 0 1.25rem;
+  font: 500 1.2rem/1 var(--font-hand);
+  color: var(--graphite);
+  transform: rotate(-1deg);
+  transform-origin: left;
+}
+/* The Spark itself: a note taped into the manuscript */
+.echo--taped {
+  position: relative;
+  margin: 1.8rem .25rem 1.6rem;
+  padding: 1.6rem 1.5rem 1.15rem;
+  background: oklch(0.995 0.002 95);
+  box-shadow: 0 1px 1px oklch(0.3 0.01 60 / .08), 0 14px 24px -18px oklch(0.3 0.01 60 / .4);
+  transform: rotate(-.7deg);
+}
+.echo--taped::before {
+  content: "";
+  position: absolute;
+  top: -.75rem;
+  left: 50%;
+  width: 6.5rem;
+  height: 1.55rem;
+  translate: -50% 0;
+  rotate: 3deg;
+  background: var(--tape);
+  box-shadow: 0 1px 1px oklch(0.3 0.01 60 / .08);
+  clip-path: polygon(2% 8%, 7% 0, 13% 9%, 19% 2%, 26% 7%, 100% 0, 98% 22%, 100% 46%, 97% 70%, 100% 100%, 92% 92%, 85% 100%, 78% 93%, 0 100%, 3% 74%, 0 50%, 3% 27%);
+}
+.echo--taped blockquote { border-left: 0; padding-left: 0; }
+.echo--taped blockquote p { font-size: 1.3rem; }
+.echo--taped figcaption { margin-left: 0; }
+
+/* Connections: pencilled into a hand-drawn box */
+.bp-section--connections {
+  padding: clamp(1.3rem, 3vw, 1.8rem) clamp(1.1rem, 3vw, 1.8rem);
+  margin-inline: clamp(-1.6rem, -2vw, -.4rem);
+  border: 1.5px solid oklch(0.26 0.004 60 / .55);
+  border-radius: var(--sketch);
+}
+.connection + .connection { margin-top: 1.3rem; padding-top: 1.3rem; border-top: 1px dashed var(--line-2); }
+.connection__title {
+  margin: 0 0 .25rem !important;
+  font: 500 1.4rem/1.1 var(--font-hand) !important;
+  color: var(--red);
+}
+
+.bp-open { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.bp-open li { font: 400 1.1rem/1.6 var(--font-text); color: var(--charcoal-2); }
+.bp-open strong {
+  display: block;
+  margin-bottom: .2rem;
+  font: 700 .76rem/1.3 var(--font-type);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.bp-doors { margin: 0; padding: 0; list-style: none; counter-reset: door; display: grid; gap: 1.05rem; }
+.bp-doors li {
+  counter-increment: door;
+  position: relative;
+  padding-left: 2.9rem;
+  font: 400 1.14rem/1.65 var(--font-text);
+}
+.bp-doors li::before {
+  content: counter(door);
+  position: absolute;
+  left: 0; top: -.05rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1.5px solid var(--charcoal-2);
+  border-radius: 52% 46% 55% 47% / 47% 55% 46% 52%;
+  font: 600 1.35rem/1 var(--font-hand);
+  color: var(--charcoal);
+  rotate: -4deg;
+}
+
+.sheet__foot {
+  margin-top: clamp(2.75rem, 6vw, 4rem);
+  padding-top: 1.75rem;
+  text-align: center;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 8' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 120 2.8 240 5.4 330 4 S 520 3.1 599 4.6' fill='none' stroke='%23332f2b' stroke-opacity='.3' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") top center / 100% 8px no-repeat;
+}
+.sheet__closing {
+  margin: 0 auto;
+  max-width: 30rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: 1.32rem;
+  line-height: 1.45;
+  color: var(--charcoal);
+  text-wrap: balance;
+}
+.sheet__sign { margin: .5rem 0 0; font: 500 1.45rem/1 var(--font-hand); color: var(--charcoal-2); }
+.sheet__note { margin: 1.2rem auto 0; max-width: 32rem; font: 400 .78rem/1.5 var(--font-type); color: var(--graphite); }
+
+.bp-source {
+  margin-top: 1.75rem;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+@starting-style { .bp-source { opacity: 0; transform: translateY(-4px); } }
+.bp-source__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .65rem 1rem;
+  border-bottom: 1px solid var(--line);
+  font: 400 .8rem/1 var(--font-type);
+  color: var(--graphite);
+}
+.bp-source pre {
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 1rem 1.15rem 1.25rem;
+  font: 400 .86rem/1.6 var(--font-type);
+  color: var(--charcoal);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Page footer */
+.foot {
+  width: min(100% - var(--gutter) * 2, 72rem);
+  margin: 0 auto;
+  padding: 1.5rem 0 2.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .5rem 1rem;
+  font: 400 .78rem/1.4 var(--font-type);
+  color: var(--graphite);
+}
+.foot p { margin: 0; }
+.foot em {
+  font-family: var(--font-display);
+  font-weight: 340;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: 1.02rem;
+  color: var(--charcoal-2);
+}
+
+/* 10. Dialogs & toast ------------------------------------------------------ */
+dialog {
+  width: min(100% - 2rem, 34rem);
+  max-height: min(88vh, 46rem);
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  color: var(--charcoal);
+  background:
+    linear-gradient(oklch(1 0 0 / .55), oklch(1 0 0 / .55)),
+    var(--paper-tex) 0 0 / var(--tex-size) var(--tex-size),
+    var(--card);
+  box-shadow: 0 40px 100px -30px oklch(0.2 0.01 60 / .45);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--t-med) var(--ease-out),
+    transform var(--t-med) var(--ease-out),
+    overlay var(--t-med) allow-discrete,
+    display var(--t-med) allow-discrete;
+}
+dialog:not([open]) { opacity: 0; transform: translateY(8px) rotate(.4deg); }
+@starting-style { dialog[open] { opacity: 0; transform: translateY(8px) rotate(.4deg); } }
+dialog::backdrop {
+  background: oklch(0.3 0.006 60 / .28);
+  backdrop-filter: blur(2px);
+  transition: opacity var(--t-med), overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete;
+}
+@starting-style { dialog[open]::backdrop { opacity: 0; } }
+
+.dialog__body { padding: clamp(1.5rem, 4vw, 2.25rem); }
+.dialog__body h2 {
+  margin: 0 0 .75rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-size: 1.85rem;
+  line-height: 1.12;
+  letter-spacing: -.012em;
+}
+.dialog__body h3 {
+  margin: 1.5rem 0 .4rem;
+  font: 400 .76rem/1 var(--font-type);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.dialog__body p { margin: 0 0 .8rem; color: var(--charcoal-2); line-height: 1.6; }
+.dialog__body .lede { font: italic 400 1.18rem/1.5 var(--font-text); color: var(--charcoal); }
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .6rem;
+  padding: 1rem clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--line);
+}
+.dialog__actions .btn { min-height: 2.75rem; padding: .7rem 1.2rem; font-size: 1rem; }
+.dialog__actions .spacer { margin-right: auto; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 10;
+  padding: .7rem 1.15rem;
+  border-radius: var(--cut);
+  background: var(--charcoal);
+  color: var(--card);
+  font: 400 .88rem/1.3 var(--font-type);
+  box-shadow: 0 16px 34px -16px oklch(0.2 0.01 60 / .6);
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+.toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+/* 11. Stage choreography --------------------------------------------------- */
+body[data-stage="discovery"] .spark { padding-top: clamp(.75rem, 3vh, 1.75rem); }
+body[data-stage="discovery"] .spark__eyebrow { display: block; animation: rise .5s var(--ease-out) both; }
+body[data-stage="discovery"] .marginalia { display: none; }
+body[data-stage="discovery"] .question {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.55rem, 1.15rem + 1.4vw, 2.15rem);
+  color: var(--charcoal-2);
+}
+body[data-stage="discovery"] .field--spark .field__input { min-height: 6.5rem; font-size: 1.14rem; --lh: 1.95rem; }
+body[data-stage="discovery"] .spark__actions-wrap {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-med) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out),
+    visibility 0s linear var(--t-med);
+}
+body[data-stage="discovery"] .discovery { margin-top: clamp(2.25rem, 5vh, 3.25rem); }
+
+body[data-stage="generating"] :is(.spark, .discovery) {
+  opacity: 0;
+  transform: translateY(-8px);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.enter { animation: rise .55s var(--ease-out) both; }
+
+@media (hover: none) { .shortcut { display: none; } }
+
+@media (max-width: 34rem) {
+  .wordmark__sub { display: none; }
+  .q__fragment { margin-left: 0; flex-basis: 100%; }
+  .spark__actions .btn { flex: 1 1 auto; }
+  .bp-bar { flex-direction: column; align-items: stretch; }
+  .bp-bar__group { justify-content: space-between; }
+  .bp-bar__group .tool { flex: 1 1 auto; justify-content: center; }
+  .marginalia { font-size: 1.2rem; }
+  .field__input { padding-left: 2.6rem; background-position: -.6rem 0, 0 var(--pad-top); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .sketch path { animation: none; stroke-dashoffset: 0; }
+}
+.no-anim *, .no-anim *::before, .no-anim *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media print {
+  body { background: #fff; }
+  #lamp, .masthead, .foot, .bp-bar, .bp-source, .spark, .discovery, .generating, .toast { display: none !important; }
+  .blueprint { margin: 0; }
+  .sheet-wrap { filter: none; animation: none; }
+  .sheet { clip-path: none; padding: 0; background: #fff; }
+}
+</style>
+
+<!-- Three.js is loaded from a CDN; all application code lives in this file. -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+</script>
+
+<!-- ========================================================================
+     Paper & lamp (Three.js)
+     1. Generates a seamless tile of handmade paper once — cotton cloudiness,
+        fine tooth, stray fibres, the odd fleck — and hands it to CSS, so the
+        texture scrolls with the page like a real sheet.
+     2. A desk lamp: a soft pool of light multiplied over the page that
+        widens as discovery opens, gathers near the card you're writing on,
+        and settles over the finished manuscript. Renders only when it changes.
+     Entirely decorative and optional — the CSS paper fallback remains.
+     ======================================================================== -->
+<script type="module">
+const VERTEX = /* glsl */ `
+  varying vec2 vUv;
+  void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+`;
+
+const HASH = /* glsl */ `
+  float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21) + uSeed);
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+`;
+
+const PAPER = /* glsl */ `
+  uniform float uSeed;
+  varying vec2 vUv;
+  ${HASH}
+  // Periodic value noise: every layer wraps, so the tile is seamless.
+  float pnoise(vec2 p, vec2 period) {
+    vec2 i = floor(p), f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    float a = hash(mod(i, period));
+    float b = hash(mod(i + vec2(1.0, 0.0), period));
+    float c = hash(mod(i + vec2(0.0, 1.0), period));
+    float d = hash(mod(i + vec2(1.0, 1.0), period));
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+  }
+  float pfbm(vec2 uv, float s) {
+    float v = 0.0, a = 0.5;
+    for (int i = 0; i < 5; i++) { v += a * pnoise(uv * s, vec2(s)); s *= 2.0; a *= 0.5; }
+    return v;
+  }
+  void main() {
+    vec2 uv = vUv;
+    float cloud = pfbm(uv, 3.0);                                         // cotton formation
+    float tooth = pnoise(uv * 384.0, vec2(384.0)) * 0.6
+                + pnoise(uv * 192.0, vec2(192.0)) * 0.4;                 // fine surface tooth
+    // Stray cotton fibres: thin, curving ridges running in every direction.
+    vec2 warp = vec2(pnoise(uv * 12.0, vec2(12.0)), pnoise(uv * 12.0 + 5.0, vec2(12.0)));
+    float r1 = 1.0 - abs(2.0 * pnoise(uv * 36.0 + warp * 2.0, vec2(36.0)) - 1.0);
+    float r2 = 1.0 - abs(2.0 * pnoise(uv * 54.0 - warp * 3.0 + 9.0, vec2(54.0)) - 1.0);
+    float fibres = pow(r1, 30.0) * 0.6 + pow(r2, 30.0) * 0.4;
+    float fleck = step(0.99965, hash(mod(floor(uv * 640.0), 640.0) + 7.13)); // the odd inclusion
+
+    float v = 0.992;
+    v -= (cloud - 0.5) * 0.04;
+    v -= (tooth - 0.5) * 0.036;
+    v -= fibres * 0.05;
+    v -= fleck * 0.18;
+    gl_FragColor = vec4(vec3(v) * vec3(1.0, 0.997, 0.99), 1.0);
+  }
+`;
+
+const LAMP = /* glsl */ `
+  uniform vec2  uRes;
+  uniform float uStage;     // 0 spark · 1 discovery · 2 blueprint (eased)
+  uniform vec2  uFocus;
+  uniform float uFocusAmt;
+  uniform float uSeed;
+  varying vec2 vUv;
+  ${HASH}
+  void main() {
+    float aspect = uRes.x / uRes.y;
+    vec2 p = (vUv - 0.5) * vec2(aspect, 1.0);
+    float discover = clamp(uStage, 0.0, 1.0);
+    float reveal   = clamp(uStage - 1.0, 0.0, 1.0);
+
+    // A desk lamp up and to the left; it swings over the manuscript at the end.
+    vec2 lamp = mix(vec2(-0.28 * aspect, 0.62), vec2(0.0, 0.5), reveal);
+    float r = length((p - lamp) * vec2(0.72, 1.0));
+    float light = smoothstep(1.55 + 0.2 * discover + 0.15 * reveal, 0.1, r);
+    float shade = mix(0.945, 1.0, light);
+
+    // Light gathers on the card being written on.
+    vec2 f = (uFocus - 0.5) * vec2(aspect, 1.0);
+    shade = mix(shade, 1.0, exp(-dot(p - f, p - f) * 5.0) * uFocusAmt * 0.7);
+
+    vec3 col = vec3(shade) * mix(vec3(1.0), vec3(1.0, 0.99, 0.975), (1.0 - light) * 0.5);
+    col += (hash(gl_FragCoord.xy) - 0.5) / 255.0;
+    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+  }
+`;
+
+function quad(THREE, fragmentShader, uniforms) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const material = new THREE.ShaderMaterial({ uniforms, vertexShader: VERTEX, fragmentShader, depthTest: false, depthWrite: false });
+  scene.add(new THREE.Mesh(geometry, material));
+  return { scene, camera, dispose() { geometry.dispose(); material.dispose(); } };
+}
+
+/** Render one seamless tile of handmade paper and give it to CSS. */
+function makePaper(THREE) {
+  const cssSize = 512;
+  const px = cssSize * Math.min(2, Math.max(1, Math.round(window.devicePixelRatio || 1)));
+  const canvas = document.createElement('canvas');
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: true }); }
+  catch { return; }
+  renderer.setPixelRatio(1);
+  renderer.setSize(px, px, false);
+  const q = quad(THREE, PAPER, { uSeed: { value: 0.137 } });
+  renderer.render(q.scene, q.camera);
+  canvas.toBlob((blob) => {
+    q.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const root = document.documentElement.style;
+      root.setProperty('--paper-tex', `url("${url}")`);
+      root.setProperty('--tex-size', `${cssSize}px`);
+    };
+    img.src = url;
+  }, 'image/webp', 0.9);
+}
+
+/** The desk lamp overlay. Animates only while light is moving, then rests. */
+function initLamp(THREE) {
+  const canvas = document.getElementById('lamp');
+  if (!canvas) return;
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' }); }
+  catch { return; }
+  renderer.setPixelRatio(1);
+
+  const uniforms = {
+    uRes:      { value: new THREE.Vector2(1, 1) },
+    uStage:    { value: 0 },
+    uFocus:    { value: new THREE.Vector2(0.5, 0.55) },
+    uFocusAmt: { value: 0 },
+    uSeed:     { value: 0.61 },
+  };
+  const q = quad(THREE, LAMP, uniforms);
+
+  const SCALE = 0.35; // the light is soft; low resolution is visually identical
+  function resize() {
+    renderer.setSize(Math.max(1, Math.round(innerWidth * SCALE)), Math.max(1, Math.round(innerHeight * SCALE)), false);
+    uniforms.uRes.value.set(innerWidth, innerHeight);
+  }
+
+  const STAGE = { spark: 0, discovery: 1, generating: 1.35, blueprint: 2 };
+  const target = { stage: STAGE[document.body.dataset.stage] ?? 0, fx: 0.5, fy: 0.55, amt: 0 };
+
+  function readFocus() {
+    const a = document.activeElement;
+    if (a && a.matches?.('textarea, .btn, .mic')) {
+      const r = a.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) {
+        target.fx = (r.left + r.width / 2) / innerWidth;
+        target.fy = 1 - (r.top + Math.min(r.height, 260) / 2) / innerHeight;
+        target.amt = a.matches('textarea') ? 1 : 0.5;
+        return;
+      }
+    }
+    target.amt = 0;
+  }
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  let raf = 0, last = 0, ready = false;
+
+  function draw() {
+    renderer.render(q.scene, q.camera);
+    if (!ready) { ready = true; canvas.classList.add('is-ready'); }
+  }
+  function snap() {
+    readFocus();
+    uniforms.uStage.value = target.stage;
+    uniforms.uFocus.value.set(target.fx, target.fy);
+    uniforms.uFocusAmt.value = target.amt;
+    draw();
+  }
+  function tick(now) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    readFocus();
+    const ease = (k) => 1 - Math.exp(-dt * k);
+    const u = uniforms;
+    u.uStage.value += (target.stage - u.uStage.value) * ease(1.8);
+    u.uFocus.value.x += (target.fx - u.uFocus.value.x) * ease(3);
+    u.uFocus.value.y += (target.fy - u.uFocus.value.y) * ease(3);
+    u.uFocusAmt.value += (target.amt - u.uFocusAmt.value) * ease(2.5);
+    draw();
+    const settled = Math.abs(target.stage - u.uStage.value) < 0.002
+      && Math.abs(target.amt - u.uFocusAmt.value) < 0.004
+      && Math.abs(target.fx - u.uFocus.value.x) < 0.002
+      && Math.abs(target.fy - u.uFocus.value.y) < 0.002;
+    raf = settled || document.hidden ? 0 : requestAnimationFrame(tick);
+  }
+  function request() {
+    if (reduce.matches) { snap(); return; }
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+
+  document.addEventListener('wb:stage', (e) => { target.stage = STAGE[e.detail] ?? 0; request(); });
+  document.addEventListener('focusin', request);
+  document.addEventListener('focusout', request);
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', () => { resize(); request(); }, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) request(); });
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); canvas.classList.remove('is-ready'); });
+
+  resize();
+  snap();
+}
+
+async function initPaperAndLamp() {
+  let THREE;
+  try { THREE = await import('three'); }
+  catch { return; } // CDN unavailable: the CSS paper remains.
+  makePaper(THREE);
+  initLamp(THREE);
+}
+
+initPaperAndLamp();
+</script>
+
+<!-- ========================================================================
+     Application
+     Sections: content · state & utilities · persistence · context ·
+     profile · BLUEPRINT SERVICE (backend seam) · mock service · markdown ·
+     rendering · voice · stage controller · wiring
+     ======================================================================== -->
+<script type="module">
+/* ---------------------------------------------------------------------------
+   Content: the seven questions are curated, not invented during discovery.
+   --------------------------------------------------------------------------- */
+const QUESTIONS = [
+  {
+    key: 'origin', label: 'Origin', question: 'What’s its story?',
+    fragment: 'Where did it begin?', heading: 'Where it begins',
+    explore: [
+      'What was happening the first time this idea appeared to you?',
+      'Who or what existed before it — and what changed?',
+      'If it had a first sentence, what would it be?',
+    ],
+    imagine: 'Imagine finding an old photograph of its very first moment. What’s in the frame?',
+  },
+  {
+    key: 'essence', label: 'Essence', question: 'What makes it matter?',
+    fragment: 'Why does it matter?', heading: 'Why it matters',
+    explore: [
+      'If it disappeared tomorrow, what would be lost?',
+      'Who is it for, even if that’s only you?',
+      'What does it do that nothing else quite does?',
+    ],
+    imagine: 'Describe it to a friend in one breath, without explaining how it works.',
+  },
+  {
+    key: 'belief', label: 'Belief', question: 'What does it hold to be true?',
+    fragment: 'What does it believe?', heading: 'What it holds true',
+    explore: [
+      'What does it assume about people?',
+      'What would it argue with?',
+      'Which truth does it hold that it has never had to say aloud?',
+    ],
+    imagine: 'If it had a motto carved somewhere, what would it say — and who carved it?',
+  },
+  {
+    key: 'perception', label: 'Perception', question: 'What does it notice that others miss?',
+    fragment: 'What might it be missing?', heading: 'What it notices',
+    explore: [
+      'What does it pay attention to first?',
+      'What do others overlook that it can’t ignore?',
+      'Where is its blind spot?',
+    ],
+    imagine: 'Walk into a crowded room as it would. What catches its eye?',
+  },
+  {
+    key: 'friction', label: 'Friction', question: 'What’s holding it back?',
+    fragment: 'What’s standing in the way?', heading: 'What resists it',
+    explore: [
+      'What is it afraid of?',
+      'Where do its wants and needs pull in different directions?',
+      'What has stopped it before?',
+    ],
+    imagine: 'Write the sentence it would never want anyone to read about it.',
+  },
+  {
+    key: 'gravity', label: 'Gravity', question: 'What holds everything together?',
+    fragment: 'What holds it together?', heading: 'What holds it together',
+    explore: [
+      'What keeps returning, no matter where it goes?',
+      'Which relationship matters most?',
+      'What would it come back for?',
+    ],
+    imagine: 'If everything else were stripped away, what single thing would still be standing?',
+  },
+  {
+    key: 'coherence', label: 'Coherence', question: 'What makes it stay itself?',
+    fragment: 'What must remain true?', heading: 'What keeps it itself',
+    explore: [
+      'What could change without it becoming something else?',
+      'What could never change?',
+      'How would you recognize it in a stranger’s hands?',
+    ],
+    imagine: 'Picture it twenty years from now. What do you recognize instantly?',
+  },
+];
+
+/* Context only adapts the gentle examples; the seven questions never change. */
+const CONTEXTS = {
+  character: { noun: 'character', kind: 'Character', pattern: /\b(character|protagonist|heroine|hero|villain|antihero|detective|knight|witch|wizard|sorcer\w*|assassin|orphan|(?:girl|boy|woman|man|person|creature) who)\b/g },
+  world:     { noun: 'world',     kind: 'World',     pattern: /\b(world|universe|realm|planet|kingdom|empire|galaxy|continent|civili[sz]ation|magic system|setting|lore|island)\b/g },
+  story:     { noun: 'story',     kind: 'Story',     pattern: /\b(story|stories|novel|book|series|saga|screenplay|script|comic|graphic novel|game|plot|tale|fiction|fantasy|mystery|romance|thriller)\b/g },
+  venture:   { noun: 'venture',   kind: 'Venture',   pattern: /\b(business|company|startup|brand|shop|store|service|product|agency|nonprofit|customers?|clients?|market|e-?commerce|subscription|revenue)\b/g },
+  concept:   { noun: 'idea',      kind: 'Concept',   pattern: /\b(app|platform|tool|software|technology|ai|course|curriculum|education|lesson|community|podcast|website|framework|guide|method)\b/g },
+  open:      { noun: 'idea',      kind: 'Creative',  pattern: null },
+};
+
+const HINTS = {
+  origin: {
+    character: 'A character might have a history — a place they left, a promise they broke, a night that changed them.',
+    story:     'A story might begin with a question someone couldn’t stop asking.',
+    world:     'A world might carry the memory of how it was made — or how it nearly ended.',
+    venture:   'A business might have a founding necessity — the problem someone got tired of living with.',
+    concept:   'An idea might start as a frustration you noticed again and again.',
+    open:      'A memory, a frustration, an image, or a question you couldn’t let go of.',
+  },
+  essence: {
+    character: 'Maybe it’s what they’d risk everything to protect.',
+    story:     'Maybe it’s the feeling a reader carries away after the last page.',
+    world:     'Maybe it’s the one thing that could only happen here.',
+    venture:   'Maybe it’s the difference it makes on an ordinary Tuesday for one customer.',
+    concept:   'Maybe it’s who would miss it if it never existed.',
+    open:      'Maybe it’s why you keep returning to it.',
+  },
+  belief: {
+    character: 'A character might hold a conviction they learned the hard way.',
+    story:     'A story might quietly argue that people can change — or that they can’t.',
+    world:     'A fictional world might have an inherited belief nobody questions anymore.',
+    venture:   'A business might believe something its industry has forgotten.',
+    concept:   'A concept might rest on an assumption worth saying out loud.',
+    open:      'Something it would defend, even when that’s inconvenient.',
+  },
+  perception: {
+    character: 'What do they see in a room that nobody else does?',
+    story:     'Which small detail would only this story pause to notice?',
+    world:     'What do its people sense that outsiders can’t?',
+    venture:   'What does it understand about its customers that competitors overlook?',
+    concept:   'What pattern does it catch that existing tools miss?',
+    open:      'A detail, a pattern, a person, a feeling others pass by.',
+  },
+  friction: {
+    character: 'A fear, a flaw, an enemy, a secret — or simply bad timing.',
+    story:     'What keeps the ending from arriving too easily?',
+    world:     'Scarcity, a broken treaty, a fading magic, an old wound.',
+    venture:   'Money, time, trust, a competitor — or a doubt you haven’t said aloud.',
+    concept:   'A technology concept might contain an unresolved contradiction.',
+    open:      'It’s fine if the honest answer is “I don’t know yet.”',
+  },
+  gravity: {
+    character: 'A relationship, a vow, a place they keep returning to.',
+    story:     'The theme or question every scene circles back toward.',
+    world:     'A law of nature, a shared myth, a single city at the center.',
+    venture:   'A mission, a community, a standard you won’t compromise.',
+    concept:   'The core principle every feature has to serve.',
+    open:      'The thread that would unravel everything if it were pulled.',
+  },
+  coherence: {
+    character: 'What would make them unrecognizable if it changed?',
+    story:     'What would a sequel have to keep to still feel like this story?',
+    world:     'Which rule can never break without the world becoming somewhere else?',
+    venture:   'What would you refuse to do, even if it paid well?',
+    concept:   'What must stay true as it grows?',
+    open:      'What must remain true, no matter how it evolves?',
+  },
+};
+
+/* ---------------------------------------------------------------------------
+   State & utilities
+   --------------------------------------------------------------------------- */
+const state = {
+  stage: 'spark',      // 'spark' | 'discovery' | 'generating' | 'blueprint'
+  busy: false,
+  blueprint: null,
+  markdown: '',
+};
+
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollBehavior = () => (reducedMotion() ? 'auto' : 'smooth');
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+function announce(message) {
+  const region = $('#announcer');
+  region.textContent = '';
+  requestAnimationFrame(() => { region.textContent = message; });
+}
+
+let toastTimer;
+function toast(message) {
+  const t = $('#toast');
+  t.textContent = message;
+  t.dataset.show = 'true';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.dataset.show = 'false'; }, 2600);
+}
+
+const supportsFieldSizing = CSS.supports('field-sizing', 'content');
+function autosize(textarea) {
+  if (supportsFieldSizing) return;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`; // CSS max-height keeps it sensible
+}
+
+/* ---------------------------------------------------------------------------
+   Elements
+   --------------------------------------------------------------------------- */
+const sparkSection   = $('#spark');
+const sparkInput     = $('#spark-input');
+const sparkNudge     = $('#spark-nudge');
+const letsGoButton   = $('#lets-go');
+const discovery      = $('#discovery');
+const discoveryTitle = $('#discovery-title');
+const questionList   = $('#questions');
+const blueprintBtn   = $('#get-blueprint');
+const generating     = $('#generating');
+const blueprintView  = $('#blueprint');
+
+/* ---------------------------------------------------------------------------
+   Persistence: drafts stay in this browser so an hour of writing is never lost.
+   --------------------------------------------------------------------------- */
+const DRAFT_KEY = 'wbb.draft.v1';
+const Draft = {
+  load() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY)) || null; }
+    catch { return null; }
+  },
+  save: debounce(() => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        spark: sparkInput.value,
+        answers: readAnswers(),
+        opened: state.stage !== 'spark',
+        savedAt: Date.now(),
+      }));
+    } catch { /* storage unavailable — nothing to do */ }
+  }, 400),
+  clear() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+  },
+};
+
+/* ---------------------------------------------------------------------------
+   Context: a light keyword read of the Spark to tailor examples.
+   --------------------------------------------------------------------------- */
+function classifyContext(text) {
+  const t = (text || '').toLowerCase();
+  let best = 'open', bestScore = 0;
+  for (const [key, ctx] of Object.entries(CONTEXTS)) {
+    if (!ctx.pattern) continue;
+    const score = (t.match(ctx.pattern) || []).length;
+    if (score > bestScore) { best = key; bestScore = score; }
+  }
+  return best;
+}
+
+function updateHints(context) {
+  for (const node of $$('[data-hint]')) {
+    const set = HINTS[node.dataset.hint];
+    node.textContent = set[context] || set.open;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Profile: the Spark plus the seven responses — the input to generation.
+   --------------------------------------------------------------------------- */
+function answerField(key) { return $(`#q-${key}-input`); }
+
+function readAnswers() {
+  return Object.fromEntries(QUESTIONS.map((q) => [q.key, answerField(q.key)?.value ?? '']));
+}
+
+function buildProfile() {
+  const answers = readAnswers();
+  const spark = sparkInput.value.trim();
+  return {
+    spark,
+    responses: QUESTIONS.map((q) => ({
+      key: q.key,
+      label: q.label,
+      question: q.question,
+      answer: (answers[q.key] || '').trim(),   // empty string = intentionally left open
+    })),
+    context: classifyContext(spark),           // client-side hint only; a backend may ignore it
+    locale: navigator.language || 'en',
+    createdAt: new Date().toISOString(),
+  };
+}
+
+/* ===========================================================================
+   BLUEPRINT SERVICE — the single seam between the UI and Blueprint generation
+   ===========================================================================
+
+   The UI depends only on this Blueprint view model:
+
+   @typedef {Object} Blueprint
+   @property {Object}   meta
+   @property {string}   meta.title
+   @property {string}   meta.kicker        e.g. "A World Blueprint"
+   @property {string}   meta.kind          e.g. "World"
+   @property {string}   meta.description
+   @property {string}   meta.created       ISO date string
+   @property {string}   meta.version
+   @property {string[]} meta.foundations   labels of answered questions
+   @property {string[]} meta.openQuestions labels of unanswered questions
+   @property {string[]} meta.keywords
+   @property {string}   meta.source
+   @property {Array<{id:string, eyebrow:string, heading:string, mdHeading?:string,
+                      variant?:string, blocks:Block[]}>} sections
+   @property {string}   closing
+   Block = {type:'p', text} | {type:'echo', text} | {type:'connection', title, text}
+         | {type:'open', items:[{label, text}]} | {type:'doors', items:string[]}
+*/
+
+/**
+ * Generate a Blueprint from a creator's Profile.
+ * @param {ReturnType<typeof buildProfile>} profile
+ * @param {{ signal?: AbortSignal }} [options]
+ * @returns {Promise<Blueprint>}
+ */
+async function generateBlueprint(profile, { signal } = {}) {
+  // TODO(backend): Replace the mock call below with a request to the
+  // World Builder Blueprint generation service once it exists.
+  //
+  //   • The endpoint, request/response contract and authentication are NOT
+  //     defined yet. Do not guess them here.
+  //   • Never put API keys or model credentials in this file. AI calls belong
+  //     on the server; the browser should only talk to your own backend.
+  //   • Send `profile` (the Spark + seven responses) as the request payload.
+  //   • If the service returns Markdown or a different shape, convert it into
+  //     the Blueprint view model above in a small adapter function so the UI
+  //     stays unchanged.
+  //   • Pass `signal` through to support cancellation, and throw on failure —
+  //     requestBlueprint() already shows a calm "Try again" state.
+  //
+  //   Sketch:
+  //     const response = await fetch(/* your endpoint */, { method: 'POST', body: JSON.stringify(profile), signal, ... });
+  //     if (!response.ok) throw new Error(`Blueprint service responded ${response.status}`);
+  //     return adaptBlueprint(await response.json());
+  return MockBlueprintService.generate(profile, { signal });
+}
+
+/* ---------------------------------------------------------------------------
+   Mock Blueprint service (Phase One only). Composes a demonstration Blueprint
+   locally from the creator's own words. Delete this block once the backend
+   is connected — nothing else depends on it.
+   --------------------------------------------------------------------------- */
+const MockBlueprintService = (() => {
+  const NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+  const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  const SMALL_WORDS = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'from', 'in', 'into', 'nor', 'of', 'on', 'or', 'the', 'to', 'with']);
+  const TRAILING = new Set([...SMALL_WORDS, 'who', 'that', 'which', 'where', 'when', 'about', 'is', 'are', 'was', 'his', 'her', 'their', 'its', 'my', 'our']);
+  const STOP = new Set(('about above after again against because been before being below between both could does doing during each few further have having here hers herself himself into itself just more most myself only other ought ours ourselves over same should some such than that their theirs them themselves then there these they this those through under until very what when where which while whom with would your yours yourself yourselves really something thing things want create make build write maybe someone everything always never also would like kind still even much many every whatever anything').split(' '));
+
+  const LEADS = {
+    origin:     (n) => `Every ${n} carries the shape of where it started. Yours begins here:`,
+    essence:    () => 'What makes it matter, in your words:',
+    belief:     () => 'Underneath everything, it holds something to be true:',
+    perception: () => 'It notices what others pass by:',
+    friction:   () => 'Something stands in the way:',
+    gravity:    () => 'At the center, holding everything in orbit:',
+    coherence:  () => 'And this is what lets it stay itself:',
+  };
+  const REFLECTIONS = {
+    origin:     (n) => `Origins tend to echo. Watch for the ways this beginning resurfaces — in choices, in tone, in what the ${n} refuses to forget.`,
+    essence:    () => 'This is the part worth protecting as everything else changes. When decisions get complicated, it is the measure.',
+    belief:     (n) => `A belief like this does quiet work. It decides what the ${n} will tolerate, and what it will fight for.`,
+    perception: (n) => `Perception is a signature. It is how people will come to recognize this ${n} before they can explain why.`,
+    friction:   (n) => `Friction isn’t a defect to remove. It is the pressure that gives the ${n} somewhere to go.`,
+    gravity:    () => 'When the parts begin to drift, this is what pulls them back. Anything new should be able to answer to it.',
+    coherence:  (n) => `Coherence is a promise to anyone who meets it later: that it will still be, recognizably, this ${n}.`,
+  };
+  const READINGS = {
+    character: 'A character described in a single breath is usually defined by two things: what they want, and what they can’t have. The rest of this Blueprint looks for both.',
+    story:     'A story in its earliest form is often a situation waiting for pressure. The foundations below show where that pressure might come from.',
+    world:     'A world announced in one sentence is usually held together by one rule. Finding that rule is often the quickest way into everything else.',
+    venture:   'A venture at this stage is less a plan than a promise to someone. The foundations below help name who that someone is, and what is being promised.',
+    concept:   'An idea at this stage is a direction more than a design. The foundations below sketch the principles that should survive any version of it.',
+    open:      'Some ideas arrive before their category does. That isn’t a weakness — it means the shape is still yours to discover. The foundations below begin to trace it.',
+  };
+  const DOORS = {
+    character: ['Write one ordinary morning in their life, before anything goes wrong.', 'Introduce someone who sees them completely differently than they see themselves.', 'Decide what they would never say out loud — then find the scene where they almost do.'],
+    story:     ['Write the first page as if the reader already trusts you.', 'Name the question the ending will answer, even if you don’t know the answer yet.', 'Find the scene you’re most afraid to write, and sketch it first.'],
+    world:     ['Draw a rough map — not of land, but of who holds power and who wants it.', 'Describe one ordinary custom and the old reason behind it.', 'Imagine a traveler arriving for the first time. What do they misunderstand?'],
+    venture:   ['Describe the one person you most want to help, in a single paragraph.', 'Write the promise you’d print on the first thing a customer receives.', 'List what you’d refuse to do, even if it paid well.'],
+    concept:   ['Describe the smallest version that would still be unmistakably this idea.', 'Write down the assumption it depends on most, then test it with one person.', 'Sketch the moment someone first understands why it matters.'],
+    open:      ['Write one page without deciding what form it takes.', 'Explain it to someone who knows nothing about it, and notice what they ask first.', 'Return to an open question below and answer the one that pulls at you.'],
+  };
+
+  function words(s) { return s.trim().split(/\s+/).filter(Boolean); }
+
+  function firstSentence(text) {
+    return (text.trim().split(/(?<=[.!?])\s+/)[0] || '').trim();
+  }
+
+  /** A short excerpt for quoting inside synthesis sentences. */
+  function excerpt(text, max = 14) {
+    let s = firstSentence(text).replace(/[\s.,;:!?]+$/, '');
+    const w = words(s);
+    if (w.length > max) s = `${w.slice(0, max).join(' ').replace(/[,;:—–-]+$/, '')}…`;
+    return s;
+  }
+
+  /** End a quoted excerpt with a period unless it already trails off. */
+  function close(s) { return /[…]$/.test(s) ? s : `${s}.`; }
+
+  function titleCase(s) {
+    return words(s).map((w, i) => {
+      const lower = w.toLowerCase();
+      if (i > 0 && SMALL_WORDS.has(lower)) return lower;
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+
+  function deriveTitle(spark) {
+    const named = spark.match(/\b(?:called|named|titled)\s+["“']?([A-Z][\w’'-]*(?:\s+(?:of\s+|the\s+)?[A-Z][\w’'-]*){0,3})/);
+    if (named) return named[1];
+
+    let s = firstSentence(spark)
+      .replace(/^(?:i\s+(?:want|would like|’d like|'d like|hope|am trying|’m trying|'m trying|need)\s+to\s+(?:create|make|build|write|start|design|develop|launch|imagine|tell|explore)\s+)/i, '')
+      .replace(/^(?:i\s*(?:’m|'m|am)\s+(?:creating|making|building|writing|imagining|designing)\s+)/i, '')
+      .replace(/^(?:(?:to\s+)?(?:create|make|build|write)\s+)/i, '');
+    s = s.split(/[,;:.!?(—–]/)[0];
+    const parts = s.split(/\s(?:and|but|so|because|which)\s/i);
+    if (words(parts[0]).length >= 3) s = parts[0];
+    let w = words(s);
+    if (w.length > 8) w = w.slice(0, 8);
+    while (w.length > 2 && TRAILING.has(w.at(-1).toLowerCase())) w.pop();
+    const title = titleCase(w.join(' ').replace(/["“”]/g, ''));
+    return title || 'An Untitled Beginning';
+  }
+
+  function describe(spark) {
+    const w = words(spark.replace(/\s+/g, ' '));
+    let s = w.length > 34 ? `${w.slice(0, 34).join(' ').replace(/[,;:]+$/, '')}…` : w.join(' ');
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    return /[.!?…]$/.test(s) ? s : `${s}.`;
+  }
+
+  function keywords(text, n = 6) {
+    const counts = new Map();
+    for (const raw of text.toLowerCase().match(/[a-z’'-]{5,}/g) || []) {
+      const w = raw.replace(/[’']s$/, '');
+      if (STOP.has(w) || /[’']/.test(w)) continue;
+      counts.set(w, (counts.get(w) || 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([w]) => w);
+  }
+
+  function compose(profile) {
+    const ctxKey = profile.context in CONTEXTS ? profile.context : 'open';
+    const ctx = CONTEXTS[ctxKey];
+    const noun = ctx.noun;
+    const answered = profile.responses.filter((r) => r.answer);
+    const open = profile.responses.filter((r) => !r.answer);
+    const a = Object.fromEntries(profile.responses.map((r) => [r.key, r.answer]));
+    const sections = [];
+    let n = 0;
+    const eyebrow = (label) => `${ROMAN[n++]} · ${label}`;
+
+    // The Spark
+    const count = answered.length;
+    const summary =
+      count === 7 ? 'You explored all seven foundations. What follows gathers them into a single shape.'
+      : count === 0 ? 'You chose to begin with the spark alone. That is enough. What follows reflects it back, and treats the seven foundations as open doors rather than empty boxes.'
+      : `You explored ${NUMBERS[count]} of the seven foundations and left ${NUMBERS[7 - count]} open. What follows gathers what you said into a single shape — and keeps the open questions open, because that is usually where the next discoveries are.`;
+    sections.push({
+      id: 'spark', eyebrow: eyebrow('The Spark'), heading: 'It began with a few words',
+      blocks: [
+        { type: 'p', text: 'Everything in this Blueprint grows from what you wrote first.' },
+        { type: 'echo', text: profile.spark, taped: true },
+        { type: 'p', text: READINGS[ctxKey] },
+        { type: 'p', text: summary },
+      ],
+    });
+
+    // Each answered foundation
+    for (const q of QUESTIONS) {
+      if (!a[q.key]) continue;
+      sections.push({
+        id: q.key, eyebrow: eyebrow(q.label), heading: q.heading,
+        mdHeading: `${q.label} — ${q.heading}`,
+        blocks: [
+          { type: 'p', text: LEADS[q.key](noun) },
+          { type: 'echo', text: a[q.key] },
+          { type: 'p', text: REFLECTIONS[q.key](noun) },
+        ],
+      });
+    }
+
+    // Connections: the relationships between answers
+    const connections = [];
+    const tensionSource = a.belief ? ['belief', 'what it believes'] : a.essence ? ['essence', 'what makes it matter'] : null;
+    if (a.friction && tensionSource) {
+      connections.push({
+        type: 'connection', title: 'The central tension',
+        text: `Set ${tensionSource[1]} — “${excerpt(a[tensionSource[0]])}” — beside what holds it back — “${close(excerpt(a.friction))}” The gap between them is not a flaw in the ${noun}. It is likely where its most compelling choices live.`,
+      });
+    }
+    if (a.origin && a.gravity) {
+      connections.push({
+        type: 'connection', title: 'Beginning and center',
+        text: `Where it began — “${excerpt(a.origin)}” — and what holds it together — “${excerpt(a.gravity)}” — may be closer than they look. Many ideas orbit their origin without ever naming it.`,
+      });
+    }
+    if (a.perception && a.essence) {
+      connections.push({
+        type: 'connection', title: 'Seeing and mattering',
+        text: `What it notices — “${excerpt(a.perception)}” — may be the clearest route to why it matters — “${close(excerpt(a.essence))}” The way it sees is part of what it gives.`,
+      });
+    }
+    if (a.coherence && a.friction) {
+      connections.push({
+        type: 'connection', title: 'The test ahead',
+        text: `What keeps it itself — “${excerpt(a.coherence)}” — will be tested by what holds it back — “${close(excerpt(a.friction))}” That test is a natural spine for whatever you build next.`,
+      });
+    }
+    if (!connections.length && count > 0) {
+      connections.push({
+        type: 'p',
+        text: `The connections between foundations usually appear once two or three of them sit side by side. Friction, in particular, tends to reveal what the rest of the ${noun} is for. When you’re ready, return to it.`,
+      });
+    }
+    if (connections.length) {
+      sections.push({
+        id: 'connections', eyebrow: eyebrow('Connections'), heading: 'What your answers reveal together',
+        variant: 'connections', blocks: connections.slice(0, 3),
+      });
+    }
+
+    // Left open, for now
+    if (open.length) {
+      const byKey = Object.fromEntries(QUESTIONS.map((q) => [q.key, q]));
+      sections.push({
+        id: 'open', eyebrow: eyebrow('Still open'), heading: 'Left open, for now',
+        blocks: [
+          { type: 'p', text: 'Meaningful incompleteness is part of the process. These foundations are waiting, not missing.' },
+          { type: 'open', items: open.map((r) => ({ label: `${r.label} · ${r.question}`, text: byKey[r.key].imagine })) },
+        ],
+      });
+    }
+
+    // Doors forward
+    const generic = DOORS[ctxKey];
+    const doors = [
+      a.friction ? `Put it under pressure. Find the moment where “${excerpt(a.friction, 12)}” can no longer be avoided — and write that moment first.` : generic[0],
+      a.origin ? `Return to the beginning. Tell the smallest true moment inside “${excerpt(a.origin, 12)}” in a single page.` : generic[1],
+      (a.coherence || a.gravity) ? `Test its shape. Imagine it changed by time or success, and check whether “${excerpt(a.coherence || a.gravity, 12)}” still holds.` : generic[2],
+    ];
+    sections.push({
+      id: 'doors', eyebrow: eyebrow('Forward'), heading: 'Three doors forward',
+      blocks: [{ type: 'doors', items: doors }],
+    });
+
+    const allText = [profile.spark, ...answered.map((r) => r.answer)].join(' ');
+    return {
+      meta: {
+        title: deriveTitle(profile.spark),
+        kicker: `A ${ctx.kind} Blueprint`,
+        kind: ctx.kind,
+        description: describe(profile.spark),
+        created: new Date().toISOString().slice(0, 10),
+        version: '0.1',
+        foundations: answered.map((r) => r.label),
+        openQuestions: open.map((r) => r.label),
+        keywords: keywords(allText),
+        source: 'Demonstration — composed in your browser',
+      },
+      sections,
+      closing: 'This Blueprint is a beginning, not a verdict. Everything in it came from what you imagined.',
+    };
+  }
+
+  return {
+    async generate(profile, { signal } = {}) {
+      await new Promise((resolve, reject) => {
+        const t = setTimeout(resolve, 1500 + Math.random() * 900); // simulate a service round-trip
+        signal?.addEventListener('abort', () => { clearTimeout(t); reject(signal.reason); }, { once: true });
+      });
+      return compose(profile);
+    },
+  };
+})();
+
+/* ---------------------------------------------------------------------------
+   Markdown export (YAML front matter + narrative body)
+   --------------------------------------------------------------------------- */
+function blueprintToMarkdown(bp) {
+  const q = (v) => JSON.stringify(String(v));              // JSON strings are valid YAML scalars
+  const list = (arr) => (arr.length ? `[${arr.map(q).join(', ')}]` : '[]');
+  const quote = (text) => text.trim().split('\n').map((line) => `> ${line}`.trimEnd()).join('\n');
+  const m = bp.meta;
+
+  const out = [
+    '---',
+    `title: ${q(m.title)}`,
+    `kind: ${q(m.kind)}`,
+    `description: ${q(m.description)}`,
+    `created: ${q(m.created)}`,
+    `version: ${q(m.version)}`,
+    `foundations: ${list(m.foundations)}`,
+    `open_questions: ${list(m.openQuestions)}`,
+    `keywords: ${list(m.keywords)}`,
+    `source: ${q(m.source)}`,
+    'site: "worldbuilderblueprint.com"',
+    '---',
+    '',
+    `# ${m.title}`,
+    '',
+    m.description,
+    '',
+  ];
+
+  for (const s of bp.sections) {
+    out.push(`## ${s.mdHeading || s.heading}`, '');
+    for (const b of s.blocks) {
+      if (b.type === 'p') out.push(b.text, '');
+      else if (b.type === 'echo') out.push(quote(b.text), '');
+      else if (b.type === 'connection') out.push(`**${b.title}.** ${b.text}`, '');
+      else if (b.type === 'open') { b.items.forEach((i) => out.push(`- **${i.label}** — ${i.text}`)); out.push(''); }
+      else if (b.type === 'doors') { b.items.forEach((d, i) => out.push(`${i + 1}. ${d}`)); out.push(''); }
+    }
+  }
+  out.push('---', '', `*${bp.closing}*`, '');
+  return out.join('\n');
+}
+
+function slugify(s) {
+  return s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'blueprint';
+}
+
+/* ---------------------------------------------------------------------------
+   Rendering
+   --------------------------------------------------------------------------- */
+const MIC_ICON = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>`;
+
+function voiceTools(forId, label) {
+  return `
+    <div class="field__tools">
+      <span class="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <button type="button" class="mic" data-voice-for="${forId}" aria-label="${label}" aria-pressed="false" title="Speak instead of typing">
+        ${MIC_ICON}<span class="mic__rec" aria-hidden="true"></span>
+      </button>
+    </div>`;
+}
+
+const TILTS = [-0.6, 0.45, -0.3, 0.55, -0.5, 0.35, -0.4]; // a loose pile of cards
+
+function renderQuestions() {
+  questionList.innerHTML = QUESTIONS.map((q, i) => {
+    const id = `q-${q.key}`;
+    return `
+      <li class="q" data-key="${q.key}" style="--i:${i}; --tilt:${TILTS[i]}deg">
+        <div class="q__head">
+          <span class="q__num" aria-hidden="true">No.${String(i + 1).padStart(2, '0')}</span>
+          <p class="q__label" id="${id}-label">${q.label}</p>
+          <p class="q__fragment">${q.fragment}</p>
+          <span class="q__mark" aria-hidden="true">
+            <svg width="26" height="22" viewBox="0 0 26 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M2.5 12.5c2.2 1.6 4.3 3.8 6 6.6C12.6 11.4 17.8 5.7 23.6 2.4"/></svg>
+            noted
+          </span>
+        </div>
+        <div class="q__body" inert>
+          <div class="q__inner">
+            <h3 class="q__question" id="${id}-title"><label for="${id}-input">${q.question}</label></h3>
+            <div class="field field--q">
+              <textarea id="${id}-input" class="field__input" data-key="${q.key}" rows="3"
+                aria-labelledby="${id}-label ${id}-title" aria-describedby="${id}-hint ${id}-voice"></textarea>
+              ${voiceTools(`${id}-input`, `Speak your answer to ${q.label}`)}
+            </div>
+            <p class="voice-note" id="${id}-voice" aria-live="polite"></p>
+            <p class="q__hint" id="${id}-hint"><span class="q__hint-label">e.g.</span><span class="q__hint-text" data-hint="${q.key}"></span></p>
+            <button type="button" class="explore-toggle" aria-expanded="false" aria-controls="${id}-explore">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+              Explore this question
+            </button>
+            <div class="explore" id="${id}-explore" hidden>
+              <p class="explore__title">Discovery prompts</p>
+              <ul class="explore__list">${q.explore.map((p) => `<li>${p}</li>`).join('')}</ul>
+              <p class="explore__spark"><span>an imagination spark —</span>${q.imagine}</p>
+            </div>
+          </div>
+        </div>
+      </li>`;
+  }).join('');
+  updateHints('open');
+}
+
+/* The kit's rubber stamp. Inked with the #stamp-ink filter for an uneven impression. */
+const STAMP_SVG = `
+  <svg viewBox="0 0 140 140">
+    <defs><path id="stamp-arc" d="M70,70 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0"/></defs>
+    <circle cx="70" cy="70" r="64" fill="none" stroke="currentColor" stroke-width="3"/>
+    <circle cx="70" cy="70" r="59" fill="none" stroke="currentColor" stroke-width="1"/>
+    <circle cx="70" cy="70" r="38" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text font-family="Courier Prime, Courier New, monospace" font-size="9.5" font-weight="700" fill="currentColor">
+      <textPath href="#stamp-arc" textLength="310" lengthAdjust="spacing">WORLD BUILDER BLUEPRINT • AUTHORING KIT •</textPath>
+    </text>
+    <text x="70" y="62" text-anchor="middle" font-family="Courier Prime, Courier New, monospace" font-size="8.5" font-weight="700" letter-spacing="1.5" fill="currentColor">KIT No.</text>
+    <text x="70" y="86" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="600" fill="currentColor">01</text>
+  </svg>`;
+
+const UNDERLINE_SVG = `<svg class="underline-sketch" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 9.5C60 6.2 118 8.8 170 7.4 214 6.2 258 4.8 297 6.4"/><path pathLength="1" d="M42 12.2c50-2.4 108-2 156-3.1" opacity=".45"/></svg>`;
+
+/** A hand-torn (deckle) edge: a polygon with a little irregularity on every side. */
+function deckle() {
+  const jitter = () => (Math.random() * 2.2 + (Math.random() < 0.12 ? 1.3 : 0)).toFixed(2);
+  const pct = (i, n) => `${((i / n) * 100).toFixed(2)}%`;
+  const H = 56, V = 110, pts = [];
+  for (let i = 0; i <= H; i++) pts.push(`${pct(i, H)} ${jitter()}px`);
+  for (let i = 1; i <= V; i++) pts.push(`calc(100% - ${jitter()}px) ${pct(i, V)}`);
+  for (let i = H - 1; i >= 0; i--) pts.push(`${pct(i, H)} calc(100% - ${jitter()}px)`);
+  for (let i = V - 1; i >= 1; i--) pts.push(`${jitter()}px ${pct(i, V)}`);
+  return `polygon(${pts.join(', ')})`;
+}
+
+function fromMarkup(markup) {
+  const t = document.createElement('template');
+  t.innerHTML = markup.trim();
+  return t.content.firstElementChild;
+}
+
+function renderBlueprint(bp) {
+  const sheet = $('#bp-sheet');
+  sheet.replaceChildren();
+  sheet.style.setProperty('--deckle', deckle());
+
+  // Head: stamp, title with a pencilled underline, description, kit record.
+  const head = el('header', 'sheet__head');
+  const stamp = el('span', 'stamp');
+  stamp.setAttribute('aria-hidden', 'true');
+  stamp.innerHTML = STAMP_SVG; // static markup, no user content
+
+  const intro = el('div', 'sheet__intro');
+  const title = el('h2', 'sheet__title charcoal', bp.meta.title);
+  title.id = 'bp-title';
+  title.tabIndex = -1;
+  intro.append(
+    el('p', 'sheet__kicker', `${bp.meta.kicker} · Authoring Kit`),
+    title,
+    fromMarkup(UNDERLINE_SVG),
+    el('p', 'sheet__dek', bp.meta.description),
+  );
+
+  const drawn = new Intl.DateTimeFormat(undefined, { dateStyle: 'long' })
+    .format(new Date(`${bp.meta.created}T12:00:00`));
+  const rows = [
+    ['Kind', bp.meta.kind],
+    ['Drawn', drawn],
+    ['Revision', `${bp.meta.version} · first draft`],
+    ['Cards', `${bp.meta.foundations.length} of 7 answered`],
+    ['Foundations', bp.meta.foundations.length ? bp.meta.foundations.join(', ') : 'Spark only', 'wide'],
+    ['Left open', bp.meta.openQuestions.length ? bp.meta.openQuestions.join(', ') : 'None', 'wide'],
+  ];
+  if (bp.meta.keywords.length) rows.push(['Keywords', bp.meta.keywords.join(' · '), 'wide']);
+  const record = el('div', 'record');
+  const dl = el('dl');
+  for (const [k, v, wide] of rows) {
+    const row = el('div', wide || null);
+    row.append(el('dt', null, k), el('dd', null, v));
+    dl.append(row);
+  }
+  record.append(el('p', 'record__title', 'Kit record'), dl);
+  head.append(stamp, intro, record);
+
+  // Body
+  const body = el('div', 'sheet__body');
+  for (const s of bp.sections) {
+    const section = el('section', `bp-section${s.variant ? ` bp-section--${s.variant}` : ''}`);
+    const h = el('h3', null, s.heading);
+    h.id = `bp-${s.id}`;
+    section.setAttribute('aria-labelledby', h.id);
+    section.append(el('p', 'bp-eyebrow', s.eyebrow), h);
+    for (const b of s.blocks) section.append(renderBlock(b));
+    body.append(section);
+  }
+
+  // Foot
+  const foot = el('footer', 'sheet__foot');
+  foot.append(
+    el('p', 'sheet__closing', bp.closing),
+    el('p', 'sheet__sign', '— drawn from your own words'),
+    el('p', 'sheet__note', 'Demonstration Blueprint, composed in your browser from your own answers. Full AI synthesis arrives when the Blueprint service is connected.'),
+  );
+
+  sheet.append(head, body, foot);
+  $('#bp-source-code').textContent = state.markdown;
+}
+
+function renderBlock(b) {
+  switch (b.type) {
+    case 'echo': {
+      const fig = el('figure', b.taped ? 'echo echo--taped' : 'echo');
+      const quote = el('blockquote');
+      for (const para of b.text.split(/\n+/).filter((s) => s.trim())) quote.append(el('p', null, para.trim()));
+      fig.append(quote, el('figcaption', null, 'In your words'));
+      return fig;
+    }
+    case 'connection': {
+      const div = el('div', 'connection');
+      div.append(el('p', 'connection__title', b.title), el('p', null, b.text));
+      return div;
+    }
+    case 'open': {
+      const ul = el('ul', 'bp-open');
+      for (const item of b.items) {
+        const li = el('li');
+        li.append(el('strong', null, item.label), document.createTextNode(item.text));
+        ul.append(li);
+      }
+      return ul;
+    }
+    case 'doors': {
+      const ol = el('ol', 'bp-doors');
+      for (const d of b.items) ol.append(el('li', null, d));
+      return ol;
+    }
+    default:
+      return el('p', null, b.text);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Voice input: Web Speech API, one field at a time.
+   Speaking and typing are two ways of answering the same question.
+   --------------------------------------------------------------------------- */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const Voice = {
+  rec: null, button: null, field: null, wrap: null, note: null,
+  base: '', finals: '', detached: false, error: '', consented: false,
+  stream: null, audioCtx: null, meterRaf: 0,
+
+  get active() { return Boolean(this.rec); },
+
+  setNote(note, text, tone = '') {
+    if (!note) return;
+    note.textContent = text;
+    note.dataset.tone = tone;
+  },
+
+  setButton(btn, s) {
+    btn.dataset.state = s;
+    btn.setAttribute('aria-pressed', String(s === 'listening'));
+    const wrap = btn.closest('.field');
+    if (s === 'listening') wrap.dataset.voice = 'listening';
+    else delete wrap.dataset.voice;
+  },
+
+  async toggle(btn) {
+    if (this.active && this.button === btn) { this.stop(); return; }
+    await this.start(btn);
+  },
+
+  async start(btn) {
+    const field = document.getElementById(btn.dataset.voiceFor);
+    const note = document.getElementById(field.getAttribute('aria-describedby').split(' ').find((id) => id.endsWith('-voice')));
+
+    if (!SpeechRecognition) {
+      this.setButton(btn, 'unavailable');
+      this.setNote(note, 'Voice input isn’t available in this browser. Typing works just the same — Chrome, Edge, and Safari support speaking.');
+      return;
+    }
+    if (!window.isSecureContext) {
+      this.setNote(note, 'Voice input needs a secure (https) connection. You can keep typing in the meantime.');
+      return;
+    }
+    if (!this.consented) {
+      this.consented = await askVoiceConsent();
+      if (!this.consented) { btn.focus(); return; }
+    }
+
+    this.stop();
+    Object.assign(this, {
+      button: btn, field, note, wrap: btn.closest('.field'),
+      base: field.value && !/\s$/.test(field.value) ? `${field.value} ` : field.value,
+      finals: '', detached: false, error: '',
+    });
+
+    const rec = new SpeechRecognition();
+    rec.lang = navigator.language || 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+
+    rec.onstart = () => {
+      this.setButton(btn, 'listening');
+      btn.setAttribute('aria-label', 'Stop listening');
+      this.setNote(note, 'Listening. Speak naturally — select the microphone again or press Esc to stop.', 'live');
+      announce('Microphone on.');
+      this.startMeter();
+    };
+    rec.onresult = (event) => {
+      if (this.detached) return;
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const r = event.results[i];
+        if (r.isFinal) this.finals += `${r[0].transcript.trim()} `;
+        else interim += r[0].transcript;
+      }
+      field.value = this.base + this.finals + interim;
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    rec.onerror = (event) => {
+      this.error = ({
+        'not-allowed': 'Microphone access is blocked. You can allow it in your browser’s site settings — or keep typing.',
+        'service-not-allowed': 'Speech recognition isn’t permitted here. Typing works just the same.',
+        'no-speech': 'I didn’t catch anything. Try again whenever you’re ready.',
+        'audio-capture': 'No microphone was found. Check that one is connected, or keep typing.',
+        network: 'Speech recognition needs a network connection right now. Everything you’ve typed is safe.',
+        'language-not-supported': 'Speech recognition doesn’t support your browser language yet. Typing works just the same.',
+        aborted: '',
+      })[event.error] ?? 'Voice input stopped unexpectedly. You can try again or keep typing.';
+    };
+    rec.onend = () => {
+      if (!this.detached) {
+        field.value = (this.base + this.finals).replace(/\s+$/, '');
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      const heard = Boolean(this.finals.trim());
+      this.cleanup();
+      this.setNote(note, this.error || (heard ? 'Microphone off. Your words are in the field — edit them freely.' : 'Microphone off.'));
+      if (!this.error) announce('Microphone off.');
+    };
+
+    this.rec = rec;
+    this.setButton(btn, 'requesting');
+    this.setNote(note, 'Waiting for microphone permission…');
+    try { rec.start(); }
+    catch { this.cleanup(); this.setNote(note, 'Voice input couldn’t start. You can try again or keep typing.'); }
+  },
+
+  /** Typing while listening hands control back to the keyboard. */
+  detach(field) {
+    if (this.active && this.field === field) { this.detached = true; this.stop(); }
+  },
+
+  stop() {
+    if (!this.rec) return;
+    try { this.rec.stop(); } catch { this.cleanup(); }
+  },
+
+  async startMeter() {
+    const wrap = this.wrap;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    if (coarse || reducedMotion() || !navigator.mediaDevices?.getUserMedia) {
+      wrap.dataset.meter = 'ambient';
+      return;
+    }
+    try {
+      // Permission was already granted for recognition, so this doesn't prompt again.
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      if (!this.active) { this.stream.getTracks().forEach((t) => t.stop()); this.stream = null; return; }
+      this.audioCtx = new AudioContext();
+      const analyser = this.audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      this.audioCtx.createMediaStreamSource(this.stream).connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      let level = 0;
+      const tick = () => {
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (const v of data) { const x = (v - 128) / 128; sum += x * x; }
+        const rms = Math.sqrt(sum / data.length);
+        level += (Math.min(1, rms * 5) - level) * 0.35;
+        wrap.style.setProperty('--level', level.toFixed(3));
+        this.meterRaf = requestAnimationFrame(tick);
+      };
+      tick();
+    } catch {
+      wrap.dataset.meter = 'ambient';
+    }
+  },
+
+  cleanup() {
+    cancelAnimationFrame(this.meterRaf);
+    this.stream?.getTracks().forEach((t) => t.stop());
+    this.audioCtx?.close().catch(() => {});
+    if (this.wrap) { this.wrap.style.removeProperty('--level'); delete this.wrap.dataset.meter; }
+    if (this.button) {
+      this.setButton(this.button, 'idle');
+      this.button.setAttribute('aria-label', this.button.dataset.label);
+    }
+    Object.assign(this, { rec: null, stream: null, audioCtx: null, meterRaf: 0 });
+  },
+};
+
+function askVoiceConsent() {
+  const dialog = $('#voice-consent');
+  return new Promise((resolve) => {
+    dialog.returnValue = '';
+    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'allow'), { once: true });
+    dialog.showModal();
+  });
+}
+
+/* ---------------------------------------------------------------------------
+   Stage controller
+   --------------------------------------------------------------------------- */
+function setStage(stage) {
+  state.stage = stage;
+  document.body.dataset.stage = stage;
+  document.dispatchEvent(new CustomEvent('wb:stage', { detail: stage }));
+}
+
+function nudge(message) { sparkNudge.textContent = message; }
+
+function openDiscovery({ animate = true } = {}) {
+  updateHints(classifyContext(sparkInput.value));
+  discovery.dataset.state = 'active';
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = false; });
+  setStage('discovery');
+  Draft.save();
+
+  if (!animate) return;
+  announce('Seven questions are open. Every one is optional.');
+  discoveryTitle.focus({ preventScroll: true });
+  // Let the Spark settle first, then bring the questions into view if needed.
+  wait(reducedMotion() ? 0 : 420).then(() => {
+    const top = $('.discovery__head').getBoundingClientRect().top;
+    if (top < 0 || top > innerHeight * 0.55) {
+      $('.discovery__head').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+    }
+  });
+}
+
+function closeDiscovery() {
+  discovery.dataset.state = 'deferred';
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = true; });
+}
+
+let generationController = null;
+
+async function requestBlueprint() {
+  if (state.busy) return;
+  if (!sparkInput.value.trim()) {
+    nudge('Your Blueprint grows from your spark. Add a few words about what you want to create.');
+    sparkInput.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+    sparkInput.focus({ preventScroll: true });
+    return;
+  }
+
+  Voice.stop();
+  state.busy = true;
+  blueprintBtn.setAttribute('aria-busy', 'true');
+  const profile = buildProfile();
+
+  // The page grows quiet; the form recedes rather than vanishing.
+  setStage('generating');
+  await wait(reducedMotion() ? 0 : 450);
+  sparkSection.hidden = true;
+  discovery.hidden = true;
+  $('#gen-error').hidden = true;
+  $('.generating__inner').hidden = false;
+  $('#gen-msg').textContent = 'Bringing your ideas together.';
+  $('#gen-sub').textContent = '';
+  generating.hidden = false;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  const slow = setTimeout(() => {
+    $('#gen-sub').textContent = 'Still working. Longer answers take a little more time to bring together.';
+  }, 7000);
+  const started = performance.now();
+  generationController = new AbortController();
+
+  try {
+    const blueprint = await generateBlueprint(profile, { signal: generationController.signal });
+    const elapsed = performance.now() - started;
+    if (elapsed < 900) await wait(900 - elapsed); // never flash the waiting state
+
+    state.blueprint = blueprint;
+    state.markdown = blueprintToMarkdown(blueprint);
+    renderBlueprint(blueprint);
+    generating.hidden = true;
+    closeSource();
+    blueprintView.hidden = false;
+    setStage('blueprint');
+    $('#bp-title').focus({ preventScroll: true });
+    announce(`Your Blueprint is ready: ${blueprint.meta.title}.`);
+  } catch (error) {
+    if (error?.name !== 'AbortError') console.error('[blueprint] generation failed', error);
+    $('.generating__inner').hidden = true;
+    $('#gen-error').hidden = false;
+    $('#gen-retry').focus();
+  } finally {
+    clearTimeout(slow);
+    generationController = null;
+    state.busy = false;
+    blueprintBtn.removeAttribute('aria-busy');
+  }
+}
+
+function showForm({ focusTarget = discoveryTitle } = {}) {
+  generationController?.abort();
+  generating.hidden = true;
+  blueprintView.hidden = true;
+  closeSource();
+  sparkSection.hidden = false;
+  discovery.hidden = false;
+  for (const node of [sparkSection, discovery]) {
+    node.classList.add('enter');
+    node.addEventListener('animationend', () => node.classList.remove('enter'), { once: true });
+  }
+  setStage('discovery');
+  requestAnimationFrame(() => {
+    $('.discovery__head').scrollIntoView({ behavior: 'auto', block: 'start' });
+    focusTarget.focus({ preventScroll: true });
+  });
+}
+
+function resetAll() {
+  Voice.stop();
+  Draft.clear();
+  sparkInput.value = '';
+  autosize(sparkInput);
+  for (const t of $$('textarea[data-key]')) { t.value = ''; autosize(t); t.closest('.q').classList.remove('is-answered'); }
+  for (const btn of $$('.explore-toggle')) setExplore(btn, false);
+  $$('.voice-note').forEach((n) => { n.textContent = ''; });
+  nudge('');
+  state.blueprint = null;
+  state.markdown = '';
+  generating.hidden = true;
+  blueprintView.hidden = true;
+  sparkSection.hidden = false;
+  discovery.hidden = false;
+  closeDiscovery();
+  setStage('spark');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+/* ---------------------------------------------------------------------------
+   Blueprint actions
+   --------------------------------------------------------------------------- */
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch {
+    const ta = Object.assign(document.createElement('textarea'), { value: text });
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch { /* ignore */ }
+    ta.remove();
+    return ok;
+  }
+}
+
+function downloadMarkdown() {
+  if (!state.blueprint) return;
+  const blob = new Blob([state.markdown], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement('a'), { href: url, download: `${slugify(state.blueprint.meta.title)}.md` });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('Blueprint downloaded as Markdown.');
+}
+
+function closeSource() {
+  $('#bp-source').hidden = true;
+  $('#bp-source-toggle').setAttribute('aria-expanded', 'false');
+}
+
+function toggleSource() {
+  const panel = $('#bp-source');
+  const open = panel.hidden;
+  panel.hidden = !open;
+  $('#bp-source-toggle').setAttribute('aria-expanded', String(open));
+  if (open) panel.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' });
+}
+
+function setExplore(btn, open) {
+  btn.setAttribute('aria-expanded', String(open));
+  document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+}
+
+/* ---------------------------------------------------------------------------
+   Wiring
+   --------------------------------------------------------------------------- */
+function init() {
+  renderQuestions();
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = true; });
+  for (const btn of $$('.mic')) btn.dataset.label = btn.getAttribute('aria-label');
+  if (!SpeechRecognition) $$('.mic').forEach((b) => { b.dataset.state = 'unavailable'; b.title = 'Voice input isn’t available in this browser'; });
+
+  const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');
+  $$('[data-shortcut]').forEach((n) => { n.textContent = isMac ? '⌘ Enter' : 'Ctrl Enter'; });
+
+  // Inputs: autosize, capture state, save drafts.
+  const refreshHints = debounce(() => {
+    if (state.stage !== 'spark') updateHints(classifyContext(sparkInput.value));
+  }, 500);
+
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLTextAreaElement)) return;
+    autosize(t);
+    if (t === sparkInput) {
+      if (t.value.trim()) nudge('');
+      refreshHints();
+    } else if (t.dataset.key) {
+      t.closest('.q').classList.toggle('is-answered', t.value.trim().length > 0);
+    }
+    Draft.save();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (e.key === 'Escape' && Voice.active) { Voice.stop(); return; }
+    if (!(t instanceof HTMLTextAreaElement)) return;
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (state.stage === 'spark') letsGoButton.click();
+      else requestBlueprint();
+      return;
+    }
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete')) {
+      Voice.detach(t);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const mic = e.target.closest('.mic');
+    if (mic) { Voice.toggle(mic); return; }
+    const explore = e.target.closest('.explore-toggle');
+    if (explore) setExplore(explore, explore.getAttribute('aria-expanded') !== 'true');
+  });
+
+  letsGoButton.addEventListener('click', () => {
+    if (!sparkInput.value.trim()) {
+      nudge('Start with a few words — anything at all. It doesn’t need to be finished.');
+      sparkInput.focus();
+      return;
+    }
+    nudge('');
+    Voice.stop();
+    openDiscovery({ animate: true });
+  });
+
+  blueprintBtn.addEventListener('click', requestBlueprint);
+  $('#gen-retry').addEventListener('click', requestBlueprint);
+  $('#gen-back').addEventListener('click', () => showForm());
+
+  $('#bp-edit').addEventListener('click', () => showForm());
+  $('#bp-copy').addEventListener('click', async () => {
+    toast((await copyText(state.markdown)) ? 'Markdown copied to your clipboard.' : 'Copy wasn’t allowed here — try View source.');
+  });
+  $('#bp-download').addEventListener('click', downloadMarkdown);
+  $('#bp-source-toggle').addEventListener('click', toggleSource);
+  $('#bp-source-copy').addEventListener('click', async () => {
+    toast((await copyText(state.markdown)) ? 'Markdown copied to your clipboard.' : 'Copy wasn’t allowed here.');
+  });
+
+  // About dialog
+  const about = $('#about');
+  $('#about-open').addEventListener('click', () => about.showModal());
+  $('#about-clear').addEventListener('click', () => {
+    about.close();
+    resetAll();
+    toast('Your saved draft was cleared.');
+    sparkInput.focus();
+  });
+  for (const d of $$('dialog')) {
+    d.addEventListener('click', (e) => { if (e.target === d) d.close('cancel'); }); // backdrop click
+  }
+
+  // Restore a saved draft, without re-performing the reveal.
+  const draft = Draft.load();
+  if (draft && (draft.spark?.trim() || Object.values(draft.answers || {}).some((v) => v?.trim()))) {
+    document.documentElement.classList.add('no-anim');
+    sparkInput.value = draft.spark || '';
+    for (const [key, value] of Object.entries(draft.answers || {})) {
+      const field = answerField(key);
+      if (!field || !value) continue;
+      field.value = value;
+      field.closest('.q').classList.toggle('is-answered', value.trim().length > 0);
+    }
+    if (draft.opened && sparkInput.value.trim()) openDiscovery({ animate: false });
+    $$('textarea').forEach(autosize);
+    requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('no-anim')));
+    setTimeout(() => toast('Welcome back — your draft is right where you left it.'), 600);
+  } else {
+    setStage('spark');
+  }
+}
+
+init();
+</script>
+</head>
+
+<body data-stage="spark">
+  <canvas id="lamp" aria-hidden="true"></canvas>
+
+  <!-- Handmade filters: charcoal edges for large lettering; uneven ink for the stamp. -->
+  <svg class="visually-hidden" aria-hidden="true" focusable="false" width="0" height="0">
+    <filter id="charcoal" x="-3%" y="-8%" width="106%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="warp"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.6" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="grain"/>
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.7 0 0 0 1.25" result="tooth"/>
+      <feComposite in="rough" in2="tooth" operator="in"/>
+    </filter>
+    <filter id="stamp-ink" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="9" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.2 0 0 0 1.75" result="mask"/>
+      <feComposite in="SourceGraphic" in2="mask" operator="in" result="inked"/>
+      <feDisplacementMap in="inked" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <header class="masthead">
+    <a class="wordmark" href="https://worldbuilderblueprint.com/" aria-label="World Builder Blueprint, home">
+      <svg viewBox="0 0 28 28" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+        <path d="M14.2 3.1c6.1-.2 10.9 4.6 10.7 10.9-.1 6-4.9 10.9-11 10.8C7.8 24.7 3 19.9 3.2 13.8 3.4 7.9 8.3 3.3 14.2 3.1z"/>
+        <path d="M14 3.4c-3.4 3-4.6 7-4.5 10.8.1 4 1.5 7.7 4.6 10.5M14.3 3.3c3 3.1 4.3 6.9 4.2 10.9-.1 3.9-1.4 7.7-4.4 10.5" stroke-width="1"/>
+        <path d="M3.6 12.6c3.6 1.2 7.2 1.6 10.6 1.5 3.6-.1 7.2-.7 10.6-1.9" stroke-width="1"/>
+      </svg>
+      <span class="wordmark__name">World Builder</span>
+      <span class="wordmark__sub">Blueprint</span>
+    </a>
+    <button type="button" class="link-quiet" id="about-open" aria-haspopup="dialog">About</button>
+  </header>
+
+  <main id="main">
+    <!-- Stage 1 — The Spark -->
+    <section class="spark" id="spark" aria-labelledby="spark-title">
+      <p class="spark__eyebrow">Your spark</p>
+      <h1 class="question charcoal" id="spark-title">What do you want to create?</h1>
+
+      <p class="marginalia" aria-hidden="true">
+        write as much as you like
+        <svg width="34" height="30" viewBox="0 0 34 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4c9 1 18 6 24 18"/><path d="M19 19.5l7 3.5 1.8-8"/></svg>
+      </p>
+      <div class="field field--spark">
+        <label class="visually-hidden" for="spark-input">Describe what you want to create</label>
+        <textarea id="spark-input" class="field__input" rows="5" autocomplete="off"
+          placeholder="It can be anything. A character, a story, a business, a world, or something you can’t quite explain yet."
+          aria-describedby="spark-help spark-input-voice"></textarea>
+        <div class="field__tools">
+          <span class="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <button type="button" class="mic" data-voice-for="spark-input" aria-label="Speak your idea" aria-pressed="false" title="Speak instead of typing">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
+            <span class="mic__rec" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <p class="voice-note" id="spark-input-voice" aria-live="polite"></p>
+      <div class="visually-hidden">
+        <span id="spark-help">Write as much or as little as you like — or speak it.</span>
+      </div>
+      <p class="nudge" id="spark-nudge" role="status"></p>
+
+      <div class="spark__actions-wrap">
+        <div class="spark__actions">
+          <button type="button" class="btn btn--ink" id="lets-go">Let’s go</button>
+          <span class="shortcut">or press <kbd data-shortcut>⌘ Enter</kbd></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 2 — The Seven Questions (visible but deferred until the Spark) -->
+    <section class="discovery" id="discovery" data-state="deferred" aria-labelledby="discovery-title" aria-describedby="discovery-lede">
+      <header class="discovery__head">
+        <h2 class="discovery__title" id="discovery-title" tabindex="-1">
+          <span class="when-deferred">Next · Seven question cards</span>
+          <span class="when-active">Seven question cards</span>
+        </h2>
+        <p class="discovery__lede" id="discovery-lede">
+          <span class="when-deferred">They open after you share your idea.</span>
+          <span class="when-active">Answer whichever ones speak to you. Every question is optional — leaving one open is part of the process.</span>
+        </p>
+      </header>
+
+      <ol class="questions" id="questions"></ol>
+
+      <div class="culmination">
+        <div class="culmination__inner">
+          <p class="culmination__line">Your world begins with what you’ve imagined.</p>
+          <button type="button" class="btn btn--ink btn--primary" id="get-blueprint">
+            Get Your Blueprint
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5c.4 3.6 1.4 5.8 3 6.6 1.3.7 2.7.9 4.5.9-1.9.2-3.4.6-4.5 1.4-1.6 1.1-2.6 3.3-3 6.1-.5-3-1.5-5.1-3-6.1C5.9 10.6 4.4 10.2 2.5 10c1.8 0 3.3-.3 4.5-.9 1.6-.9 2.6-3 3-6.6z"/></svg>
+          </button>
+          <p class="shortcut">or press <kbd data-shortcut>⌘ Enter</kbd> in any answer</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 3a — Bringing ideas together -->
+    <section class="generating" id="generating" hidden aria-label="Preparing your Blueprint">
+      <div class="generating__inner" role="status" aria-live="polite">
+        <svg class="sketch" viewBox="0 0 80 80" width="72" height="72" aria-hidden="true">
+          <path pathLength="1" d="M40.5 8.2c17.6-.6 31.4 13.4 30.9 31.3-.4 17.2-14.3 31.3-31.7 31.1C22.4 70.4 8.5 56.6 9 39 9.5 22 23.4 8.8 40.5 8.2z"/>
+          <path pathLength="1" d="M40 8.8c-9.8 8.6-13.3 20.1-13 31.1.3 11.5 4.3 22.2 13.3 30.2"/>
+          <path pathLength="1" d="M40.8 8.6c8.7 9 12.4 19.9 12.1 31.4-.3 11.2-4 22.2-12.7 30.3"/>
+          <path pathLength="1" d="M10.2 36.4c10.4 3.4 20.8 4.6 30.6 4.3 10.4-.3 20.8-2 30.6-5.5"/>
+        </svg>
+        <p class="generating__msg" id="gen-msg">Bringing your ideas together.</p>
+        <p class="generating__sub" id="gen-sub"></p>
+      </div>
+      <div class="generating__error" id="gen-error" hidden role="alert">
+        <p>Something interrupted your Blueprint. Your answers are safe.</p>
+        <div class="row">
+          <button type="button" class="btn btn--ink" id="gen-retry">Try again</button>
+          <button type="button" class="btn btn--quiet" id="gen-back">Back to your answers</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 3b — The Blueprint -->
+    <section class="blueprint" id="blueprint" hidden aria-label="Your Blueprint">
+      <div class="bp-bar">
+        <button type="button" class="tool tool--plain" id="bp-edit">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>
+          Edit your answers
+        </button>
+        <div class="bp-bar__group" role="group" aria-label="Keep your Blueprint">
+          <button type="button" class="tool" id="bp-copy">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg>
+            Copy Markdown
+          </button>
+          <button type="button" class="tool" id="bp-download">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10M5.5 8.5 10 13l4.5-4.5M4 17h12"/></svg>
+            Download .md
+          </button>
+          <button type="button" class="tool" id="bp-source-toggle" aria-expanded="false" aria-controls="bp-source">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 6-4 4 4 4M13 6l4 4-4 4"/></svg>
+            View source
+          </button>
+        </div>
+      </div>
+
+      <div class="sheet-wrap">
+        <article class="sheet" id="bp-sheet" aria-labelledby="bp-title"></article>
+      </div>
+
+      <div class="bp-source" id="bp-source" hidden>
+        <div class="bp-source__head">
+          <span>Markdown with structured metadata</span>
+          <button type="button" class="tool tool--plain" id="bp-source-copy">Copy</button>
+        </div>
+        <pre tabindex="0" aria-label="Blueprint Markdown source"><code id="bp-source-code"></code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p><em>Create the world behind what you imagine.</em></p>
+    <p>worldbuilderblueprint.com</p>
+  </footer>
+
+  <!-- About -->
+  <dialog id="about" aria-labelledby="about-title">
+    <div class="dialog__body">
+      <h2 id="about-title">World Builder Blueprint</h2>
+      <p class="lede">One question, seven more, and a Blueprint built from your own ideas.</p>
+      <p>Describe what you want to create — a character, a story, a business, a world, or something you can’t quite explain yet. Seven optional questions help you explore its foundations. Then your answers are gathered into a Blueprint you can read, copy, and keep.</p>
+      <h3>Your words</h3>
+      <p>What you write is saved only in this browser, so you don’t lose it if you step away. In this preview, Blueprints are composed on your device and nothing is sent anywhere.</p>
+      <p>Voice input uses your browser’s built-in speech recognition, which may process audio through the browser maker’s service. The microphone is only on while it says “Listening.”</p>
+    </div>
+    <form method="dialog" class="dialog__actions">
+      <button type="button" class="btn btn--quiet spacer" id="about-clear">Clear my saved draft</button>
+      <button class="btn btn--ink" value="close" autofocus>Close</button>
+    </form>
+  </dialog>
+
+  <!-- Voice privacy: shown before the microphone is used for the first time -->
+  <dialog id="voice-consent" aria-labelledby="voice-title" aria-describedby="voice-desc">
+    <div class="dialog__body">
+      <h2 id="voice-title">Speak instead of typing</h2>
+      <div id="voice-desc">
+        <p class="lede">Your words will appear in the field, where you can review and edit them.</p>
+        <p>Voice input uses your browser’s speech recognition. Depending on your browser, audio may be processed by its speech service (for example, Google in Chrome or Apple in Safari) to turn it into text. World Builder Blueprint doesn’t record or store audio.</p>
+        <p>The microphone stays on only while the button shows it’s listening. Select it again, or press Esc, to stop.</p>
+      </div>
+    </div>
+    <form method="dialog" class="dialog__actions">
+      <button class="btn btn--quiet" value="cancel">Not now</button>
+      <button class="btn btn--ink" value="allow" autofocus>Turn on microphone</button>
+    </form>
+  </dialog>
+
+  <div class="visually-hidden" id="announcer" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" data-show="false"></div>
+</body>
+</html>

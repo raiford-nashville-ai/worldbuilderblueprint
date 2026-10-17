@@ -1,0 +1,26 @@
+# Hugo build output and caches
+/site/public/
+/site/resources/
+/site/.hugo_build.lock
+
+# Dependencies and browser test artifacts
+node_modules/
+playwright-report/
+test-results/
+coverage/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Local editor and operating-system artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.log

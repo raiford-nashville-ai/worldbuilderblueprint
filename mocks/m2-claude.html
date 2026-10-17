@@ -1,0 +1,3034 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World Builder Blueprint · What do you want to create?</title>
+<meta name="description" content="Describe what you want to create, explore it through seven questions, and discover the Blueprint behind what you imagine.">
+<meta name="theme-color" content="#121519">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://worldbuilderblueprint.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="World Builder Blueprint">
+<meta property="og:title" content="World Builder Blueprint">
+<meta property="og:description" content="Create the world behind what you imagine.">
+<meta property="og:url" content="https://worldbuilderblueprint.com/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c1a17'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23d8bb8c' stroke-width='1.6'/%3E%3Cpath d='M6 17.5c3.3-1.8 6.7-1.8 10 0s6.7 1.8 10 0' fill='none' stroke='%23d8bb8c' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='11.5' r='2' fill='%23d8bb8c'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap">
+
+<style>
+/* ==========================================================================
+   World Builder Blueprint — Phase One · Concept II "Drafting Table"
+   A blue-slate drafting table: graph paper, survey marks, contour lines.
+   1. Tokens   2. Base & drafting sheet   3. Masthead   4. Spark
+   5. Fields & voice   6. Discovery (survey stations)   7. Buttons
+   8. Drafting (generating)   9. Blueprint sheet   10. Dialogs, toast
+   11. Stage choreography, motion, print
+   ========================================================================== */
+
+/* 1. Tokens ---------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  /* Blue-slate ink: the blue is there, but only just. */
+  --bg:            oklch(0.18 0.012 250);
+  --bg-deep:       oklch(0.15 0.011 250);
+  --surface:       oklch(0.205 0.013 250 / 0.82);
+  --surface-solid: oklch(0.21 0.013 250);
+  --surface-hi:    oklch(0.245 0.015 250);
+  --line-faint:    oklch(0.55 0.025 245 / 0.18);
+  --line-soft:     oklch(0.55 0.025 245 / 0.34);
+  --line:          oklch(0.58 0.028 245 / 0.55);
+  --line-strong:   oklch(0.76 0.04 238 / 0.9);
+
+  /* Text */
+  --text:   oklch(0.95 0.006 240);
+  --text-2: oklch(0.82 0.012 240);
+  --text-3: oklch(0.68 0.016 242);
+  --text-4: oklch(0.56 0.016 244);
+
+  /* Accents — chalk white and the blueprint line, used sparingly */
+  --chalk:      oklch(0.955 0.008 235);
+  --chalk-hi:   oklch(0.99 0.004 235);
+  --chalk-ink:  oklch(0.2 0.022 252);
+  --blue:       oklch(0.83 0.06 230);
+  --blue-a:     oklch(0.83 0.06 230 / 0.15);
+  --mark:       oklch(0.84 0.07 205);
+  --focus:      oklch(0.87 0.065 228);
+
+  /* Graph paper */
+  --grid-minor: oklch(0.78 0.04 235 / 0.034);
+  --grid-major: oklch(0.78 0.04 235 / 0.062);
+
+  /* Drafting sheet (the finished Blueprint) */
+  --paper:        oklch(0.972 0.006 235);
+  --paper-hi:     oklch(0.993 0.003 235);
+  --paper-2:      oklch(0.95 0.013 236);
+  --paper-ink:    oklch(0.25 0.028 252);
+  --paper-ink-2:  oklch(0.41 0.03 250);
+  --paper-ink-3:  oklch(0.53 0.03 248);
+  --paper-line:   oklch(0.84 0.025 240);
+  --paper-grid:   oklch(0.55 0.08 245 / 0.055);
+  --paper-grid-major: oklch(0.55 0.08 245 / 0.095);
+  --paper-accent: oklch(0.46 0.1 248);
+
+  /* Type */
+  --font-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-ui: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: cubic-bezier(.6, 0, .3, 1);
+  --t-fast: 180ms;
+  --t-med: 320ms;
+  --t-slow: 520ms;
+
+  /* Shape & space */
+  --radius-sm: 8px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --gutter: clamp(1rem, 4vw, 2.75rem);
+  --column: 46rem;
+}
+
+/* 2. Base & the drafting table -------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 1.5rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.55;
+  background:
+    radial-gradient(120% 70% at 50% -12%, oklch(0.28 0.025 245 / 0.45), transparent 62%),
+    var(--bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+/* Three.js terrain: faint contour lines, like a survey map under the paper. */
+#atmosphere {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 1.6s var(--ease-out);
+  pointer-events: none;
+}
+#atmosphere.is-ready { opacity: 1; }
+
+/* Graph paper: minor and major rules, fading toward the edges. */
+.graph {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right,  var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to right,  var(--grid-minor) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(140% 105% at 50% 30%, #000 35%, transparent 88%);
+  mask-image: radial-gradient(140% 105% at 50% 30%, #000 35%, transparent 88%);
+  transition: opacity 1s var(--ease-out);
+}
+body[data-stage="blueprint"] .graph { opacity: .55; }
+
+/* The drawing frame: sheet border with map coordinates in the margin. */
+.frame {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  font: 400 .6rem/1 var(--font-mono);
+  letter-spacing: .1em;
+  color: var(--text-4);
+}
+.frame__border {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid var(--line-faint);
+}
+.frame__cols, .frame__rows { position: absolute; display: flex; justify-content: space-around; opacity: .75; }
+.frame__cols { top: 5px; left: 18px; right: 18px; }
+.frame__rows { left: 6px; top: 18px; bottom: 18px; flex-direction: column; }
+.frame__sheet {
+  position: absolute;
+  right: 4px;
+  bottom: 30px;
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+  opacity: .8;
+}
+.frame__sheet::after { content: "WBB · Sheet 01 — The Spark"; }
+body[data-stage="discovery"]  .frame__sheet::after { content: "WBB · Sheet 02 — Survey"; }
+body[data-stage="generating"] .frame__sheet::after { content: "WBB · Sheet 03 — Drafting"; }
+body[data-stage="blueprint"]  .frame__sheet::after { content: "WBB · Sheet 03 — Blueprint"; }
+@media (max-width: 52rem) { .frame { display: none; } }
+
+::selection { background: oklch(0.83 0.06 230 / 0.3); color: var(--text); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+[tabindex="-1"]:focus:not(:focus-visible) { outline: none; }
+
+button { font: inherit; color: inherit; }
+kbd {
+  font: 500 .7rem/1 var(--font-mono);
+  padding: .22rem .4rem;
+  border: 1px solid var(--line-soft);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  color: var(--text-3);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+main {
+  flex: 1;
+  width: min(100% - var(--gutter) * 2, var(--column));
+  margin-inline: auto;
+  padding-bottom: clamp(4rem, 12vh, 8rem);
+}
+
+/* 3. Masthead -------------------------------------------------------------- */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100% - var(--gutter) * 2, 72rem);
+  margin-inline: auto;
+  padding-block: clamp(1.4rem, 3.5vh, 2rem);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 6px;
+}
+.wordmark svg { color: var(--blue); flex: none; }
+.wordmark__name {
+  font: 450 1.02rem/1 var(--font-display);
+  letter-spacing: .005em;
+}
+.wordmark__sub {
+  font: 500 .64rem/1 var(--font-mono);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding-left: .6rem;
+  border-left: 1px solid var(--line-soft);
+}
+
+.link-quiet {
+  background: none;
+  border: 0;
+  padding: .4rem .2rem;
+  font: 500 .84rem/1 var(--font-ui);
+  color: var(--text-3);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: .3em;
+  transition: color var(--t-fast), text-decoration-color var(--t-fast);
+}
+.link-quiet:hover { color: var(--text); text-decoration-color: var(--line-strong); }
+
+/* 4. The Spark ------------------------------------------------------------- */
+.spark {
+  padding-top: clamp(2.25rem, 10vh, 7rem);
+  transition:
+    padding var(--t-slow) var(--ease-out),
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    filter 420ms var(--ease-out);
+}
+
+.spark__eyebrow {
+  display: none;
+  margin: 0 0 .5rem;
+  font: 500 .68rem/1 var(--font-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.question {
+  margin: 0 0 clamp(1.5rem, 4vh, 2.25rem);
+  font-family: var(--font-display);
+  font-weight: 380;
+  font-size: clamp(2.5rem, 1.2rem + 5vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  color: var(--text);
+  transition:
+    font-size var(--t-slow) var(--ease-out),
+    color var(--t-slow) var(--ease-out),
+    margin var(--t-slow) var(--ease-out);
+}
+
+/* A drafting dimension line: the field has no fixed size. */
+.dimension {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  height: 9px;
+  margin: 0 0 .75rem;
+  padding-inline: 0;
+  border-inline: 1px solid var(--line-soft);
+  font: 400 .6rem/1 var(--font-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+.dimension::before, .dimension::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.spark__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .25rem 1rem;
+  margin: .7rem .25rem 0;
+  font-size: .84rem;
+  color: var(--text-4);
+}
+
+.nudge {
+  margin: .6rem .25rem 0;
+  font: italic 400 1.02rem/1.4 var(--font-display);
+  color: var(--blue);
+}
+.nudge:empty { display: none; }
+
+.spark__actions-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows var(--t-med) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out),
+    visibility 0s linear 0s;
+}
+.spark__actions {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem 1.25rem;
+  padding: clamp(1.25rem, 3vh, 1.75rem) .4rem .6rem;
+}
+.shortcut { font-size: .82rem; color: var(--text-4); }
+
+/* 5. Fields & voice -------------------------------------------------------- */
+.field {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .03),
+    0 24px 60px -36px oklch(0 0 0 / .7);
+  transition:
+    border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out);
+}
+/* Registration marks: four corner brackets appear when the field is attended to. */
+.field::after {
+  --c: var(--blue);
+  --l: 9px;
+  content: "";
+  position: absolute;
+  inset: -9px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) top left / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) top right / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) top right / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) bottom left / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px var(--l);
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out), inset var(--t-fast) var(--ease-out);
+}
+.field:hover { border-color: oklch(0.62 0.03 242 / .7); }
+.field:focus-within {
+  border-color: var(--line-strong);
+  background: oklch(0.215 0.014 250 / .9);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .045),
+    0 30px 70px -34px oklch(0 0 0 / .8);
+}
+.field:focus-within::after { opacity: .85; inset: -7px; }
+
+.field__input {
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  caret-color: var(--blue);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.6;
+  field-sizing: content;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  border-radius: inherit;
+  transition: font-size var(--t-slow) var(--ease-out), min-height var(--t-slow) var(--ease-out);
+}
+.field__input::placeholder { color: var(--text-3); font-style: italic; opacity: 1; }
+.field__input:focus-visible { outline: none; } /* the .field wrapper carries focus */
+
+.field--spark .field__input {
+  min-height: 10rem;
+  max-height: 62vh;
+  padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(1.1rem, 2.5vw, 1.6rem) 3.75rem;
+  font-size: clamp(1.15rem, 1rem + .5vw, 1.35rem);
+}
+.field--q .field__input {
+  min-height: 6.5rem;
+  max-height: 52vh;
+  padding: 1rem 1.15rem 3.4rem;
+  font-size: 1.12rem;
+}
+
+.field__tools {
+  position: absolute;
+  right: .6rem;
+  bottom: .6rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.mic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 50%;
+  background: oklch(0.24 0.015 250 / .9);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
+}
+.mic:hover { color: var(--text); border-color: var(--line-strong); }
+.mic:active { transform: scale(.96); }
+.mic:focus-visible { border-radius: 50%; }
+.mic[data-state="requesting"] { color: var(--blue); border-style: dashed; border-color: var(--blue); }
+.mic[data-state="listening"] { color: var(--bg-deep); background: var(--blue); border-color: var(--blue); }
+.mic[data-state="unavailable"] { color: var(--text-4); }
+.mic__rec {
+  position: absolute;
+  top: .3rem; right: .3rem;
+  width: .42rem; height: .42rem;
+  border-radius: 50%;
+  background: oklch(0.66 0.16 25);
+  box-shadow: 0 0 0 2px var(--blue);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.mic[data-state="listening"] .mic__rec { opacity: 1; }
+
+/* Audio-level indicator */
+.meter { display: inline-flex; align-items: center; gap: 3px; height: 1.1rem; opacity: 0; transition: opacity var(--t-fast); }
+.meter i {
+  width: 2px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--blue);
+  transform: scaleY(.18);
+  transition: transform 90ms linear;
+}
+.field[data-voice="listening"] .meter { opacity: 1; }
+.meter i:nth-child(1) { transform: scaleY(calc(.18 + var(--level, 0) * .45)); }
+.meter i:nth-child(2) { transform: scaleY(calc(.18 + var(--level, 0) * .8)); animation-delay: .15s; }
+.meter i:nth-child(3) { transform: scaleY(calc(.18 + var(--level, 0) * 1)); animation-delay: .3s; }
+.meter i:nth-child(4) { transform: scaleY(calc(.18 + var(--level, 0) * .7)); animation-delay: .45s; }
+.meter i:nth-child(5) { transform: scaleY(calc(.18 + var(--level, 0) * .4)); animation-delay: .6s; }
+.field[data-voice="listening"][data-meter="ambient"] .meter i { animation: breathe 1.6s var(--ease-in-out) infinite; }
+@keyframes breathe { 0%, 100% { transform: scaleY(.2); } 50% { transform: scaleY(.6); } }
+
+.voice-note { margin: .55rem .25rem 0; font-size: .84rem; line-height: 1.45; color: var(--text-3); }
+.voice-note:empty { display: none; }
+.voice-note[data-tone="live"] { color: var(--blue); }
+
+/* 6. Discovery: seven survey stations ------------------------------------- */
+.discovery {
+  margin-top: clamp(3.25rem, 9vh, 5.5rem);
+  transition:
+    margin var(--t-slow) var(--ease-out),
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    filter 420ms var(--ease-out);
+}
+
+.discovery__head {
+  display: grid;
+  gap: .45rem;
+  margin-bottom: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line-faint);
+  scroll-margin-top: 1rem;
+}
+.discovery__title {
+  margin: 0;
+  font: 500 .68rem/1.2 var(--font-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  transition: color var(--t-slow);
+}
+.discovery__lede {
+  margin: 0;
+  max-width: 38rem;
+  font: italic 400 1.08rem/1.5 var(--font-display);
+  color: var(--text-3);
+  transition: color var(--t-slow);
+}
+.discovery[data-state="deferred"] .when-active,
+.discovery[data-state="active"] .when-deferred { display: none; }
+.discovery[data-state="active"] .discovery__title { color: var(--blue); }
+.discovery[data-state="active"] .discovery__lede { color: var(--text-2); }
+
+.questions {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .5rem;
+  transition: gap var(--t-slow) var(--ease-out);
+}
+.discovery[data-state="deferred"] .questions {
+  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+}
+.discovery[data-state="active"] .questions { gap: 1rem; }
+
+.q {
+  --delay: calc(var(--i, 0) * 80ms);
+  position: relative;
+  padding: 1rem clamp(1rem, 3vw, 1.4rem);
+  border: 1px solid var(--line-faint);
+  border-radius: var(--radius-lg);
+  background: oklch(0.205 0.013 250 / 0);
+  opacity: .62;
+  transition:
+    opacity var(--t-med) var(--ease-out) var(--delay),
+    border-color var(--t-med) var(--ease-out) var(--delay),
+    background-color var(--t-med) var(--ease-out) var(--delay);
+}
+.discovery[data-state="active"] .q {
+  opacity: 1;
+  border-color: var(--line-soft);
+  background: oklch(0.2 0.013 250 / .62);
+}
+.discovery[data-state="active"] .q.is-answered { border-color: oklch(0.7 0.045 232 / .55); }
+.discovery[data-state="active"] .q:focus-within { border-color: var(--line); }
+
+/* Survey station marker — on wide screens the seven sit on a dashed traverse line. */
+.q__station {
+  position: absolute;
+  top: .8rem;
+  left: 1rem;
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 50%;
+  background: var(--bg);
+  font: 500 .62rem/1 var(--font-mono);
+  color: var(--text-3);
+  transition:
+    border-color var(--t-med) var(--ease-out),
+    color var(--t-med) var(--ease-out),
+    background-color var(--t-med) var(--ease-out),
+    box-shadow var(--t-med) var(--ease-out);
+}
+.q__head { padding-left: 2.5rem; min-height: 1.7rem; }
+.discovery[data-state="active"] .q:focus-within .q__station { border-color: var(--line-strong); color: var(--text); }
+.discovery[data-state="active"] .q.is-answered .q__station {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: oklch(0.24 0.03 240);
+  box-shadow: 0 0 0 3px var(--blue-a);
+}
+
+@media (min-width: 52rem) {
+  .questions { padding-left: 3.25rem; }
+  .questions::before {
+    content: "";
+    position: absolute;
+    left: .95rem;
+    top: 1.6rem;
+    bottom: 1.6rem;
+    border-left: 1px dashed var(--line-soft);
+    transition: border-color var(--t-slow);
+  }
+  .discovery[data-state="active"] .questions::before { border-left-color: var(--line); }
+  .q__station { left: -3.25rem; top: .75rem; width: 1.9rem; height: 1.9rem; }
+  .q__head { padding-left: 0; }
+}
+
+.q__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .25rem .9rem;
+}
+.q__label {
+  margin: 0;
+  padding-top: .35rem;
+  font: 600 .74rem/1 var(--font-ui);
+  letter-spacing: .17em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.q__fragment {
+  margin: 0 0 0 auto;
+  font: italic 400 1.02rem/1.3 var(--font-display);
+  color: var(--text-3);
+  filter: blur(.35px);
+  transition: opacity var(--t-fast) var(--ease-out), visibility 0s linear var(--t-fast);
+}
+.discovery[data-state="active"] .q__fragment { opacity: 0; visibility: hidden; filter: none; }
+
+.q__mark {
+  position: absolute;
+  top: 1.05rem;
+  right: clamp(1rem, 3vw, 1.4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font: 500 .66rem/1 var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+.q__dot { width: .4rem; height: .4rem; border-radius: 50%; background: var(--mark); }
+.discovery[data-state="active"] .q.is-answered .q__mark { opacity: 1; transform: none; }
+
+/* Expanding body */
+.q__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) var(--delay),
+    opacity var(--t-med) var(--ease-out) calc(var(--delay) + 80ms),
+    visibility 0s linear calc(var(--delay) + var(--t-slow));
+}
+.discovery[data-state="active"] .q__body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) var(--delay),
+    opacity var(--t-med) var(--ease-out) calc(var(--delay) + 80ms),
+    visibility 0s linear 0s;
+}
+.q__inner {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0 -12px -12px;
+  padding: 0 12px 12px; /* room for focus rings and registration marks */
+}
+
+.q__question {
+  margin: .85rem 0 .9rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 1.15rem + 1.1vw, 1.95rem);
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.q__question label { cursor: text; }
+
+.q__hint { margin: .7rem .2rem 0; font-size: .9rem; line-height: 1.5; color: var(--text-3); }
+.q__hint-label {
+  font: 500 .62rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  margin-right: .45rem;
+}
+.q__hint-text { font-family: var(--font-display); font-style: italic; font-size: 1rem; }
+
+.explore-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  margin: .6rem 0 0;
+  padding: .45rem .55rem .45rem .35rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: 500 .84rem/1 var(--font-ui);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color var(--t-fast), background-color var(--t-fast);
+}
+.explore-toggle:hover { color: var(--text); background: oklch(1 0 0 / .03); }
+.explore-toggle svg { transition: transform var(--t-med) var(--ease-out); }
+.explore-toggle[aria-expanded="true"] { color: var(--text-2); }
+.explore-toggle[aria-expanded="true"] svg { transform: rotate(45deg); }
+
+.explore {
+  margin: .4rem 0 .2rem;
+  padding: 1rem 1.15rem;
+  border-left: 1px dashed var(--line);
+  background: linear-gradient(to right, oklch(0.83 0.06 230 / .04), transparent 70%);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+@starting-style { .explore { opacity: 0; transform: translateY(-4px); } }
+.explore__title {
+  margin: 0 0 .5rem;
+  font: 500 .62rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.explore__list { margin: 0; padding: 0; list-style: none; display: grid; gap: .4rem; }
+.explore__list li {
+  position: relative;
+  padding-left: 1rem;
+  font: 400 1.02rem/1.45 var(--font-display);
+  color: var(--text-2);
+}
+.explore__list li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .72em;
+  width: .4rem; height: 1px;
+  background: var(--text-4);
+}
+.explore__spark { margin: .9rem 0 0; font: italic 400 1.02rem/1.45 var(--font-display); color: var(--text-2); }
+.explore__spark span {
+  display: block;
+  margin-bottom: .3rem;
+  font: 500 .62rem/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+/* Culmination */
+.culmination {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out),
+    opacity var(--t-slow) var(--ease-out),
+    visibility 0s linear var(--t-slow);
+}
+.discovery[data-state="active"] .culmination {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--t-slow) var(--ease-out) 560ms,
+    opacity var(--t-slow) var(--ease-out) 640ms,
+    visibility 0s linear 0s;
+}
+.culmination__inner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  padding: clamp(2.5rem, 7vh, 4rem) .5rem .75rem;
+  text-align: center;
+}
+.culmination__line {
+  margin: 0;
+  font: italic 400 clamp(1.2rem, 1rem + .7vw, 1.45rem)/1.4 var(--font-display);
+  color: var(--text-2);
+  text-wrap: balance;
+}
+.culmination .shortcut { margin: 0; }
+
+/* 7. Buttons --------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  min-height: 3rem;
+  padding: .9rem 1.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: 550 1rem/1 var(--font-ui);
+  letter-spacing: .01em;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out);
+}
+.btn:active { transform: translateY(0) scale(.99); transition-duration: 60ms; }
+.btn svg { flex: none; }
+
+.btn--chalk {
+  background: var(--chalk);
+  color: var(--chalk-ink);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .6), 0 10px 26px -16px oklch(0 0 0 / .9);
+}
+.btn--chalk:hover {
+  background: var(--chalk-hi);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .7), 0 14px 32px -16px oklch(0 0 0 / .95);
+}
+
+.btn--primary {
+  min-width: min(100%, 21rem);
+  min-height: 3.75rem;
+  padding: 1.1rem 2.4rem;
+  border-radius: 12px;
+  background: var(--chalk);
+  color: var(--chalk-ink);
+  font: 500 1.24rem/1 var(--font-display);
+  letter-spacing: 0;
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .65),
+    0 0 0 1px oklch(0.83 0.06 230 / .35),
+    0 0 0 6px oklch(0.83 0.06 230 / .06),
+    0 18px 50px -20px oklch(0.75 0.08 235 / .4),
+    0 14px 30px -18px oklch(0 0 0 / .9);
+}
+.btn--primary:hover {
+  background: var(--chalk-hi);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / .75),
+    0 0 0 1px oklch(0.83 0.06 230 / .5),
+    0 0 0 6px oklch(0.83 0.06 230 / .09),
+    0 22px 60px -20px oklch(0.75 0.08 235 / .5),
+    0 16px 34px -18px oklch(0 0 0 / .95);
+}
+.btn--primary svg { transition: transform var(--t-fast) var(--ease-out); }
+.btn--primary:hover svg { transform: translateX(2px); }
+.btn[aria-busy="true"] { cursor: progress; }
+
+.btn--quiet { background: transparent; color: var(--text-2); border-color: var(--line); }
+.btn--quiet:hover { color: var(--text); border-color: var(--line-strong); }
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 2.5rem;
+  padding: .5rem .8rem;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  background: oklch(0.2 0.013 250 / .65);
+  font: 500 .86rem/1 var(--font-ui);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast), background-color var(--t-fast);
+}
+.tool:hover { color: var(--text); border-color: var(--line-strong); background: oklch(0.24 0.015 250 / .85); }
+.tool[aria-expanded="true"] { color: var(--text); border-color: var(--line-strong); }
+.tool--plain { border-color: transparent; background: none; padding-inline: .4rem; }
+
+/* 8. Drafting (generating) ------------------------------------------------- */
+.generating {
+  display: grid;
+  place-items: center;
+  min-height: min(68vh, 34rem);
+  text-align: center;
+  animation: rise .6s var(--ease-out) both;
+}
+.generating__inner { display: grid; justify-items: center; gap: 1.25rem; }
+.compass { overflow: visible; }
+.compass__ring  { fill: none; stroke: var(--line-soft); stroke-width: 1; }
+.compass__cross { fill: none; stroke: var(--line); stroke-width: 1; }
+.compass__pin   { fill: var(--blue); }
+.compass__draw {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transform: rotate(-90deg);
+  transform-origin: 32px 32px;
+  animation: draft 3.2s var(--ease-in-out) infinite;
+}
+@keyframes draft {
+  0%   { stroke-dashoffset: 100; }
+  55%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+.generating__msg { margin: 0; font: italic 400 clamp(1.4rem, 1.1rem + 1vw, 1.8rem)/1.3 var(--font-display); color: var(--text); }
+.generating__sub { margin: 0; max-width: 28rem; font-size: .9rem; color: var(--text-3); }
+.generating__sub:empty { display: none; }
+.generating__error { display: grid; justify-items: center; gap: 1.25rem; }
+.generating__error p { margin: 0; font: italic 400 1.3rem/1.4 var(--font-display); color: var(--text); }
+.row { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+
+/* 9. The Blueprint: a drafting sheet --------------------------------------- */
+.blueprint { padding-top: clamp(.5rem, 3vh, 1.5rem); }
+@media (min-width: 60rem) { .blueprint { margin-inline: -3.5rem; } }
+
+.bp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .6rem;
+  margin-bottom: 1.6rem;
+  animation: rise .5s var(--ease-out) .35s both;
+}
+.bp-bar__group { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.sheet-wrap { position: relative; }
+/* Crop marks just outside the sheet's corners */
+.sheet-wrap::before {
+  --c: var(--line);
+  --l: 14px;
+  content: "";
+  position: absolute;
+  inset: -12px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) top left / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) top right / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) top right / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) bottom left / 1px var(--l),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) 1px,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px var(--l);
+  background-repeat: no-repeat;
+  animation: rise .6s var(--ease-out) .5s both;
+}
+
+.sheet {
+  position: relative;
+  padding: clamp(2.25rem, 7vw, 5rem) clamp(1.4rem, 7.5vw, 6rem) clamp(2.5rem, 6vw, 4.5rem);
+  border-radius: 3px;
+  color: var(--paper-ink);
+  background:
+    linear-gradient(to bottom, var(--paper-grid-major) 1px, transparent 1px) 0 0 / 80px 80px,
+    linear-gradient(to right,  var(--paper-grid-major) 1px, transparent 1px) 0 0 / 80px 80px,
+    linear-gradient(to bottom, var(--paper-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(to right,  var(--paper-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    radial-gradient(120% 55% at 50% -5%, var(--paper-hi), transparent 60%),
+    var(--paper);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / .06),
+    0 50px 120px -50px oklch(0 0 0 / .85),
+    0 0 160px -40px oklch(0.75 0.08 235 / .2);
+  animation: manuscript .8s var(--ease-out) both;
+}
+/* The inner drawing border of a sheet */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: clamp(8px, 1.5vw, 14px);
+  border: 1px solid var(--paper-line);
+  pointer-events: none;
+}
+@keyframes manuscript {
+  from { opacity: 0; transform: translateY(22px) scale(.992); }
+  to   { opacity: 1; transform: none; }
+}
+.sheet ::selection { background: oklch(0.83 0.06 230 / .45); color: var(--paper-ink); }
+.sheet :focus-visible { outline-color: var(--paper-accent); }
+
+.sheet__head { position: relative; margin-bottom: clamp(2rem, 5vw, 3rem); }
+.sheet__intro { padding-right: clamp(5rem, 16vw, 9rem); }
+
+/* The seal: a compass-rose stamp, surveyed from the creator's own words */
+.seal {
+  position: absolute;
+  top: -.5rem;
+  right: -.5rem;
+  width: clamp(76px, 13vw, 124px);
+  color: var(--paper-accent);
+  opacity: .6;
+  transform: rotate(-9deg);
+  mix-blend-mode: multiply;
+  animation: stamp .7s var(--ease-out) .6s both;
+}
+.seal svg { display: block; width: 100%; height: auto; }
+@keyframes stamp {
+  from { opacity: 0; transform: rotate(-9deg) scale(1.14); }
+  to   { opacity: .6; transform: rotate(-9deg) scale(1); }
+}
+
+.sheet__kicker {
+  margin: 0 0 1rem;
+  font: 500 .68rem/1 var(--font-mono);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--paper-accent);
+}
+.sheet__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 420;
+  font-size: clamp(2.2rem, 1.3rem + 3.6vw, 3.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.sheet__dek {
+  margin: 1.1rem 0 0;
+  max-width: 40rem;
+  font: italic 400 clamp(1.15rem, 1rem + .5vw, 1.35rem)/1.5 var(--font-display);
+  color: var(--paper-ink-2);
+  text-wrap: pretty;
+}
+
+/* Title block, as on a drawing sheet */
+.titleblock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: clamp(1.75rem, 4vw, 2.5rem) 0 0;
+  border: 1px solid var(--paper-line);
+  background: var(--paper-line);
+}
+.titleblock > div { padding: .7rem .85rem .8rem; background: oklch(0.975 0.005 235 / .95); }
+.titleblock .span-2 { grid-column: span 2; }
+.titleblock .span-4 { grid-column: 1 / -1; }
+.titleblock dt {
+  margin-bottom: .4rem;
+  font: 500 .58rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--paper-ink-3);
+}
+.titleblock dd { margin: 0; font: 400 .98rem/1.4 var(--font-display); color: var(--paper-ink); }
+@media (max-width: 40rem) {
+  .titleblock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .titleblock .span-2 { grid-column: 1 / -1; }
+}
+
+.sheet__body { max-width: 40rem; }
+.bp-section + .bp-section { margin-top: clamp(2.25rem, 5vw, 3.25rem); }
+.bp-section .bp-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin: 0 0 .5rem;
+  font: 500 .64rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--paper-accent);
+}
+.bp-section .bp-eyebrow::after {
+  content: "";
+  flex: 0 0 2.25rem;
+  height: 1px;
+  background: currentColor;
+  opacity: .45;
+}
+.bp-section h3 {
+  margin: 0 0 .9rem;
+  font: 450 clamp(1.45rem, 1.2rem + .8vw, 1.8rem)/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.bp-section p {
+  margin: 0 0 1rem;
+  font: 400 1.14rem/1.72 var(--font-display);
+  text-wrap: pretty;
+  hanging-punctuation: first;
+}
+.bp-section p:last-child { margin-bottom: 0; }
+
+.echo { margin: 1.25rem 0 1.35rem; }
+.echo blockquote {
+  margin: 0;
+  padding: .1rem 0 .1rem 1.25rem;
+  border-left: 2px solid oklch(0.46 0.1 248 / .45);
+}
+.echo blockquote p { margin: 0 0 .6rem; font: italic 400 1.18rem/1.6 var(--font-display); color: var(--paper-ink); }
+.echo blockquote p:last-child { margin-bottom: 0; }
+.echo figcaption {
+  margin: .5rem 0 0 1.25rem;
+  font: 500 .58rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--paper-ink-3);
+}
+
+.bp-section--connections {
+  margin-inline: clamp(-1.5rem, -2vw, -.5rem);
+  padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1rem, 3vw, 1.75rem);
+  border: 1px dashed oklch(0.55 0.07 245 / .5);
+  border-radius: 4px;
+  background: oklch(0.95 0.014 236 / .92);
+}
+.connection + .connection { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--paper-line); }
+.connection__title {
+  margin: 0 0 .4rem !important;
+  font: 500 .62rem/1.2 var(--font-mono) !important;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--paper-accent);
+}
+
+.bp-open { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; }
+.bp-open li { font: 400 1.08rem/1.6 var(--font-display); color: var(--paper-ink-2); }
+.bp-open strong {
+  display: block;
+  margin-bottom: .25rem;
+  font: 500 .62rem/1.3 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--paper-ink);
+}
+.bp-doors { margin: 0; padding: 0; list-style: none; counter-reset: door; display: grid; gap: .9rem; }
+.bp-doors li {
+  counter-increment: door;
+  position: relative;
+  padding-left: 2.2rem;
+  font: 400 1.12rem/1.65 var(--font-display);
+}
+.bp-doors li::before {
+  content: counter(door, upper-roman);
+  position: absolute;
+  left: 0; top: .2em;
+  font: 500 .72rem/1.6 var(--font-mono);
+  letter-spacing: .08em;
+  color: var(--paper-accent);
+}
+
+.sheet__foot {
+  margin-top: clamp(2.5rem, 6vw, 3.75rem);
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--paper-line);
+  text-align: center;
+}
+/* A cartographer's scale bar */
+.scalebar { display: inline-grid; justify-items: center; gap: .45rem; margin-bottom: 1.4rem; }
+.scalebar__bar { display: flex; border: 1px solid var(--paper-ink-2); }
+.scalebar__bar i { display: block; width: 2.25rem; height: 5px; }
+.scalebar__bar i:nth-child(odd) { background: var(--paper-ink-2); }
+.scalebar__label {
+  font: 500 .58rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--paper-ink-3);
+}
+.sheet__closing {
+  margin: 0 auto;
+  max-width: 30rem;
+  font: italic 400 1.22rem/1.5 var(--font-display);
+  color: var(--paper-ink);
+  text-wrap: balance;
+}
+.sheet__note { margin: 1rem auto 0; max-width: 32rem; font: 400 .78rem/1.5 var(--font-ui); color: var(--paper-ink-3); }
+
+.bp-source {
+  margin-top: 1.75rem;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+  overflow: hidden;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+@starting-style { .bp-source { opacity: 0; transform: translateY(-4px); } }
+.bp-source__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--line-faint);
+  font: 400 .72rem/1 var(--font-mono);
+  letter-spacing: .06em;
+  color: var(--text-3);
+}
+.bp-source pre {
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 1rem 1.1rem 1.25rem;
+  font: 400 .84rem/1.6 var(--font-mono);
+  color: var(--text-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Page footer */
+.foot {
+  width: min(100% - var(--gutter) * 2, 72rem);
+  margin: 0 auto;
+  padding: 1.5rem 0 2.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+  font: 400 .72rem/1.4 var(--font-mono);
+  letter-spacing: .06em;
+  color: var(--text-4);
+}
+.foot p { margin: 0; }
+.foot em { font: italic 400 .95rem/1.3 var(--font-display); letter-spacing: 0; color: var(--text-3); }
+
+/* 10. Dialogs & toast ------------------------------------------------------ */
+dialog {
+  width: min(100% - 2rem, 34rem);
+  max-height: min(88vh, 46rem);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  background: var(--surface-solid);
+  box-shadow: 0 40px 120px -30px oklch(0 0 0 / .9);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--t-med) var(--ease-out),
+    transform var(--t-med) var(--ease-out),
+    overlay var(--t-med) allow-discrete,
+    display var(--t-med) allow-discrete;
+}
+dialog:not([open]) { opacity: 0; transform: translateY(8px); }
+@starting-style { dialog[open] { opacity: 0; transform: translateY(8px); } }
+dialog::backdrop {
+  background: oklch(0.12 0.01 250 / .66);
+  backdrop-filter: blur(3px);
+  transition: opacity var(--t-med), overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete;
+}
+@starting-style { dialog[open]::backdrop { opacity: 0; } }
+
+.dialog__body { padding: clamp(1.5rem, 4vw, 2.25rem); }
+.dialog__body h2 { margin: 0 0 .75rem; font: 420 1.75rem/1.15 var(--font-display); letter-spacing: -.01em; }
+.dialog__body h3 {
+  margin: 1.5rem 0 .4rem;
+  font: 500 .66rem/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.dialog__body p { margin: 0 0 .8rem; color: var(--text-2); line-height: 1.6; }
+.dialog__body .lede { font: italic 400 1.15rem/1.5 var(--font-display); color: var(--text); }
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .6rem;
+  padding: 1rem clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--line-faint);
+}
+.dialog__actions .btn { min-height: 2.75rem; padding: .75rem 1.2rem; font-size: .92rem; }
+.dialog__actions .spacer { margin-right: auto; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 10;
+  padding: .7rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-hi);
+  color: var(--text);
+  font-size: .88rem;
+  box-shadow: 0 16px 40px -18px oklch(0 0 0 / .9);
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+.toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+/* 11. Stage choreography --------------------------------------------------- */
+body[data-stage="discovery"] .spark { padding-top: clamp(.75rem, 3vh, 1.75rem); }
+body[data-stage="discovery"] .spark__eyebrow { display: block; animation: rise .5s var(--ease-out) both; }
+body[data-stage="discovery"] .dimension { display: none; }
+body[data-stage="discovery"] .question {
+  margin-bottom: 1rem;
+  font-size: clamp(1.45rem, 1.1rem + 1.3vw, 2rem);
+  color: var(--text-2);
+}
+body[data-stage="discovery"] .field--spark .field__input { min-height: 5.5rem; font-size: 1.12rem; }
+body[data-stage="discovery"] .spark__actions-wrap {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--t-med) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out),
+    visibility 0s linear var(--t-med);
+}
+body[data-stage="discovery"] .discovery { margin-top: clamp(2rem, 5vh, 3rem); }
+
+body[data-stage="generating"] :is(.spark, .discovery) {
+  opacity: 0;
+  transform: translateY(-8px);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.enter { animation: rise .55s var(--ease-out) both; }
+
+@media (hover: none) { .shortcut { display: none; } }
+
+@media (max-width: 34rem) {
+  .wordmark__sub { display: none; }
+  .q__fragment { margin-left: 0; flex-basis: 100%; }
+  .spark__actions .btn { flex: 1 1 auto; }
+  .bp-bar { flex-direction: column; align-items: stretch; }
+  .bp-bar__group { justify-content: space-between; }
+  .bp-bar__group .tool { flex: 1 1 auto; justify-content: center; }
+  .sheet-wrap::before { inset: -8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .compass__draw { animation: none; stroke-dashoffset: 0; }
+}
+.no-anim *, .no-anim *::before, .no-anim *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media print {
+  body { background: #fff; }
+  #atmosphere, .graph, .frame, .masthead, .foot, .bp-bar, .bp-source, .spark, .discovery, .generating, .toast { display: none !important; }
+  .blueprint { margin: 0; }
+  .sheet-wrap::before { display: none; }
+  .sheet { box-shadow: none; padding: 0; background: #fff; animation: none; }
+  .sheet::before { display: none; }
+}
+</style>
+
+<!-- Three.js is loaded from a CDN; all application code lives in this file. -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }
+</script>
+
+<!-- ========================================================================
+     Atmosphere (Three.js)
+     A single full-screen shader: faint topographic contour lines, a cool
+     overhead lamp, and light that gathers near whatever the visitor is focused on.
+     Entirely decorative and optional — the page works without it.
+     ======================================================================== -->
+<script type="module">
+const FRAGMENT = /* glsl */ `
+  uniform vec2  uRes;
+  uniform float uTime;
+  uniform float uStage;      // 0 spark · 1 discovery · 2 blueprint (eased)
+  uniform vec2  uFocus;      // 0..1 viewport coords of the focused element
+  uniform float uFocusAmt;
+  varying vec2 vUv;
+
+  float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+  float noise(vec2 p) {
+    vec2 i = floor(p), f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+               mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+  }
+  float fbm(vec2 p) {
+    float v = 0.0, a = 0.5;
+    mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+    for (int i = 0; i < 4; i++) { v += a * noise(p); p = m * p; a *= 0.5; }
+    return v;
+  }
+
+  void main() {
+    float aspect = uRes.x / uRes.y;
+    vec2 p = (vUv - 0.5) * vec2(aspect, 1.0);
+    float t = uTime;
+    float discover = clamp(uStage, 0.0, 1.0);
+    float reveal   = clamp(uStage - 1.0, 0.0, 1.0);
+
+    vec3 ink  = vec3(0.062, 0.071, 0.086);   // blue-slate, barely blue
+    vec3 cool = vec3(0.70, 0.82, 1.0);
+
+    vec3 col = ink;
+
+    // A soft overhead lamp over the drafting table.
+    vec2 l = (vUv - vec2(0.5, 1.08)) * vec2(aspect * 0.7, 1.5);
+    col += cool * exp(-dot(l, l) * 2.4) * (0.04 + 0.015 * discover);
+
+    // Terrain: a warped height field drawn as topographic contour lines.
+    vec2 tp = p * 1.05 + vec2(t * 0.004, -t * 0.003);
+    float h = fbm(tp + 0.6 * vec2(fbm(tp * 0.7 + 3.1), fbm(tp * 0.7 - 1.7)));
+    float hl = h * 16.0;
+    float d = abs(fract(hl - 0.5) - 0.5);                 // distance to nearest contour
+    float line = 1.0 - smoothstep(0.0, fwidth(hl) * 1.25, d);
+    float index = 1.0 - step(0.5, mod(floor(hl + 0.5), 4.0)); // every 4th is an index contour
+    float strength = mix(0.55, 1.0, index);
+    // Quieter behind the reading column, a little clearer toward the margins.
+    float margin = smoothstep(0.15, 0.8, length(p * vec2(0.75, 1.0)));
+    float contour = (0.026 + 0.022 * discover + 0.012 * reveal) * mix(0.4, 1.0, margin);
+    col += cool * line * strength * contour;
+
+    // Attentive light near the focused field.
+    vec2 f = (uFocus - 0.5) * vec2(aspect, 1.0);
+    col += cool * exp(-dot(p - f, p - f) * 4.0) * uFocusAmt * 0.03;
+
+    // The finished sheet sits in a softly lit room.
+    vec2 c = p * vec2(0.9, 1.3);
+    col += cool * exp(-dot(c, c) * 1.8) * reveal * 0.045;
+
+    // Vignette and static dithering grain (prevents banding).
+    float vig = smoothstep(1.3, 0.2, length(p * vec2(0.85, 1.15)));
+    col *= mix(0.7, 1.0, vig);
+    col += (hash(gl_FragCoord.xy) - 0.5) * (1.6 / 255.0);
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+const VERTEX = /* glsl */ `
+  varying vec2 vUv;
+  void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+`;
+
+async function initAtmosphere() {
+  const canvas = document.getElementById('atmosphere');
+  if (!canvas) return;
+
+  let THREE;
+  try { THREE = await import('three'); }
+  catch { return; } // CDN unavailable: the CSS background remains.
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas, antialias: false, alpha: false, depth: false, stencil: false,
+      powerPreference: 'low-power',
+    });
+  } catch { return; }
+
+  renderer.setPixelRatio(1);
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const uniforms = {
+    uRes:      { value: new THREE.Vector2(1, 1) },
+    uTime:     { value: 20 + Math.random() * 40 },
+    uStage:    { value: 0 },
+    uFocus:    { value: new THREE.Vector2(0.5, 0.55) },
+    uFocusAmt: { value: 0 },
+  };
+  const material = new THREE.ShaderMaterial({
+    uniforms, vertexShader: VERTEX, fragmentShader: FRAGMENT,
+    depthTest: false, depthWrite: false,
+  });
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+
+  // The haze is low-frequency, so half resolution is visually identical and far cheaper.
+  const SCALE = 0.5;
+  function resize() {
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(Math.max(1, Math.round(w * SCALE)), Math.max(1, Math.round(h * SCALE)), false);
+    uniforms.uRes.value.set(w, h);
+  }
+
+  const STAGE = { spark: 0, discovery: 1, generating: 1.35, blueprint: 2 };
+  const SPEED = { spark: 0.12, discovery: 0.55, generating: 0.9, blueprint: 0.35 }; // haze drift
+  let stage = document.body.dataset.stage || 'spark';
+  const target = { stage: STAGE[stage] ?? 0, fx: 0.5, fy: 0.55, amt: 0 };
+
+  function readFocus() {
+    const a = document.activeElement;
+    if (a && a.matches?.('textarea, .btn, .mic')) {
+      const r = a.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) {
+        target.fx = (r.left + r.width / 2) / innerWidth;
+        target.fy = 1 - (r.top + Math.min(r.height, 260) / 2) / innerHeight;
+        target.amt = a.matches('textarea') ? 1 : 0.55;
+        return;
+      }
+    }
+    target.amt = 0;
+  }
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  let raf = 0, last = performance.now(), acc = 0, ready = false;
+
+  function draw() {
+    renderer.render(scene, camera);
+    if (!ready) { ready = true; canvas.classList.add('is-ready'); }
+  }
+
+  function snap() {
+    readFocus();
+    uniforms.uStage.value = target.stage;
+    uniforms.uFocus.value.set(target.fx, target.fy);
+    uniforms.uFocusAmt.value = target.amt;
+    draw();
+  }
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    acc += dt;
+    if (acc < 1 / 30) return; // ~30fps is plenty for slow atmosphere
+    const step = acc; acc = 0;
+
+    readFocus();
+    const ease = (k) => 1 - Math.exp(-step * k);
+    uniforms.uTime.value += step * (SPEED[stage] ?? 0.3);
+    uniforms.uStage.value += (target.stage - uniforms.uStage.value) * ease(1.6);
+    const f = uniforms.uFocus.value;
+    f.x += (target.fx - f.x) * ease(2.2);
+    f.y += (target.fy - f.y) * ease(2.2);
+    uniforms.uFocusAmt.value += (target.amt - uniforms.uFocusAmt.value) * ease(2.0);
+    draw();
+  }
+
+  function start() {
+    cancelAnimationFrame(raf);
+    if (reduce.matches || document.hidden) { snap(); return; }
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  document.addEventListener('wb:stage', (e) => {
+    stage = e.detail;
+    target.stage = STAGE[stage] ?? 0;
+    if (reduce.matches) snap();
+  });
+  const onInteract = () => { if (reduce.matches) snap(); };
+  document.addEventListener('focusin', onInteract);
+  document.addEventListener('focusout', onInteract);
+  addEventListener('resize', () => { resize(); if (reduce.matches) snap(); }, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? cancelAnimationFrame(raf) : start());
+  reduce.addEventListener('change', start);
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); canvas.classList.remove('is-ready'); });
+
+  resize();
+  start();
+}
+
+initAtmosphere();
+</script>
+
+<!-- ========================================================================
+     Application
+     Sections: content · state & utilities · persistence · context ·
+     profile · BLUEPRINT SERVICE (backend seam) · mock service · markdown ·
+     rendering · voice · stage controller · wiring
+     ======================================================================== -->
+<script type="module">
+/* ---------------------------------------------------------------------------
+   Content: the seven questions are curated, not invented during discovery.
+   --------------------------------------------------------------------------- */
+const QUESTIONS = [
+  {
+    key: 'origin', label: 'Origin', question: 'What’s its story?',
+    fragment: 'Where did it begin?', heading: 'Where it begins',
+    explore: [
+      'What was happening the first time this idea appeared to you?',
+      'Who or what existed before it — and what changed?',
+      'If it had a first sentence, what would it be?',
+    ],
+    imagine: 'Imagine finding an old photograph of its very first moment. What’s in the frame?',
+  },
+  {
+    key: 'essence', label: 'Essence', question: 'What makes it matter?',
+    fragment: 'Why does it matter?', heading: 'Why it matters',
+    explore: [
+      'If it disappeared tomorrow, what would be lost?',
+      'Who is it for, even if that’s only you?',
+      'What does it do that nothing else quite does?',
+    ],
+    imagine: 'Describe it to a friend in one breath, without explaining how it works.',
+  },
+  {
+    key: 'belief', label: 'Belief', question: 'What does it hold to be true?',
+    fragment: 'What does it believe?', heading: 'What it holds true',
+    explore: [
+      'What does it assume about people?',
+      'What would it argue with?',
+      'Which truth does it hold that it has never had to say aloud?',
+    ],
+    imagine: 'If it had a motto carved somewhere, what would it say — and who carved it?',
+  },
+  {
+    key: 'perception', label: 'Perception', question: 'What does it notice that others miss?',
+    fragment: 'What might it be missing?', heading: 'What it notices',
+    explore: [
+      'What does it pay attention to first?',
+      'What do others overlook that it can’t ignore?',
+      'Where is its blind spot?',
+    ],
+    imagine: 'Walk into a crowded room as it would. What catches its eye?',
+  },
+  {
+    key: 'friction', label: 'Friction', question: 'What’s holding it back?',
+    fragment: 'What’s standing in the way?', heading: 'What resists it',
+    explore: [
+      'What is it afraid of?',
+      'Where do its wants and needs pull in different directions?',
+      'What has stopped it before?',
+    ],
+    imagine: 'Write the sentence it would never want anyone to read about it.',
+  },
+  {
+    key: 'gravity', label: 'Gravity', question: 'What holds everything together?',
+    fragment: 'What holds it together?', heading: 'What holds it together',
+    explore: [
+      'What keeps returning, no matter where it goes?',
+      'Which relationship matters most?',
+      'What would it come back for?',
+    ],
+    imagine: 'If everything else were stripped away, what single thing would still be standing?',
+  },
+  {
+    key: 'coherence', label: 'Coherence', question: 'What makes it stay itself?',
+    fragment: 'What must remain true?', heading: 'What keeps it itself',
+    explore: [
+      'What could change without it becoming something else?',
+      'What could never change?',
+      'How would you recognize it in a stranger’s hands?',
+    ],
+    imagine: 'Picture it twenty years from now. What do you recognize instantly?',
+  },
+];
+
+/* Context only adapts the gentle examples; the seven questions never change. */
+const CONTEXTS = {
+  character: { noun: 'character', kind: 'Character', pattern: /\b(character|protagonist|heroine|hero|villain|antihero|detective|knight|witch|wizard|sorcer\w*|assassin|orphan|(?:girl|boy|woman|man|person|creature) who)\b/g },
+  world:     { noun: 'world',     kind: 'World',     pattern: /\b(world|universe|realm|planet|kingdom|empire|galaxy|continent|civili[sz]ation|magic system|setting|lore|island)\b/g },
+  story:     { noun: 'story',     kind: 'Story',     pattern: /\b(story|stories|novel|book|series|saga|screenplay|script|comic|graphic novel|game|plot|tale|fiction|fantasy|mystery|romance|thriller)\b/g },
+  venture:   { noun: 'venture',   kind: 'Venture',   pattern: /\b(business|company|startup|brand|shop|store|service|product|agency|nonprofit|customers?|clients?|market|e-?commerce|subscription|revenue)\b/g },
+  concept:   { noun: 'idea',      kind: 'Concept',   pattern: /\b(app|platform|tool|software|technology|ai|course|curriculum|education|lesson|community|podcast|website|framework|guide|method)\b/g },
+  open:      { noun: 'idea',      kind: 'Creative',  pattern: null },
+};
+
+const HINTS = {
+  origin: {
+    character: 'A character might have a history — a place they left, a promise they broke, a night that changed them.',
+    story:     'A story might begin with a question someone couldn’t stop asking.',
+    world:     'A world might carry the memory of how it was made — or how it nearly ended.',
+    venture:   'A business might have a founding necessity — the problem someone got tired of living with.',
+    concept:   'An idea might start as a frustration you noticed again and again.',
+    open:      'A memory, a frustration, an image, or a question you couldn’t let go of.',
+  },
+  essence: {
+    character: 'Maybe it’s what they’d risk everything to protect.',
+    story:     'Maybe it’s the feeling a reader carries away after the last page.',
+    world:     'Maybe it’s the one thing that could only happen here.',
+    venture:   'Maybe it’s the difference it makes on an ordinary Tuesday for one customer.',
+    concept:   'Maybe it’s who would miss it if it never existed.',
+    open:      'Maybe it’s why you keep returning to it.',
+  },
+  belief: {
+    character: 'A character might hold a conviction they learned the hard way.',
+    story:     'A story might quietly argue that people can change — or that they can’t.',
+    world:     'A fictional world might have an inherited belief nobody questions anymore.',
+    venture:   'A business might believe something its industry has forgotten.',
+    concept:   'A concept might rest on an assumption worth saying out loud.',
+    open:      'Something it would defend, even when that’s inconvenient.',
+  },
+  perception: {
+    character: 'What do they see in a room that nobody else does?',
+    story:     'Which small detail would only this story pause to notice?',
+    world:     'What do its people sense that outsiders can’t?',
+    venture:   'What does it understand about its customers that competitors overlook?',
+    concept:   'What pattern does it catch that existing tools miss?',
+    open:      'A detail, a pattern, a person, a feeling others pass by.',
+  },
+  friction: {
+    character: 'A fear, a flaw, an enemy, a secret — or simply bad timing.',
+    story:     'What keeps the ending from arriving too easily?',
+    world:     'Scarcity, a broken treaty, a fading magic, an old wound.',
+    venture:   'Money, time, trust, a competitor — or a doubt you haven’t said aloud.',
+    concept:   'A technology concept might contain an unresolved contradiction.',
+    open:      'It’s fine if the honest answer is “I don’t know yet.”',
+  },
+  gravity: {
+    character: 'A relationship, a vow, a place they keep returning to.',
+    story:     'The theme or question every scene circles back toward.',
+    world:     'A law of nature, a shared myth, a single city at the center.',
+    venture:   'A mission, a community, a standard you won’t compromise.',
+    concept:   'The core principle every feature has to serve.',
+    open:      'The thread that would unravel everything if it were pulled.',
+  },
+  coherence: {
+    character: 'What would make them unrecognizable if it changed?',
+    story:     'What would a sequel have to keep to still feel like this story?',
+    world:     'Which rule can never break without the world becoming somewhere else?',
+    venture:   'What would you refuse to do, even if it paid well?',
+    concept:   'What must stay true as it grows?',
+    open:      'What must remain true, no matter how it evolves?',
+  },
+};
+
+/* ---------------------------------------------------------------------------
+   State & utilities
+   --------------------------------------------------------------------------- */
+const state = {
+  stage: 'spark',      // 'spark' | 'discovery' | 'generating' | 'blueprint'
+  busy: false,
+  blueprint: null,
+  markdown: '',
+};
+
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollBehavior = () => (reducedMotion() ? 'auto' : 'smooth');
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+function announce(message) {
+  const region = $('#announcer');
+  region.textContent = '';
+  requestAnimationFrame(() => { region.textContent = message; });
+}
+
+let toastTimer;
+function toast(message) {
+  const t = $('#toast');
+  t.textContent = message;
+  t.dataset.show = 'true';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.dataset.show = 'false'; }, 2600);
+}
+
+const supportsFieldSizing = CSS.supports('field-sizing', 'content');
+function autosize(textarea) {
+  if (supportsFieldSizing) return;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`; // CSS max-height keeps it sensible
+}
+
+/* ---------------------------------------------------------------------------
+   Elements
+   --------------------------------------------------------------------------- */
+const sparkSection   = $('#spark');
+const sparkInput     = $('#spark-input');
+const sparkNudge     = $('#spark-nudge');
+const letsGoButton   = $('#lets-go');
+const discovery      = $('#discovery');
+const discoveryTitle = $('#discovery-title');
+const questionList   = $('#questions');
+const blueprintBtn   = $('#get-blueprint');
+const generating     = $('#generating');
+const blueprintView  = $('#blueprint');
+
+/* ---------------------------------------------------------------------------
+   Persistence: drafts stay in this browser so an hour of writing is never lost.
+   --------------------------------------------------------------------------- */
+const DRAFT_KEY = 'wbb.draft.v1';
+const Draft = {
+  load() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY)) || null; }
+    catch { return null; }
+  },
+  save: debounce(() => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        spark: sparkInput.value,
+        answers: readAnswers(),
+        opened: state.stage !== 'spark',
+        savedAt: Date.now(),
+      }));
+    } catch { /* storage unavailable — nothing to do */ }
+  }, 400),
+  clear() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+  },
+};
+
+/* ---------------------------------------------------------------------------
+   Context: a light keyword read of the Spark to tailor examples.
+   --------------------------------------------------------------------------- */
+function classifyContext(text) {
+  const t = (text || '').toLowerCase();
+  let best = 'open', bestScore = 0;
+  for (const [key, ctx] of Object.entries(CONTEXTS)) {
+    if (!ctx.pattern) continue;
+    const score = (t.match(ctx.pattern) || []).length;
+    if (score > bestScore) { best = key; bestScore = score; }
+  }
+  return best;
+}
+
+function updateHints(context) {
+  for (const node of $$('[data-hint]')) {
+    const set = HINTS[node.dataset.hint];
+    node.textContent = set[context] || set.open;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Profile: the Spark plus the seven responses — the input to generation.
+   --------------------------------------------------------------------------- */
+function answerField(key) { return $(`#q-${key}-input`); }
+
+function readAnswers() {
+  return Object.fromEntries(QUESTIONS.map((q) => [q.key, answerField(q.key)?.value ?? '']));
+}
+
+function buildProfile() {
+  const answers = readAnswers();
+  const spark = sparkInput.value.trim();
+  return {
+    spark,
+    responses: QUESTIONS.map((q) => ({
+      key: q.key,
+      label: q.label,
+      question: q.question,
+      answer: (answers[q.key] || '').trim(),   // empty string = intentionally left open
+    })),
+    context: classifyContext(spark),           // client-side hint only; a backend may ignore it
+    locale: navigator.language || 'en',
+    createdAt: new Date().toISOString(),
+  };
+}
+
+/* ===========================================================================
+   BLUEPRINT SERVICE — the single seam between the UI and Blueprint generation
+   ===========================================================================
+
+   The UI depends only on this Blueprint view model:
+
+   @typedef {Object} Blueprint
+   @property {Object}   meta
+   @property {string}   meta.title
+   @property {string}   meta.kicker        e.g. "A World Blueprint"
+   @property {string}   meta.kind          e.g. "World"
+   @property {string}   meta.description
+   @property {string}   meta.created       ISO date string
+   @property {string}   meta.version
+   @property {string[]} meta.foundations   labels of answered questions
+   @property {string[]} meta.openQuestions labels of unanswered questions
+   @property {string[]} meta.keywords
+   @property {string}   meta.source
+   @property {Array<{id:string, eyebrow:string, heading:string, mdHeading?:string,
+                      variant?:string, blocks:Block[]}>} sections
+   @property {string}   closing
+   Block = {type:'p', text} | {type:'echo', text} | {type:'connection', title, text}
+         | {type:'open', items:[{label, text}]} | {type:'doors', items:string[]}
+*/
+
+/**
+ * Generate a Blueprint from a creator's Profile.
+ * @param {ReturnType<typeof buildProfile>} profile
+ * @param {{ signal?: AbortSignal }} [options]
+ * @returns {Promise<Blueprint>}
+ */
+async function generateBlueprint(profile, { signal } = {}) {
+  // TODO(backend): Replace the mock call below with a request to the
+  // World Builder Blueprint generation service once it exists.
+  //
+  //   • The endpoint, request/response contract and authentication are NOT
+  //     defined yet. Do not guess them here.
+  //   • Never put API keys or model credentials in this file. AI calls belong
+  //     on the server; the browser should only talk to your own backend.
+  //   • Send `profile` (the Spark + seven responses) as the request payload.
+  //   • If the service returns Markdown or a different shape, convert it into
+  //     the Blueprint view model above in a small adapter function so the UI
+  //     stays unchanged.
+  //   • Pass `signal` through to support cancellation, and throw on failure —
+  //     requestBlueprint() already shows a calm "Try again" state.
+  //
+  //   Sketch:
+  //     const response = await fetch(/* your endpoint */, { method: 'POST', body: JSON.stringify(profile), signal, ... });
+  //     if (!response.ok) throw new Error(`Blueprint service responded ${response.status}`);
+  //     return adaptBlueprint(await response.json());
+  return MockBlueprintService.generate(profile, { signal });
+}
+
+/* ---------------------------------------------------------------------------
+   Mock Blueprint service (Phase One only). Composes a demonstration Blueprint
+   locally from the creator's own words. Delete this block once the backend
+   is connected — nothing else depends on it.
+   --------------------------------------------------------------------------- */
+const MockBlueprintService = (() => {
+  const NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+  const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  const SMALL_WORDS = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'from', 'in', 'into', 'nor', 'of', 'on', 'or', 'the', 'to', 'with']);
+  const TRAILING = new Set([...SMALL_WORDS, 'who', 'that', 'which', 'where', 'when', 'about', 'is', 'are', 'was', 'his', 'her', 'their', 'its', 'my', 'our']);
+  const STOP = new Set(('about above after again against because been before being below between both could does doing during each few further have having here hers herself himself into itself just more most myself only other ought ours ourselves over same should some such than that their theirs them themselves then there these they this those through under until very what when where which while whom with would your yours yourself yourselves really something thing things want create make build write maybe someone everything always never also would like kind still even much many every whatever anything').split(' '));
+
+  const LEADS = {
+    origin:     (n) => `Every ${n} carries the shape of where it started. Yours begins here:`,
+    essence:    () => 'What makes it matter, in your words:',
+    belief:     () => 'Underneath everything, it holds something to be true:',
+    perception: () => 'It notices what others pass by:',
+    friction:   () => 'Something stands in the way:',
+    gravity:    () => 'At the center, holding everything in orbit:',
+    coherence:  () => 'And this is what lets it stay itself:',
+  };
+  const REFLECTIONS = {
+    origin:     (n) => `Origins tend to echo. Watch for the ways this beginning resurfaces — in choices, in tone, in what the ${n} refuses to forget.`,
+    essence:    () => 'This is the part worth protecting as everything else changes. When decisions get complicated, it is the measure.',
+    belief:     (n) => `A belief like this does quiet work. It decides what the ${n} will tolerate, and what it will fight for.`,
+    perception: (n) => `Perception is a signature. It is how people will come to recognize this ${n} before they can explain why.`,
+    friction:   (n) => `Friction isn’t a defect to remove. It is the pressure that gives the ${n} somewhere to go.`,
+    gravity:    () => 'When the parts begin to drift, this is what pulls them back. Anything new should be able to answer to it.',
+    coherence:  (n) => `Coherence is a promise to anyone who meets it later: that it will still be, recognizably, this ${n}.`,
+  };
+  const READINGS = {
+    character: 'A character described in a single breath is usually defined by two things: what they want, and what they can’t have. The rest of this Blueprint looks for both.',
+    story:     'A story in its earliest form is often a situation waiting for pressure. The foundations below show where that pressure might come from.',
+    world:     'A world announced in one sentence is usually held together by one rule. Finding that rule is often the quickest way into everything else.',
+    venture:   'A venture at this stage is less a plan than a promise to someone. The foundations below help name who that someone is, and what is being promised.',
+    concept:   'An idea at this stage is a direction more than a design. The foundations below sketch the principles that should survive any version of it.',
+    open:      'Some ideas arrive before their category does. That isn’t a weakness — it means the shape is still yours to discover. The foundations below begin to trace it.',
+  };
+  const DOORS = {
+    character: ['Write one ordinary morning in their life, before anything goes wrong.', 'Introduce someone who sees them completely differently than they see themselves.', 'Decide what they would never say out loud — then find the scene where they almost do.'],
+    story:     ['Write the first page as if the reader already trusts you.', 'Name the question the ending will answer, even if you don’t know the answer yet.', 'Find the scene you’re most afraid to write, and sketch it first.'],
+    world:     ['Draw a rough map — not of land, but of who holds power and who wants it.', 'Describe one ordinary custom and the old reason behind it.', 'Imagine a traveler arriving for the first time. What do they misunderstand?'],
+    venture:   ['Describe the one person you most want to help, in a single paragraph.', 'Write the promise you’d print on the first thing a customer receives.', 'List what you’d refuse to do, even if it paid well.'],
+    concept:   ['Describe the smallest version that would still be unmistakably this idea.', 'Write down the assumption it depends on most, then test it with one person.', 'Sketch the moment someone first understands why it matters.'],
+    open:      ['Write one page without deciding what form it takes.', 'Explain it to someone who knows nothing about it, and notice what they ask first.', 'Return to an open question below and answer the one that pulls at you.'],
+  };
+
+  function words(s) { return s.trim().split(/\s+/).filter(Boolean); }
+
+  function firstSentence(text) {
+    return (text.trim().split(/(?<=[.!?])\s+/)[0] || '').trim();
+  }
+
+  /** A short excerpt for quoting inside synthesis sentences. */
+  function excerpt(text, max = 14) {
+    let s = firstSentence(text).replace(/[\s.,;:!?]+$/, '');
+    const w = words(s);
+    if (w.length > max) s = `${w.slice(0, max).join(' ').replace(/[,;:—–-]+$/, '')}…`;
+    return s;
+  }
+
+  /** End a quoted excerpt with a period unless it already trails off. */
+  function close(s) { return /[…]$/.test(s) ? s : `${s}.`; }
+
+  function titleCase(s) {
+    return words(s).map((w, i) => {
+      const lower = w.toLowerCase();
+      if (i > 0 && SMALL_WORDS.has(lower)) return lower;
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+
+  function deriveTitle(spark) {
+    const named = spark.match(/\b(?:called|named|titled)\s+["“']?([A-Z][\w’'-]*(?:\s+(?:of\s+|the\s+)?[A-Z][\w’'-]*){0,3})/);
+    if (named) return named[1];
+
+    let s = firstSentence(spark)
+      .replace(/^(?:i\s+(?:want|would like|’d like|'d like|hope|am trying|’m trying|'m trying|need)\s+to\s+(?:create|make|build|write|start|design|develop|launch|imagine|tell|explore)\s+)/i, '')
+      .replace(/^(?:i\s*(?:’m|'m|am)\s+(?:creating|making|building|writing|imagining|designing)\s+)/i, '')
+      .replace(/^(?:(?:to\s+)?(?:create|make|build|write)\s+)/i, '');
+    s = s.split(/[,;:.!?(—–]/)[0];
+    const parts = s.split(/\s(?:and|but|so|because|which)\s/i);
+    if (words(parts[0]).length >= 3) s = parts[0];
+    let w = words(s);
+    if (w.length > 8) w = w.slice(0, 8);
+    while (w.length > 2 && TRAILING.has(w.at(-1).toLowerCase())) w.pop();
+    const title = titleCase(w.join(' ').replace(/["“”]/g, ''));
+    return title || 'An Untitled Beginning';
+  }
+
+  function describe(spark) {
+    const w = words(spark.replace(/\s+/g, ' '));
+    let s = w.length > 34 ? `${w.slice(0, 34).join(' ').replace(/[,;:]+$/, '')}…` : w.join(' ');
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    return /[.!?…]$/.test(s) ? s : `${s}.`;
+  }
+
+  function keywords(text, n = 6) {
+    const counts = new Map();
+    for (const raw of text.toLowerCase().match(/[a-z’'-]{5,}/g) || []) {
+      const w = raw.replace(/[’']s$/, '');
+      if (STOP.has(w) || /[’']/.test(w)) continue;
+      counts.set(w, (counts.get(w) || 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([w]) => w);
+  }
+
+  function compose(profile) {
+    const ctxKey = profile.context in CONTEXTS ? profile.context : 'open';
+    const ctx = CONTEXTS[ctxKey];
+    const noun = ctx.noun;
+    const answered = profile.responses.filter((r) => r.answer);
+    const open = profile.responses.filter((r) => !r.answer);
+    const a = Object.fromEntries(profile.responses.map((r) => [r.key, r.answer]));
+    const sections = [];
+    let n = 0;
+    const eyebrow = (label) => `${ROMAN[n++]} · ${label}`;
+
+    // The Spark
+    const count = answered.length;
+    const summary =
+      count === 7 ? 'You explored all seven foundations. What follows gathers them into a single shape.'
+      : count === 0 ? 'You chose to begin with the spark alone. That is enough. What follows reflects it back, and treats the seven foundations as open doors rather than empty boxes.'
+      : `You explored ${NUMBERS[count]} of the seven foundations and left ${NUMBERS[7 - count]} open. What follows gathers what you said into a single shape — and keeps the open questions open, because that is usually where the next discoveries are.`;
+    sections.push({
+      id: 'spark', eyebrow: eyebrow('The Spark'), heading: 'It began with a few words',
+      blocks: [
+        { type: 'p', text: 'Everything in this Blueprint grows from what you wrote first.' },
+        { type: 'echo', text: profile.spark },
+        { type: 'p', text: READINGS[ctxKey] },
+        { type: 'p', text: summary },
+      ],
+    });
+
+    // Each answered foundation
+    for (const q of QUESTIONS) {
+      if (!a[q.key]) continue;
+      sections.push({
+        id: q.key, eyebrow: eyebrow(q.label), heading: q.heading,
+        mdHeading: `${q.label} — ${q.heading}`,
+        blocks: [
+          { type: 'p', text: LEADS[q.key](noun) },
+          { type: 'echo', text: a[q.key] },
+          { type: 'p', text: REFLECTIONS[q.key](noun) },
+        ],
+      });
+    }
+
+    // Connections: the relationships between answers
+    const connections = [];
+    const tensionSource = a.belief ? ['belief', 'what it believes'] : a.essence ? ['essence', 'what makes it matter'] : null;
+    if (a.friction && tensionSource) {
+      connections.push({
+        type: 'connection', title: 'The central tension',
+        text: `Set ${tensionSource[1]} — “${excerpt(a[tensionSource[0]])}” — beside what holds it back — “${close(excerpt(a.friction))}” The gap between them is not a flaw in the ${noun}. It is likely where its most compelling choices live.`,
+      });
+    }
+    if (a.origin && a.gravity) {
+      connections.push({
+        type: 'connection', title: 'Beginning and center',
+        text: `Where it began — “${excerpt(a.origin)}” — and what holds it together — “${excerpt(a.gravity)}” — may be closer than they look. Many ideas orbit their origin without ever naming it.`,
+      });
+    }
+    if (a.perception && a.essence) {
+      connections.push({
+        type: 'connection', title: 'Seeing and mattering',
+        text: `What it notices — “${excerpt(a.perception)}” — may be the clearest route to why it matters — “${close(excerpt(a.essence))}” The way it sees is part of what it gives.`,
+      });
+    }
+    if (a.coherence && a.friction) {
+      connections.push({
+        type: 'connection', title: 'The test ahead',
+        text: `What keeps it itself — “${excerpt(a.coherence)}” — will be tested by what holds it back — “${close(excerpt(a.friction))}” That test is a natural spine for whatever you build next.`,
+      });
+    }
+    if (!connections.length && count > 0) {
+      connections.push({
+        type: 'p',
+        text: `The connections between foundations usually appear once two or three of them sit side by side. Friction, in particular, tends to reveal what the rest of the ${noun} is for. When you’re ready, return to it.`,
+      });
+    }
+    if (connections.length) {
+      sections.push({
+        id: 'connections', eyebrow: eyebrow('Connections'), heading: 'What your answers reveal together',
+        variant: 'connections', blocks: connections.slice(0, 3),
+      });
+    }
+
+    // Left open, for now
+    if (open.length) {
+      const byKey = Object.fromEntries(QUESTIONS.map((q) => [q.key, q]));
+      sections.push({
+        id: 'open', eyebrow: eyebrow('Still open'), heading: 'Left open, for now',
+        blocks: [
+          { type: 'p', text: 'Meaningful incompleteness is part of the process. These foundations are waiting, not missing.' },
+          { type: 'open', items: open.map((r) => ({ label: `${r.label} · ${r.question}`, text: byKey[r.key].imagine })) },
+        ],
+      });
+    }
+
+    // Doors forward
+    const generic = DOORS[ctxKey];
+    const doors = [
+      a.friction ? `Put it under pressure. Find the moment where “${excerpt(a.friction, 12)}” can no longer be avoided — and write that moment first.` : generic[0],
+      a.origin ? `Return to the beginning. Tell the smallest true moment inside “${excerpt(a.origin, 12)}” in a single page.` : generic[1],
+      (a.coherence || a.gravity) ? `Test its shape. Imagine it changed by time or success, and check whether “${excerpt(a.coherence || a.gravity, 12)}” still holds.` : generic[2],
+    ];
+    sections.push({
+      id: 'doors', eyebrow: eyebrow('Forward'), heading: 'Three doors forward',
+      blocks: [{ type: 'doors', items: doors }],
+    });
+
+    const allText = [profile.spark, ...answered.map((r) => r.answer)].join(' ');
+    return {
+      meta: {
+        title: deriveTitle(profile.spark),
+        kicker: `A ${ctx.kind} Blueprint`,
+        kind: ctx.kind,
+        description: describe(profile.spark),
+        created: new Date().toISOString().slice(0, 10),
+        version: '0.1',
+        foundations: answered.map((r) => r.label),
+        openQuestions: open.map((r) => r.label),
+        keywords: keywords(allText),
+        source: 'Demonstration — composed in your browser',
+      },
+      sections,
+      closing: 'This Blueprint is a beginning, not a verdict. Everything in it came from what you imagined.',
+    };
+  }
+
+  return {
+    async generate(profile, { signal } = {}) {
+      await new Promise((resolve, reject) => {
+        const t = setTimeout(resolve, 1500 + Math.random() * 900); // simulate a service round-trip
+        signal?.addEventListener('abort', () => { clearTimeout(t); reject(signal.reason); }, { once: true });
+      });
+      return compose(profile);
+    },
+  };
+})();
+
+/* ---------------------------------------------------------------------------
+   Markdown export (YAML front matter + narrative body)
+   --------------------------------------------------------------------------- */
+function blueprintToMarkdown(bp) {
+  const q = (v) => JSON.stringify(String(v));              // JSON strings are valid YAML scalars
+  const list = (arr) => (arr.length ? `[${arr.map(q).join(', ')}]` : '[]');
+  const quote = (text) => text.trim().split('\n').map((line) => `> ${line}`.trimEnd()).join('\n');
+  const m = bp.meta;
+
+  const out = [
+    '---',
+    `title: ${q(m.title)}`,
+    `kind: ${q(m.kind)}`,
+    `description: ${q(m.description)}`,
+    `created: ${q(m.created)}`,
+    `version: ${q(m.version)}`,
+    `foundations: ${list(m.foundations)}`,
+    `open_questions: ${list(m.openQuestions)}`,
+    `keywords: ${list(m.keywords)}`,
+    `source: ${q(m.source)}`,
+    'site: "worldbuilderblueprint.com"',
+    '---',
+    '',
+    `# ${m.title}`,
+    '',
+    m.description,
+    '',
+  ];
+
+  for (const s of bp.sections) {
+    out.push(`## ${s.mdHeading || s.heading}`, '');
+    for (const b of s.blocks) {
+      if (b.type === 'p') out.push(b.text, '');
+      else if (b.type === 'echo') out.push(quote(b.text), '');
+      else if (b.type === 'connection') out.push(`**${b.title}.** ${b.text}`, '');
+      else if (b.type === 'open') { b.items.forEach((i) => out.push(`- **${i.label}** — ${i.text}`)); out.push(''); }
+      else if (b.type === 'doors') { b.items.forEach((d, i) => out.push(`${i + 1}. ${d}`)); out.push(''); }
+    }
+  }
+  out.push('---', '', `*${bp.closing}*`, '');
+  return out.join('\n');
+}
+
+function slugify(s) {
+  return s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'blueprint';
+}
+
+/* ---------------------------------------------------------------------------
+   Rendering
+   --------------------------------------------------------------------------- */
+const MIC_ICON = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>`;
+
+function voiceTools(forId, label) {
+  return `
+    <div class="field__tools">
+      <span class="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <button type="button" class="mic" data-voice-for="${forId}" aria-label="${label}" aria-pressed="false" title="Speak instead of typing">
+        ${MIC_ICON}<span class="mic__rec" aria-hidden="true"></span>
+      </button>
+    </div>`;
+}
+
+function renderQuestions() {
+  questionList.innerHTML = QUESTIONS.map((q, i) => {
+    const id = `q-${q.key}`;
+    return `
+      <li class="q" data-key="${q.key}" style="--i:${i}">
+        <span class="q__station" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+        <div class="q__head">
+          <p class="q__label" id="${id}-label">${q.label}</p>
+          <p class="q__fragment">${q.fragment}</p>
+          <span class="q__mark" aria-hidden="true"><span class="q__dot"></span>Captured</span>
+        </div>
+        <div class="q__body" inert>
+          <div class="q__inner">
+            <h3 class="q__question" id="${id}-title"><label for="${id}-input">${q.question}</label></h3>
+            <div class="field field--q">
+              <textarea id="${id}-input" class="field__input" data-key="${q.key}" rows="3"
+                aria-labelledby="${id}-label ${id}-title" aria-describedby="${id}-hint ${id}-voice"></textarea>
+              ${voiceTools(`${id}-input`, `Speak your answer to ${q.label}`)}
+            </div>
+            <p class="voice-note" id="${id}-voice" aria-live="polite"></p>
+            <p class="q__hint" id="${id}-hint"><span class="q__hint-label">For example</span><span class="q__hint-text" data-hint="${q.key}"></span></p>
+            <button type="button" class="explore-toggle" aria-expanded="false" aria-controls="${id}-explore">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+              Explore this question
+            </button>
+            <div class="explore" id="${id}-explore" hidden>
+              <p class="explore__title">Discovery prompts</p>
+              <ul class="explore__list">${q.explore.map((p) => `<li>${p}</li>`).join('')}</ul>
+              <p class="explore__spark"><span>Imagination spark</span>${q.imagine}</p>
+            </div>
+          </div>
+        </div>
+      </li>`;
+  }).join('');
+  updateHints('open');
+}
+
+/* The seal: a compass rose ringed by the line it was drawn from. */
+const SEAL_SVG = `
+  <svg viewBox="0 0 120 120">
+    <defs><path id="seal-arc" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
+    <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <circle cx="60" cy="60" r="52.5" fill="none" stroke="currentColor" stroke-width=".6"/>
+    <circle cx="60" cy="60" r="34" fill="none" stroke="currentColor" stroke-width=".8"/>
+    <text font-family="IBM Plex Mono, ui-monospace, monospace" font-size="7" font-weight="500" fill="currentColor">
+      <textPath href="#seal-arc" textLength="279" lengthAdjust="spacing">WORLD BUILDER BLUEPRINT · DRAWN FROM YOUR OWN WORDS ·</textPath>
+    </text>
+    <path d="M60 33 L63.5 56.5 L87 60 L63.5 63.5 L60 87 L56.5 63.5 L33 60 L56.5 56.5 Z" fill="none" stroke="currentColor" stroke-width=".8"/>
+    <path d="M60 33 L63.5 56.5 L60 60 Z M87 60 L63.5 63.5 L60 60 Z M60 87 L56.5 63.5 L60 60 Z M33 60 L56.5 56.5 L60 60 Z" fill="currentColor" opacity=".55"/>
+    <circle cx="60" cy="60" r="1.8" fill="currentColor"/>
+    <text x="60" y="31" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="5.5" fill="currentColor">N</text>
+  </svg>`;
+
+function renderBlueprint(bp) {
+  const sheet = $('#bp-sheet');
+  sheet.replaceChildren();
+
+  // Head: seal, title, description, and a drawing-sheet title block.
+  const head = el('header', 'sheet__head');
+  const seal = el('span', 'seal');
+  seal.setAttribute('aria-hidden', 'true');
+  seal.innerHTML = SEAL_SVG; // static markup, no user content
+
+  const intro = el('div', 'sheet__intro');
+  const title = el('h2', 'sheet__title', bp.meta.title);
+  title.id = 'bp-title';
+  title.tabIndex = -1;
+  intro.append(el('p', 'sheet__kicker', bp.meta.kicker), title, el('p', 'sheet__dek', bp.meta.description));
+
+  const drawn = new Intl.DateTimeFormat(undefined, { dateStyle: 'long' })
+    .format(new Date(`${bp.meta.created}T12:00:00`));
+  const cells = [
+    ['Kind', bp.meta.kind, ''],
+    ['Drawn', drawn, ''],
+    ['Revision', `${bp.meta.version} · first draft`, ''],
+    ['Sheet', '01 of 01', ''],
+    ['Foundations surveyed', bp.meta.foundations.length ? bp.meta.foundations.join(', ') : 'Spark only', 'span-2'],
+    ['Left open', bp.meta.openQuestions.length ? bp.meta.openQuestions.join(', ') : 'None', 'span-2'],
+  ];
+  if (bp.meta.keywords.length) cells.push(['Keywords', bp.meta.keywords.join(' · '), 'span-4']);
+  const block = el('dl', 'titleblock');
+  for (const [k, v, span] of cells) {
+    const cell = el('div', span || null);
+    cell.append(el('dt', null, k), el('dd', null, v));
+    block.append(cell);
+  }
+  head.append(seal, intro, block);
+
+  // Body
+  const body = el('div', 'sheet__body');
+  for (const s of bp.sections) {
+    const section = el('section', `bp-section${s.variant ? ` bp-section--${s.variant}` : ''}`);
+    const h = el('h3', null, s.heading);
+    h.id = `bp-${s.id}`;
+    section.setAttribute('aria-labelledby', h.id);
+    section.append(el('p', 'bp-eyebrow', s.eyebrow), h);
+    for (const b of s.blocks) section.append(renderBlock(b));
+    body.append(section);
+  }
+
+  // Foot: a cartographer's scale bar, the closing line, and the demo note.
+  const foot = el('footer', 'sheet__foot');
+  const scale = el('div', 'scalebar');
+  scale.setAttribute('aria-hidden', 'true');
+  scale.innerHTML = '<span class="scalebar__bar"><i></i><i></i><i></i><i></i></span><span class="scalebar__label">Scale · one idea, fully drawn</span>';
+  foot.append(
+    scale,
+    el('p', 'sheet__closing', bp.closing),
+    el('p', 'sheet__note', 'Demonstration Blueprint, composed in your browser from your own answers. Full AI synthesis arrives when the Blueprint service is connected.'),
+  );
+
+  sheet.append(head, body, foot);
+  $('#bp-source-code').textContent = state.markdown;
+}
+
+function renderBlock(b) {
+  switch (b.type) {
+    case 'echo': {
+      const fig = el('figure', 'echo');
+      const quote = el('blockquote');
+      for (const para of b.text.split(/\n+/).filter((s) => s.trim())) quote.append(el('p', null, para.trim()));
+      fig.append(quote, el('figcaption', null, 'In your words'));
+      return fig;
+    }
+    case 'connection': {
+      const div = el('div', 'connection');
+      div.append(el('p', 'connection__title', b.title), el('p', null, b.text));
+      return div;
+    }
+    case 'open': {
+      const ul = el('ul', 'bp-open');
+      for (const item of b.items) {
+        const li = el('li');
+        li.append(el('strong', null, item.label), document.createTextNode(item.text));
+        ul.append(li);
+      }
+      return ul;
+    }
+    case 'doors': {
+      const ol = el('ol', 'bp-doors');
+      for (const d of b.items) ol.append(el('li', null, d));
+      return ol;
+    }
+    default:
+      return el('p', null, b.text);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Voice input: Web Speech API, one field at a time.
+   Speaking and typing are two ways of answering the same question.
+   --------------------------------------------------------------------------- */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const Voice = {
+  rec: null, button: null, field: null, wrap: null, note: null,
+  base: '', finals: '', detached: false, error: '', consented: false,
+  stream: null, audioCtx: null, meterRaf: 0,
+
+  get active() { return Boolean(this.rec); },
+
+  setNote(note, text, tone = '') {
+    if (!note) return;
+    note.textContent = text;
+    note.dataset.tone = tone;
+  },
+
+  setButton(btn, s) {
+    btn.dataset.state = s;
+    btn.setAttribute('aria-pressed', String(s === 'listening'));
+    const wrap = btn.closest('.field');
+    if (s === 'listening') wrap.dataset.voice = 'listening';
+    else delete wrap.dataset.voice;
+  },
+
+  async toggle(btn) {
+    if (this.active && this.button === btn) { this.stop(); return; }
+    await this.start(btn);
+  },
+
+  async start(btn) {
+    const field = document.getElementById(btn.dataset.voiceFor);
+    const note = document.getElementById(field.getAttribute('aria-describedby').split(' ').find((id) => id.endsWith('-voice')));
+
+    if (!SpeechRecognition) {
+      this.setButton(btn, 'unavailable');
+      this.setNote(note, 'Voice input isn’t available in this browser. Typing works just the same — Chrome, Edge, and Safari support speaking.');
+      return;
+    }
+    if (!window.isSecureContext) {
+      this.setNote(note, 'Voice input needs a secure (https) connection. You can keep typing in the meantime.');
+      return;
+    }
+    if (!this.consented) {
+      this.consented = await askVoiceConsent();
+      if (!this.consented) { btn.focus(); return; }
+    }
+
+    this.stop();
+    Object.assign(this, {
+      button: btn, field, note, wrap: btn.closest('.field'),
+      base: field.value && !/\s$/.test(field.value) ? `${field.value} ` : field.value,
+      finals: '', detached: false, error: '',
+    });
+
+    const rec = new SpeechRecognition();
+    rec.lang = navigator.language || 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+
+    rec.onstart = () => {
+      this.setButton(btn, 'listening');
+      btn.setAttribute('aria-label', 'Stop listening');
+      this.setNote(note, 'Listening. Speak naturally — select the microphone again or press Esc to stop.', 'live');
+      announce('Microphone on.');
+      this.startMeter();
+    };
+    rec.onresult = (event) => {
+      if (this.detached) return;
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const r = event.results[i];
+        if (r.isFinal) this.finals += `${r[0].transcript.trim()} `;
+        else interim += r[0].transcript;
+      }
+      field.value = this.base + this.finals + interim;
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    rec.onerror = (event) => {
+      this.error = ({
+        'not-allowed': 'Microphone access is blocked. You can allow it in your browser’s site settings — or keep typing.',
+        'service-not-allowed': 'Speech recognition isn’t permitted here. Typing works just the same.',
+        'no-speech': 'I didn’t catch anything. Try again whenever you’re ready.',
+        'audio-capture': 'No microphone was found. Check that one is connected, or keep typing.',
+        network: 'Speech recognition needs a network connection right now. Everything you’ve typed is safe.',
+        'language-not-supported': 'Speech recognition doesn’t support your browser language yet. Typing works just the same.',
+        aborted: '',
+      })[event.error] ?? 'Voice input stopped unexpectedly. You can try again or keep typing.';
+    };
+    rec.onend = () => {
+      if (!this.detached) {
+        field.value = (this.base + this.finals).replace(/\s+$/, '');
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      const heard = Boolean(this.finals.trim());
+      this.cleanup();
+      this.setNote(note, this.error || (heard ? 'Microphone off. Your words are in the field — edit them freely.' : 'Microphone off.'));
+      if (!this.error) announce('Microphone off.');
+    };
+
+    this.rec = rec;
+    this.setButton(btn, 'requesting');
+    this.setNote(note, 'Waiting for microphone permission…');
+    try { rec.start(); }
+    catch { this.cleanup(); this.setNote(note, 'Voice input couldn’t start. You can try again or keep typing.'); }
+  },
+
+  /** Typing while listening hands control back to the keyboard. */
+  detach(field) {
+    if (this.active && this.field === field) { this.detached = true; this.stop(); }
+  },
+
+  stop() {
+    if (!this.rec) return;
+    try { this.rec.stop(); } catch { this.cleanup(); }
+  },
+
+  async startMeter() {
+    const wrap = this.wrap;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    if (coarse || reducedMotion() || !navigator.mediaDevices?.getUserMedia) {
+      wrap.dataset.meter = 'ambient';
+      return;
+    }
+    try {
+      // Permission was already granted for recognition, so this doesn't prompt again.
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      if (!this.active) { this.stream.getTracks().forEach((t) => t.stop()); this.stream = null; return; }
+      this.audioCtx = new AudioContext();
+      const analyser = this.audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      this.audioCtx.createMediaStreamSource(this.stream).connect(analyser);
+      const data = new Uint8Array(analyser.fftSize);
+      let level = 0;
+      const tick = () => {
+        analyser.getByteTimeDomainData(data);
+        let sum = 0;
+        for (const v of data) { const x = (v - 128) / 128; sum += x * x; }
+        const rms = Math.sqrt(sum / data.length);
+        level += (Math.min(1, rms * 5) - level) * 0.35;
+        wrap.style.setProperty('--level', level.toFixed(3));
+        this.meterRaf = requestAnimationFrame(tick);
+      };
+      tick();
+    } catch {
+      wrap.dataset.meter = 'ambient';
+    }
+  },
+
+  cleanup() {
+    cancelAnimationFrame(this.meterRaf);
+    this.stream?.getTracks().forEach((t) => t.stop());
+    this.audioCtx?.close().catch(() => {});
+    if (this.wrap) { this.wrap.style.removeProperty('--level'); delete this.wrap.dataset.meter; }
+    if (this.button) {
+      this.setButton(this.button, 'idle');
+      this.button.setAttribute('aria-label', this.button.dataset.label);
+    }
+    Object.assign(this, { rec: null, stream: null, audioCtx: null, meterRaf: 0 });
+  },
+};
+
+function askVoiceConsent() {
+  const dialog = $('#voice-consent');
+  return new Promise((resolve) => {
+    dialog.returnValue = '';
+    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'allow'), { once: true });
+    dialog.showModal();
+  });
+}
+
+/* ---------------------------------------------------------------------------
+   Stage controller
+   --------------------------------------------------------------------------- */
+function setStage(stage) {
+  state.stage = stage;
+  document.body.dataset.stage = stage;
+  document.dispatchEvent(new CustomEvent('wb:stage', { detail: stage }));
+}
+
+function nudge(message) { sparkNudge.textContent = message; }
+
+function openDiscovery({ animate = true } = {}) {
+  updateHints(classifyContext(sparkInput.value));
+  discovery.dataset.state = 'active';
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = false; });
+  setStage('discovery');
+  Draft.save();
+
+  if (!animate) return;
+  announce('Seven questions are open. Every one is optional.');
+  discoveryTitle.focus({ preventScroll: true });
+  // Let the Spark settle first, then bring the questions into view if needed.
+  wait(reducedMotion() ? 0 : 420).then(() => {
+    const top = $('.discovery__head').getBoundingClientRect().top;
+    if (top < 0 || top > innerHeight * 0.55) {
+      $('.discovery__head').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+    }
+  });
+}
+
+function closeDiscovery() {
+  discovery.dataset.state = 'deferred';
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = true; });
+}
+
+let generationController = null;
+
+async function requestBlueprint() {
+  if (state.busy) return;
+  if (!sparkInput.value.trim()) {
+    nudge('Your Blueprint grows from your spark. Add a few words about what you want to create.');
+    sparkInput.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+    sparkInput.focus({ preventScroll: true });
+    return;
+  }
+
+  Voice.stop();
+  state.busy = true;
+  blueprintBtn.setAttribute('aria-busy', 'true');
+  const profile = buildProfile();
+
+  // The page grows quiet; the form recedes rather than vanishing.
+  setStage('generating');
+  await wait(reducedMotion() ? 0 : 450);
+  sparkSection.hidden = true;
+  discovery.hidden = true;
+  $('#gen-error').hidden = true;
+  $('.generating__inner').hidden = false;
+  $('#gen-msg').textContent = 'Bringing your ideas together.';
+  $('#gen-sub').textContent = '';
+  generating.hidden = false;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  const slow = setTimeout(() => {
+    $('#gen-sub').textContent = 'Still working. Longer answers take a little more time to bring together.';
+  }, 7000);
+  const started = performance.now();
+  generationController = new AbortController();
+
+  try {
+    const blueprint = await generateBlueprint(profile, { signal: generationController.signal });
+    const elapsed = performance.now() - started;
+    if (elapsed < 900) await wait(900 - elapsed); // never flash the waiting state
+
+    state.blueprint = blueprint;
+    state.markdown = blueprintToMarkdown(blueprint);
+    renderBlueprint(blueprint);
+    generating.hidden = true;
+    closeSource();
+    blueprintView.hidden = false;
+    setStage('blueprint');
+    $('#bp-title').focus({ preventScroll: true });
+    announce(`Your Blueprint is ready: ${blueprint.meta.title}.`);
+  } catch (error) {
+    if (error?.name !== 'AbortError') console.error('[blueprint] generation failed', error);
+    $('.generating__inner').hidden = true;
+    $('#gen-error').hidden = false;
+    $('#gen-retry').focus();
+  } finally {
+    clearTimeout(slow);
+    generationController = null;
+    state.busy = false;
+    blueprintBtn.removeAttribute('aria-busy');
+  }
+}
+
+function showForm({ focusTarget = discoveryTitle } = {}) {
+  generationController?.abort();
+  generating.hidden = true;
+  blueprintView.hidden = true;
+  closeSource();
+  sparkSection.hidden = false;
+  discovery.hidden = false;
+  for (const node of [sparkSection, discovery]) {
+    node.classList.add('enter');
+    node.addEventListener('animationend', () => node.classList.remove('enter'), { once: true });
+  }
+  setStage('discovery');
+  requestAnimationFrame(() => {
+    $('.discovery__head').scrollIntoView({ behavior: 'auto', block: 'start' });
+    focusTarget.focus({ preventScroll: true });
+  });
+}
+
+function resetAll() {
+  Voice.stop();
+  Draft.clear();
+  sparkInput.value = '';
+  autosize(sparkInput);
+  for (const t of $$('textarea[data-key]')) { t.value = ''; autosize(t); t.closest('.q').classList.remove('is-answered'); }
+  for (const btn of $$('.explore-toggle')) setExplore(btn, false);
+  $$('.voice-note').forEach((n) => { n.textContent = ''; });
+  nudge('');
+  state.blueprint = null;
+  state.markdown = '';
+  generating.hidden = true;
+  blueprintView.hidden = true;
+  sparkSection.hidden = false;
+  discovery.hidden = false;
+  closeDiscovery();
+  setStage('spark');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+/* ---------------------------------------------------------------------------
+   Blueprint actions
+   --------------------------------------------------------------------------- */
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; }
+  catch {
+    const ta = Object.assign(document.createElement('textarea'), { value: text });
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch { /* ignore */ }
+    ta.remove();
+    return ok;
+  }
+}
+
+function downloadMarkdown() {
+  if (!state.blueprint) return;
+  const blob = new Blob([state.markdown], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement('a'), { href: url, download: `${slugify(state.blueprint.meta.title)}.md` });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('Blueprint downloaded as Markdown.');
+}
+
+function closeSource() {
+  $('#bp-source').hidden = true;
+  $('#bp-source-toggle').setAttribute('aria-expanded', 'false');
+}
+
+function toggleSource() {
+  const panel = $('#bp-source');
+  const open = panel.hidden;
+  panel.hidden = !open;
+  $('#bp-source-toggle').setAttribute('aria-expanded', String(open));
+  if (open) panel.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' });
+}
+
+function setExplore(btn, open) {
+  btn.setAttribute('aria-expanded', String(open));
+  document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+}
+
+/* ---------------------------------------------------------------------------
+   Wiring
+   --------------------------------------------------------------------------- */
+function init() {
+  renderQuestions();
+  $$('.q__body, .culmination', discovery).forEach((n) => { n.inert = true; });
+  for (const btn of $$('.mic')) btn.dataset.label = btn.getAttribute('aria-label');
+  if (!SpeechRecognition) $$('.mic').forEach((b) => { b.dataset.state = 'unavailable'; b.title = 'Voice input isn’t available in this browser'; });
+
+  const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');
+  $$('[data-shortcut]').forEach((n) => { n.textContent = isMac ? '⌘ Enter' : 'Ctrl Enter'; });
+
+  // Inputs: autosize, capture state, save drafts.
+  const refreshHints = debounce(() => {
+    if (state.stage !== 'spark') updateHints(classifyContext(sparkInput.value));
+  }, 500);
+
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLTextAreaElement)) return;
+    autosize(t);
+    if (t === sparkInput) {
+      if (t.value.trim()) nudge('');
+      refreshHints();
+    } else if (t.dataset.key) {
+      t.closest('.q').classList.toggle('is-answered', t.value.trim().length > 0);
+    }
+    Draft.save();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (e.key === 'Escape' && Voice.active) { Voice.stop(); return; }
+    if (!(t instanceof HTMLTextAreaElement)) return;
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (state.stage === 'spark') letsGoButton.click();
+      else requestBlueprint();
+      return;
+    }
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete')) {
+      Voice.detach(t);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const mic = e.target.closest('.mic');
+    if (mic) { Voice.toggle(mic); return; }
+    const explore = e.target.closest('.explore-toggle');
+    if (explore) setExplore(explore, explore.getAttribute('aria-expanded') !== 'true');
+  });
+
+  letsGoButton.addEventListener('click', () => {
+    if (!sparkInput.value.trim()) {
+      nudge('Start with a few words — anything at all. It doesn’t need to be finished.');
+      sparkInput.focus();
+      return;
+    }
+    nudge('');
+    Voice.stop();
+    openDiscovery({ animate: true });
+  });
+
+  blueprintBtn.addEventListener('click', requestBlueprint);
+  $('#gen-retry').addEventListener('click', requestBlueprint);
+  $('#gen-back').addEventListener('click', () => showForm());
+
+  $('#bp-edit').addEventListener('click', () => showForm());
+  $('#bp-copy').addEventListener('click', async () => {
+    toast((await copyText(state.markdown)) ? 'Markdown copied to your clipboard.' : 'Copy wasn’t allowed here — try View source.');
+  });
+  $('#bp-download').addEventListener('click', downloadMarkdown);
+  $('#bp-source-toggle').addEventListener('click', toggleSource);
+  $('#bp-source-copy').addEventListener('click', async () => {
+    toast((await copyText(state.markdown)) ? 'Markdown copied to your clipboard.' : 'Copy wasn’t allowed here.');
+  });
+
+  // About dialog
+  const about = $('#about');
+  $('#about-open').addEventListener('click', () => about.showModal());
+  $('#about-clear').addEventListener('click', () => {
+    about.close();
+    resetAll();
+    toast('Your saved draft was cleared.');
+    sparkInput.focus();
+  });
+  for (const d of $$('dialog')) {
+    d.addEventListener('click', (e) => { if (e.target === d) d.close('cancel'); }); // backdrop click
+  }
+
+  // Restore a saved draft, without re-performing the reveal.
+  const draft = Draft.load();
+  if (draft && (draft.spark?.trim() || Object.values(draft.answers || {}).some((v) => v?.trim()))) {
+    document.documentElement.classList.add('no-anim');
+    sparkInput.value = draft.spark || '';
+    for (const [key, value] of Object.entries(draft.answers || {})) {
+      const field = answerField(key);
+      if (!field || !value) continue;
+      field.value = value;
+      field.closest('.q').classList.toggle('is-answered', value.trim().length > 0);
+    }
+    if (draft.opened && sparkInput.value.trim()) openDiscovery({ animate: false });
+    $$('textarea').forEach(autosize);
+    requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('no-anim')));
+    setTimeout(() => toast('Welcome back — your draft is right where you left it.'), 600);
+  } else {
+    setStage('spark');
+  }
+}
+
+init();
+</script>
+</head>
+
+<body data-stage="spark">
+  <canvas id="atmosphere" aria-hidden="true"></canvas>
+  <div class="graph" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true">
+    <div class="frame__border"></div>
+    <div class="frame__cols"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+    <div class="frame__rows"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span></div>
+    <div class="frame__sheet"></div>
+  </div>
+
+  <header class="masthead">
+    <a class="wordmark" href="https://worldbuilderblueprint.com/" aria-label="World Builder Blueprint, home">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5"/>
+        <ellipse cx="12" cy="12" rx="3.6" ry="8.5"/>
+        <path d="M3.5 12h17M5.2 7.6h13.6M5.2 16.4h13.6" stroke-width=".8" opacity=".75"/>
+        <path d="M12 .8v2.2M12 21v2.2M.8 12h2.2M21 12h2.2"/>
+      </svg>
+      <span class="wordmark__name">World Builder</span>
+      <span class="wordmark__sub">Blueprint</span>
+    </a>
+    <button type="button" class="link-quiet" id="about-open" aria-haspopup="dialog">About</button>
+  </header>
+
+  <main id="main">
+    <!-- Stage 1 — The Spark -->
+    <section class="spark" id="spark" aria-labelledby="spark-title">
+      <p class="spark__eyebrow">Your spark</p>
+      <h1 class="question" id="spark-title">What do you want to create?</h1>
+
+      <div class="dimension" aria-hidden="true">Any length</div>
+      <div class="field field--spark">
+        <label class="visually-hidden" for="spark-input">Describe what you want to create</label>
+        <textarea id="spark-input" class="field__input" rows="5" autocomplete="off"
+          placeholder="It can be anything. A character, a story, a business, a world, or something you can’t quite explain yet."
+          aria-describedby="spark-help spark-input-voice"></textarea>
+        <div class="field__tools">
+          <span class="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <button type="button" class="mic" data-voice-for="spark-input" aria-label="Speak your idea" aria-pressed="false" title="Speak instead of typing">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>
+            <span class="mic__rec" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <p class="voice-note" id="spark-input-voice" aria-live="polite"></p>
+      <div class="spark__meta">
+        <span id="spark-help">Write as much or as little as you like — or speak it.</span>
+      </div>
+      <p class="nudge" id="spark-nudge" role="status"></p>
+
+      <div class="spark__actions-wrap">
+        <div class="spark__actions">
+          <button type="button" class="btn btn--chalk" id="lets-go">Let’s go</button>
+          <span class="shortcut">or press <kbd data-shortcut>⌘ Enter</kbd></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 2 — The Seven Questions (visible but deferred until the Spark) -->
+    <section class="discovery" id="discovery" data-state="deferred" aria-labelledby="discovery-title" aria-describedby="discovery-lede">
+      <header class="discovery__head">
+        <h2 class="discovery__title" id="discovery-title" tabindex="-1">
+          <span class="when-deferred">Next · Seven questions</span>
+          <span class="when-active">Seven questions</span>
+        </h2>
+        <p class="discovery__lede" id="discovery-lede">
+          <span class="when-deferred">They open after you share your idea.</span>
+          <span class="when-active">Answer whichever ones speak to you. Every question is optional — leaving one open is part of the process.</span>
+        </p>
+      </header>
+
+      <ol class="questions" id="questions"></ol>
+
+      <div class="culmination">
+        <div class="culmination__inner">
+          <p class="culmination__line">Your world begins with what you’ve imagined.</p>
+          <button type="button" class="btn btn--primary" id="get-blueprint">
+            Get Your Blueprint
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+          </button>
+          <p class="shortcut">or press <kbd data-shortcut>⌘ Enter</kbd> in any answer</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 3a — Bringing ideas together -->
+    <section class="generating" id="generating" hidden aria-label="Preparing your Blueprint">
+      <div class="generating__inner" role="status" aria-live="polite">
+        <svg class="compass" viewBox="0 0 64 64" width="60" height="60" aria-hidden="true">
+          <circle class="compass__ring" cx="32" cy="32" r="24"/>
+          <circle class="compass__draw" cx="32" cy="32" r="24" pathLength="100"/>
+          <path class="compass__cross" d="M32 2v12M32 50v12M2 32h12M50 32h12"/>
+          <circle class="compass__pin" cx="32" cy="32" r="1.8"/>
+        </svg>
+        <p class="generating__msg" id="gen-msg">Bringing your ideas together.</p>
+        <p class="generating__sub" id="gen-sub"></p>
+      </div>
+      <div class="generating__error" id="gen-error" hidden role="alert">
+        <p>Something interrupted your Blueprint. Your answers are safe.</p>
+        <div class="row">
+          <button type="button" class="btn btn--chalk" id="gen-retry">Try again</button>
+          <button type="button" class="btn btn--quiet" id="gen-back">Back to your answers</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 3b — The Blueprint -->
+    <section class="blueprint" id="blueprint" hidden aria-label="Your Blueprint">
+      <div class="bp-bar">
+        <button type="button" class="tool tool--plain" id="bp-edit">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>
+          Edit your answers
+        </button>
+        <div class="bp-bar__group" role="group" aria-label="Keep your Blueprint">
+          <button type="button" class="tool" id="bp-copy">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg>
+            Copy Markdown
+          </button>
+          <button type="button" class="tool" id="bp-download">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10M5.5 8.5 10 13l4.5-4.5M4 17h12"/></svg>
+            Download .md
+          </button>
+          <button type="button" class="tool" id="bp-source-toggle" aria-expanded="false" aria-controls="bp-source">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 6-4 4 4 4M13 6l4 4-4 4"/></svg>
+            View source
+          </button>
+        </div>
+      </div>
+
+      <div class="sheet-wrap">
+        <article class="sheet" id="bp-sheet" aria-labelledby="bp-title"></article>
+      </div>
+
+      <div class="bp-source" id="bp-source" hidden>
+        <div class="bp-source__head">
+          <span>Markdown with structured metadata</span>
+          <button type="button" class="tool tool--plain" id="bp-source-copy">Copy</button>
+        </div>
+        <pre tabindex="0" aria-label="Blueprint Markdown source"><code id="bp-source-code"></code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p><em>Create the world behind what you imagine.</em></p>
+    <p>worldbuilderblueprint.com</p>
+  </footer>
+
+  <!-- About -->
+  <dialog id="about" aria-labelledby="about-title">
+    <div class="dialog__body">
+      <h2 id="about-title">World Builder Blueprint</h2>
+      <p class="lede">One question, seven more, and a Blueprint built from your own ideas.</p>
+      <p>Describe what you want to create — a character, a story, a business, a world, or something you can’t quite explain yet. Seven optional questions help you explore its foundations. Then your answers are gathered into a Blueprint you can read, copy, and keep.</p>
+      <h3>Your words</h3>
+      <p>What you write is saved only in this browser, so you don’t lose it if you step away. In this preview, Blueprints are composed on your device and nothing is sent anywhere.</p>
+      <p>Voice input uses your browser’s built-in speech recognition, which may process audio through the browser maker’s service. The microphone is only on while it says “Listening.”</p>
+    </div>
+    <form method="dialog" class="dialog__actions">
+      <button type="button" class="btn btn--quiet spacer" id="about-clear">Clear my saved draft</button>
+      <button class="btn btn--chalk" value="close" autofocus>Close</button>
+    </form>
+  </dialog>
+
+  <!-- Voice privacy: shown before the microphone is used for the first time -->
+  <dialog id="voice-consent" aria-labelledby="voice-title" aria-describedby="voice-desc">
+    <div class="dialog__body">
+      <h2 id="voice-title">Speak instead of typing</h2>
+      <div id="voice-desc">
+        <p class="lede">Your words will appear in the field, where you can review and edit them.</p>
+        <p>Voice input uses your browser’s speech recognition. Depending on your browser, audio may be processed by its speech service (for example, Google in Chrome or Apple in Safari) to turn it into text. World Builder Blueprint doesn’t record or store audio.</p>
+        <p>The microphone stays on only while the button shows it’s listening. Select it again, or press Esc, to stop.</p>
+      </div>
+    </div>
+    <form method="dialog" class="dialog__actions">
+      <button class="btn btn--quiet" value="cancel">Not now</button>
+      <button class="btn btn--chalk" value="allow" autofocus>Turn on microphone</button>
+    </form>
+  </dialog>
+
+  <div class="visually-hidden" id="announcer" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" data-show="false"></div>
+</body>
+</html>
